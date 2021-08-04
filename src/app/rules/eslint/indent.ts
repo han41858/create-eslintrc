@@ -47,62 +47,61 @@ function foo(d) {
 		}]
 	}],
 	additionalOptions: [{
-		type: OptionType.Object,
-		properties: [{
-			property: 'ignoredNodes',
-			type: OptionType.StringArray,
+		type: OptionType.StringArray,
 
-			examples: [{
-				correct: true,
-				rule: '["error", 4, { "ignoredNodes": ["ConditionalExpression"] }]',
-				code: `var a = foo
+		property: 'ignoredNodes',
+
+		examples: [{
+			correct: true,
+			rule: '["error", 4, { "ignoredNodes": ["ConditionalExpression"] }]',
+			code: `var a = foo
       ? bar
       : baz;
 
 var a = foo
                 ? bar
 : baz;`
-			}, {
-				correct: true,
-				rule: '["error", 4, { "ignoredNodes": ["CallExpression > FunctionExpression.callee > BlockStatement.body"] }]',
-				code: `(function() {
+		}, {
+			correct: true,
+			rule: '["error", 4, { "ignoredNodes": ["CallExpression > FunctionExpression.callee > BlockStatement.body"] }]',
+			code: `(function() {
 
 foo();
 bar();
 
 })`
-			}]
-		}, {
-			property: 'SwitchCase',
-			type: OptionType.NumberVariable,
+		}]
+	}, {
+		property: 'SwitchCase',
+		type: OptionType.NumberVariable,
 
-			examples: [{
-				correct: false,
-				rule: '["error", 2, { "SwitchCase": 1 }]',
-				code: `switch(a){
+		examples: [{
+			correct: false,
+			rule: '["error", 2, { "SwitchCase": 1 }]',
+			code: `switch(a){
 case "a":
     break;
 case "b":
     break;
 }`
-			}, {
-				correct: true,
-				rule: '["error", 2, { "SwitchCase": 1 }]',
-				code: `switch(a){
+		}, {
+			correct: true,
+			rule: '["error", 2, { "SwitchCase": 1 }]',
+			code: `switch(a){
   case "a":
     break;
   case "b":
     break;
 }`
-			}]
-		}, {
-			property: 'VariableDeclarator',
-			type: OptionType.NumberVariable,
+		}]
+	}, {
+		property: 'VariableDeclarator',
+		type: OptionType.NumberVariable,
 
-			examples: [{
-				correct: false,
-				rule: '["error", 2, { "VariableDeclarator": 1 }]',
-				code: `var a,
+		examples: [{
+			correct: false,
+			rule: '["error", 2, { "VariableDeclarator": 1 }]',
+			code: `var a,
     b,
     c;
 let a,
@@ -111,10 +110,10 @@ let a,
 const a = 1,
     b = 2,
     c = 3;`
-			}, {
-				correct: true,
-				rule: '["error", 2, { "VariableDeclarator": 1 }]',
-				code: `var a,
+		}, {
+			correct: true,
+			rule: '["error", 2, { "VariableDeclarator": 1 }]',
+			code: `var a,
   b,
   c;
 let a,
@@ -123,10 +122,10 @@ let a,
 const a = 1,
   b = 2,
   c = 3;`
-			}, {
-				correct: false,
-				rule: '["error", 2, { "VariableDeclarator": "first" }]',
-				code: `var a,
+		}, {
+			correct: false,
+			rule: '["error", 2, { "VariableDeclarator": "first" }]',
+			code: `var a,
   b,
   c;
 let a,
@@ -135,10 +134,10 @@ let a,
 const a = 1,
   b = 2,
   c = 3;`
-			}, {
-				correct: true,
-				rule: '["error", 2, { "VariableDeclarator": "first" }]',
-				code: `var a,
+		}, {
+			correct: true,
+			rule: '["error", 2, { "VariableDeclarator": "first" }]',
+			code: `var a,
     b,
     c;
 let a,
@@ -147,10 +146,10 @@ let a,
 const a = 1,
       b = 2,
       c = 3;`
-			}, {
-				correct: true,
-				rule: '["error", 2, { "VariableDeclarator": { "var": 2, "let": 2, "const": 3 } }]',
-				code: `var a,
+		}, {
+			correct: true,
+			rule: '["error", 2, { "VariableDeclarator": { "var": 2, "let": 2, "const": 3 } }]',
+			code: `var a,
     b,
     c;
 let a,
@@ -159,7 +158,6 @@ let a,
 const a = 1,
       b = 2,
       c = 3;`
-			}]
 		}]
 	}]
 	// TODO: and more

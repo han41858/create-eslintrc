@@ -56,14 +56,11 @@ export interface StringOption extends OptionCommon {
 }
 
 export interface ObjectOption extends OptionCommon {
-	type: OptionType.Object;
+	type: OptionType;
 
-	properties: {
-		property: string;
-		type: OptionType;
-		options?: Option[];
-		examples?: Example[];
-	}[];
+	property: string;
+	options?: Option[];
+	examples?: Example[];
 }
 
 export type Option = BooleanOption | NumberOption | StringOption | ObjectOption;

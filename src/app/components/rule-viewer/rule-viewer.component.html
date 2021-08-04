@@ -20,13 +20,13 @@
 
 	<ng-template #simpleOnOff>
 		<div class="option">
-			<input type="radio" id="on" [name]="rule.name">
-			<label for="on">on</label>
+			<input type="radio" [id]="rule.name + '_on'" [name]="rule.name">
+			<label [for]="rule.name + '_on'">on</label>
 		</div>
 
 		<div class="option">
-			<input type="radio" id="off" [name]="rule.name">
-			<label for="off">off</label>
+			<input type="radio" [id]="rule.name + '_off'" [name]="rule.name">
+			<label [for]="rule.name + '_off'">off</label>
 		</div>
 
 		<ng-container *ngFor="let example of rule.examples">
@@ -38,14 +38,22 @@
 	<ng-container *ngIf="rule.additionalOptions">
 		<h2>Additional Options</h2>
 
-		<div class="option" *ngFor="let option of rule.additionalOptions">
-			<p>{{ option | json }}</p>
+		<div class="option" *ngFor="let additionalOption of rule.additionalOptions;let i=index">
+			<input type="checkbox" [id]="rule.name + '_' + additionalOption.property">
+			<h3>{{ additionalOption.property }}</h3>
+
+			<ng-container
+					*ngTemplateOutlet="optionSelector;context: { ruleName: rule.name, index: i, option: additionalOption }"></ng-container>
+
+			<ng-container *ngFor="let example of additionalOption.examples">
+				<ng-container *ngTemplateOutlet="exampleViewer;context: { $implicit: example }"></ng-container>
+			</ng-container>
 		</div>
 	</ng-container>
 </ng-container>
 
 
-<ng-template #optionSelector let-ruleName let-index="index" let-option="option">
+<ng-template #optionSelector let-ruleName="ruleName" let-index="index" let-option="option">
 	<div class="option">
 		<input type="radio" [id]="ruleName + index" [name]="ruleName">
 
