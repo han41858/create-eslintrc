@@ -1,4 +1,6 @@
 <p>rules: {{ rules?.length }}</p>
 
+<app-config-form></app-config-form>
+
 <app-rule-viewer *ngFor="let rule of rules"
                  [rule]="rule"></app-rule-viewer>

@@ -1,6 +1,11 @@
 import { FixableType, OptionType, Package, RuleCategory, RuleType } from 'src/app/common/constants';
 
 
+export interface TextValue<T> {
+	text: string;
+	value: T;
+}
+
 export interface Rule {
 	package: Package;
 	name: string;

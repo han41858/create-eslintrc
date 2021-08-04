@@ -1,5 +1,9 @@
 export enum Package {
-	ESLint = 'eslint'
+	ESLint = 'eslint',
+	TypeScript = '@typescript-eslint',
+	Angular = '@angular-eslint/eslint-plugin',
+	React = 'eslint-plugin-react',
+	Vue = 'eslint-plugin-vue'
 }
 
 export enum RuleType {
@@ -23,9 +27,10 @@ export enum FixableType {
 }
 
 export enum ErrorLevel {
-	Off,
-	Warn,
-	Error
+	skip = 'skip',
+	off = 'off',
+	warn = 'warn',
+	error = 'error'
 }
 
 export enum OptionType {
@@ -46,4 +51,17 @@ export enum RuleFileType {
 	YML = 'yml',
 	JSON = 'json',
 	InPackageJson = 'package.json'
+}
+
+export enum Environment {
+	Node = 'node',
+	Browser = 'browser'
+}
+
+export enum RuleOrder {
+	DocumentOrder = 'document order',
+	Alphabetical = 'by alphabetical',
+	FromOlderVersion = 'from older version',
+	FromNewerVersion = 'from newer version',
+	Random = 'by random'
 }
