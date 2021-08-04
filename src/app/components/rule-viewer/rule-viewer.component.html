@@ -29,9 +29,8 @@
 			<label [for]="rule.name + '_off'">off</label>
 		</div>
 
-		<ng-container *ngFor="let example of rule.examples">
-			<ng-container *ngTemplateOutlet="exampleViewer;context: { $implicit: example }"></ng-container>
-		</ng-container>
+		<app-example-viewer *ngFor="let example of rule.examples"
+		                    [example]="example"></app-example-viewer>
 	</ng-template>
 
 
@@ -45,9 +44,8 @@
 			<ng-container
 					*ngTemplateOutlet="optionSelector;context: { ruleName: rule.name, index: i, option: additionalOption }"></ng-container>
 
-			<ng-container *ngFor="let example of additionalOption.examples">
-				<ng-container *ngTemplateOutlet="exampleViewer;context: { $implicit: example }"></ng-container>
-			</ng-container>
+			<app-example-viewer *ngFor="let example of additionalOption.examples"
+			                    [example]="example"></app-example-viewer>
 		</div>
 	</ng-container>
 </ng-container>
@@ -71,20 +69,9 @@
 			</div>
 		</ng-container>
 
-		<ng-container *ngFor="let example of option.examples">
-			<ng-container *ngTemplateOutlet="exampleViewer;context: { $implicit: example }"></ng-container>
-		</ng-container>
+		<app-example-viewer *ngFor="let example of option.examples"
+		                    [example]="example"></app-example-viewer>
 	</div>
 </ng-template>
 
 
-<ng-template #exampleViewer let-example>
-	<p>
-		<span>{{ example.correct ? '✔' : '❌' }}</span>
-		<code>{{ example.rule }}</code>
-	</p>
-
-	<div class="example">
-		<pre class="code">{{ example.code }}</pre>
-	</div>
-</ng-template>

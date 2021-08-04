@@ -5,13 +5,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { RuleViewerComponent } from './components/rule-viewer/rule-viewer.component';
+import { ExampleViewerComponent } from './components/example-viewer/example-viewer.component';
 
 
 @NgModule({
 	declarations: [
 		AppComponent,
 
-		RuleViewerComponent
+		RuleViewerComponent,
+		ExampleViewerComponent
 	],
 	imports: [
 		BrowserModule,

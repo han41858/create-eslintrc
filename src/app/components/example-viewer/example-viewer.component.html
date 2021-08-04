@@ -1,0 +1,8 @@
+<ng-container *ngIf="example">
+	<p>
+		<span>{{ example.correct ? '🟢' : '❌' }}</span>
+		<code class="rule devFont">{{ example.rule }}</code>
+	</p>
+
+	<pre class="codeBlock lang-js"><code>{{ example.code }}</code></pre>
+</ng-container>
