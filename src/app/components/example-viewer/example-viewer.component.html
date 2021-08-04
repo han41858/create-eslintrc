@@ -1,8 +1,15 @@
 <ng-container *ngIf="example">
-	<p>
-		<span>{{ example.correct ? '🟢' : '❌' }}</span>
+	<div class="header">
+		<ng-container *ngIf="example.correct;else incorrectTemplate">
+			<span title="correct">🟢</span>
+		</ng-container>
+
+		<ng-template #incorrectTemplate>
+			<span title="incorrect">❌</span>
+		</ng-template>
+
 		<code class="rule devFont">{{ example.rule }}</code>
-	</p>
+	</div>
 
 	<pre class="codeBlock lang-js"><code>{{ example.code }}</code></pre>
 </ng-container>
