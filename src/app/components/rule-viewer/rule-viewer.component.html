@@ -1,77 +1,21 @@
 <ng-container *ngIf="rule">
-	<h1 class="name">
-		{{ rule.name }}
-		<span *ngIf="rule.recommended" title="recommended">👍</span>
-		<span *ngIf="rule.fixable" title="fixable">🔧</span>
-	</h1>
-	<p class="description">{{ rule.description }}</p>
-	<p class="version">{{ rule.version }}</p>
+	<div class="header">
+		<h1 class="name devFont">{{ rule.name }}</h1>
 
+		<span *ngIf="rule.recommended" class="recommended" title="recommended">👍</span>
+		<span *ngIf="rule.fixable" class="fixable" title="fixable">🔧</span>
+	</div>
+
+	<p class="description">{{ rule.description }}</p>
+	<div class="version">
+		<span class="devFont">{{ rule.version }}</span>
+	</div>
 
 	<h2>Options</h2>
-
-	<ng-container *ngIf="rule.options;else simpleOnOff">
-		<ng-container *ngFor="let option of rule.options;let i=index">
-			<ng-container
-					*ngTemplateOutlet="optionSelector;context: { ruleName: rule.name, index: i, option: option }"></ng-container>
-		</ng-container>
-	</ng-container>
-
-
-	<ng-template #simpleOnOff>
-		<div class="option">
-			<input type="radio" [id]="rule.name + '_on'" [name]="rule.name">
-			<label [for]="rule.name + '_on'">on</label>
-		</div>
-
-		<div class="option">
-			<input type="radio" [id]="rule.name + '_off'" [name]="rule.name">
-			<label [for]="rule.name + '_off'">off</label>
-		</div>
-
-		<app-example-viewer *ngFor="let example of rule.examples"
-		                    [example]="example"></app-example-viewer>
-	</ng-template>
-
+	<app-option-selector [rule]="rule"></app-option-selector>
 
 	<ng-container *ngIf="rule.additionalOptions">
 		<h2>Additional Options</h2>
-
-		<div class="option" *ngFor="let additionalOption of rule.additionalOptions;let i=index">
-			<input type="checkbox" [id]="rule.name + '_' + additionalOption.property">
-			<h3>{{ additionalOption.property }}</h3>
-
-			<ng-container
-					*ngTemplateOutlet="optionSelector;context: { ruleName: rule.name, index: i, option: additionalOption }"></ng-container>
-
-			<app-example-viewer *ngFor="let example of additionalOption.examples"
-			                    [example]="example"></app-example-viewer>
-		</div>
+		<app-additional-option-selector [rule]="rule"></app-additional-option-selector>
 	</ng-container>
 </ng-container>
-
-
-<ng-template #optionSelector let-ruleName="ruleName" let-index="index" let-option="option">
-	<div class="option">
-		<input type="radio" [id]="ruleName + index" [name]="ruleName">
-
-		<ng-container [ngSwitch]="option.type">
-			<div class="numberVariable" *ngSwitchCase="OptionType.NumberVariable">
-				<input type="number" [value]="option.value">
-			</div>
-
-			<div class="stringFixed" *ngSwitchCase="OptionType.StringFixed">
-				<label [for]="ruleName + index">{{ option.value }}</label>
-			</div>
-
-			<div class="stringVariable" *ngSwitchCase="OptionType.StringVariable">
-				<input type="text" [value]="option.value">
-			</div>
-		</ng-container>
-
-		<app-example-viewer *ngFor="let example of option.examples"
-		                    [example]="example"></app-example-viewer>
-	</div>
-</ng-template>
-
-

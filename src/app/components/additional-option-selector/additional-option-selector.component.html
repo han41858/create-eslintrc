@@ -1,0 +1,16 @@
+<ng-container *ngIf="rule">
+	<ng-container *ngIf="rule.additionalOptions && rule.additionalOptions.length> 0">
+		<ng-container *ngFor="let option of rule.additionalOptions">
+			<div class="option">
+				<input type="checkbox" [id]="rule.name + '_' + option.property">
+
+				<label [for]="rule.name + '_' + option.property">
+					<h3 class="devFont">{{ option.property }}</h3>
+				</label>
+			</div>
+
+			<app-example-viewer *ngFor="let example of option.examples"
+			                    [example]="example"></app-example-viewer>
+		</ng-container>
+	</ng-container>
+</ng-container>

@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 
 import { Rule } from '../../common/interfaces';
-import { OptionType } from '../../common/constants';
 
 
 @Component({
@@ -10,8 +9,6 @@ import { OptionType } from '../../common/constants';
 	styleUrls: ['./rule-viewer.component.sass']
 })
 export class RuleViewerComponent {
-
-	OptionType = OptionType;
 
 	@Input() rule: Rule | undefined;
 

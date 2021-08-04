@@ -29,13 +29,13 @@ export enum ErrorLevel {
 }
 
 export enum OptionType {
-	Boolean,
-	NumberFixed,
-	NumberVariable,
-	StringFixed,
-	StringVariable,
-	StringArray,
-	Object
+	Boolean = 'boolean',
+	NumberFixed = 'numberFixed',
+	NumberVariable = 'numberVariable',
+	StringFixed = 'stringFixed',
+	StringVariable = 'stringVariable',
+	StringArray = 'stringArray',
+	Object = 'object'
 }
 
 // value is extension
