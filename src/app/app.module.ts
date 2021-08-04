@@ -10,6 +10,7 @@ import { ExampleViewerComponent } from './components/example-viewer/example-view
 import { OptionSelectorComponent } from './components/option-selector/option-selector.component';
 import { AdditionalOptionSelectorComponent } from './components/additional-option-selector/additional-option-selector.component';
 import { CommonConfigComponent } from './components/common-config/common-config.component';
+import { ResultPreviewComponent } from './components/result-preview/result-preview.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { CommonConfigComponent } from './components/common-config/common-config.
 		ExampleViewerComponent,
 		OptionSelectorComponent,
 		AdditionalOptionSelectorComponent,
-		CommonConfigComponent
+		CommonConfigComponent,
+		ResultPreviewComponent
 	],
 	imports: [
 		BrowserModule,

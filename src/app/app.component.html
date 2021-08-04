@@ -1,6 +1,12 @@
-<p>rules: {{ rules?.length }}</p>
+<div class="wrapper">
+	<div class="left">
+		<app-config-form></app-config-form>
 
-<app-config-form></app-config-form>
+		<app-rule-viewer *ngFor="let rule of rules"
+		                 [rule]="rule"></app-rule-viewer>
+	</div>
 
-<app-rule-viewer *ngFor="let rule of rules"
-                 [rule]="rule"></app-rule-viewer>
+	<div class="right">
+		<app-result-preview></app-result-preview>
+	</div>
+</div>

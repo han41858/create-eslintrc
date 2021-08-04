@@ -38,7 +38,8 @@
 							"node_modules/prismjs/themes/prism-okaidia.css"
 						],
 						"scripts": [
-							"node_modules/prismjs/prism.js"
+							"node_modules/prismjs/prism.js",
+							"node_modules/prismjs/components/prism-json.js"
 						]
 					},
 					"configurations": {
