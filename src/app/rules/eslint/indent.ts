@@ -1,7 +1,7 @@
-import { Rule } from 'src/app/common/interfaces';
-import { FixableType, OptionType, Package, RuleCategory, RuleType } from 'src/app/common/constants';
+import { Rule } from '../../common/interfaces';
+import { FixableType, OptionType, Package, RuleCategory, RuleType } from '../../common/constants';
 
-const rule: Rule = {
+export const IndentRule: Rule = {
 	package: Package.ESLint,
 	name: 'indent',
 	description: 'enforce consistent indentation',
@@ -164,5 +164,3 @@ const a = 1,
 	}]
 	// TODO: and more
 };
-
-export default rule;

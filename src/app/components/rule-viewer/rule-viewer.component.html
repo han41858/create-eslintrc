@@ -1,0 +1,82 @@
+<ng-container *ngIf="rule">
+	<h1 class="name">
+		{{ rule.name }}
+		<span *ngIf="rule.recommended" title="recommended">👍</span>
+		<span *ngIf="rule.fixable" title="fixable">🔧</span>
+	</h1>
+	<p class="description">{{ rule.description }}</p>
+	<p class="version">{{ rule.version }}</p>
+
+
+	<h2>Options</h2>
+
+	<ng-container *ngIf="rule.options;else simpleOnOff">
+		<ng-container *ngFor="let option of rule.options;let i=index">
+			<ng-container
+					*ngTemplateOutlet="optionSelector;context: { ruleName: rule.name, index: i, option: option }"></ng-container>
+		</ng-container>
+	</ng-container>
+
+
+	<ng-template #simpleOnOff>
+		<div class="option">
+			<input type="radio" id="on" [name]="rule.name">
+			<label for="on">on</label>
+		</div>
+
+		<div class="option">
+			<input type="radio" id="off" [name]="rule.name">
+			<label for="off">off</label>
+		</div>
+
+		<ng-container *ngFor="let example of rule.examples">
+			<ng-container *ngTemplateOutlet="exampleViewer;context: { $implicit: example }"></ng-container>
+		</ng-container>
+	</ng-template>
+
+
+	<ng-container *ngIf="rule.additionalOptions">
+		<h2>Additional Options</h2>
+
+		<div class="option" *ngFor="let option of rule.additionalOptions">
+			<p>{{ option | json }}</p>
+		</div>
+	</ng-container>
+</ng-container>
+
+
+<ng-template #optionSelector let-ruleName let-index="index" let-option="option">
+	<div class="option">
+		<input type="radio" [id]="ruleName + index" [name]="ruleName">
+
+		<ng-container [ngSwitch]="option.type">
+			<div class="numberVariable" *ngSwitchCase="OptionType.NumberVariable">
+				<input type="number" [value]="option.value">
+			</div>
+
+			<div class="stringFixed" *ngSwitchCase="OptionType.StringFixed">
+				<label [for]="ruleName + index">{{ option.value }}</label>
+			</div>
+
+			<div class="stringVariable" *ngSwitchCase="OptionType.StringVariable">
+				<input type="text" [value]="option.value">
+			</div>
+		</ng-container>
+
+		<ng-container *ngFor="let example of option.examples">
+			<ng-container *ngTemplateOutlet="exampleViewer;context: { $implicit: example }"></ng-container>
+		</ng-container>
+	</div>
+</ng-template>
+
+
+<ng-template #exampleViewer let-example>
+	<p>
+		<span>{{ example.correct ? '✔' : '❌' }}</span>
+		<code>{{ example.rule }}</code>
+	</p>
+
+	<div class="example">
+		<pre class="code">{{ example.code }}</pre>
+	</div>
+</ng-template>

@@ -1,7 +1,7 @@
-import { Rule } from 'src/app/common/interfaces';
-import { FixableType, Package, RuleCategory, RuleType } from 'src/app/common/constants';
+import { Rule } from '../../common/interfaces';
+import { FixableType, Package, RuleCategory, RuleType } from '../../common/constants';
 
-const rule: Rule = {
+export const ForDirectionRule: Rule = {
 	package: Package.ESLint,
 	name: 'for-direction',
 	description: 'enforce "for" loop update clause moving the counter in the right direction.',
@@ -30,5 +30,3 @@ for (var i = 10; i >= 0; i++) {
 }`
 	}]
 };
-
-export default rule;

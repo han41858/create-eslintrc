@@ -35,6 +35,7 @@ export interface Example {
 
 interface OptionCommon {
 	type: OptionType;
+	value?: unknown;
 
 	examples?: Example[];
 }

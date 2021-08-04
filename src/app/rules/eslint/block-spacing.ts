@@ -1,7 +1,7 @@
-import { Rule } from 'src/app/common/interfaces';
-import { FixableType, OptionType, Package, RuleCategory, RuleType } from 'src/app/common/constants';
+import { Rule } from '../../common/interfaces';
+import { FixableType, OptionType, Package, RuleCategory, RuleType } from '../../common/constants';
 
-const rule: Rule = {
+export const BlockSpacingRule: Rule = {
 	package: Package.ESLint,
 	name: 'block-spacing',
 	description: 'disallow or enforce spaces inside of blocks after opening block and before closing block',
@@ -54,5 +54,3 @@ if (foo) { bar = 0;}`
 		}]
 	}]
 };
-
-export default rule;
