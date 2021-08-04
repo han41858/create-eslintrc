@@ -1,1 +1,1 @@
-# create-eslintrc
+# Create .eslintrc
