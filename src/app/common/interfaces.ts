@@ -1,4 +1,12 @@
-import { FixableType, OptionType, Package, RuleCategory, RuleType } from 'src/app/common/constants';
+import {
+	FixableType,
+	OptionType,
+	Package,
+	RuleCategory,
+	RuleFileType,
+	RuleType,
+	SyntaxType
+} from 'src/app/common/constants';
 
 
 export interface TextValue<T> {
@@ -35,6 +43,8 @@ export interface Rule {
 export interface Example {
 	correct: boolean;
 	rule: string;
+
+	syntax: SyntaxType;
 	code: string;
 }
 
@@ -69,3 +79,10 @@ export interface ObjectOption extends OptionCommon {
 }
 
 export type Option = BooleanOption | NumberOption | StringOption | ObjectOption;
+
+export interface ResultSet {
+	fileName?: string;
+	fileType: RuleFileType;
+	syntaxFileType: SyntaxType;
+	code: string;
+}

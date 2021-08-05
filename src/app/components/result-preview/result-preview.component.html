@@ -3,12 +3,14 @@
 		<div class="header">
 			<div class="left">
 				<h3>Result</h3>
-				<span>({{ fileName }})</span>
+				<span *ngIf="resultSet && resultSet.fileName">({{ resultSet.fileName }})</span>
 			</div>
 
-			<button type="button">Download</button>
+			<button type="button" *ngIf="resultSet">Download</button>
 		</div>
 
-		<pre [class]="'lang-' + fileType"><code>{{ result }}</code></pre>
+		<app-code-viewer *ngIf="resultSet"
+		                 [syntax]="resultSet.syntaxFileType"
+		                 [code]="resultSet.code"></app-code-viewer>
 	</div>
 </div>

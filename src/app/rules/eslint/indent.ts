@@ -1,5 +1,5 @@
 import { Rule } from '../../common/interfaces';
-import { FixableType, OptionType, Package, RuleCategory, RuleType } from '../../common/constants';
+import { FixableType, OptionType, Package, RuleCategory, RuleType, SyntaxType } from '../../common/constants';
 
 export const IndentRule: Rule = {
 	package: Package.ESLint,
@@ -29,6 +29,8 @@ export const IndentRule: Rule = {
 		examples: [{
 			correct: false,
 			rule: '["error", "tab"]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `if (a) {
      b=c;
 function foo(d) {
@@ -38,6 +40,8 @@ function foo(d) {
 		}, {
 			correct: true,
 			rule: '["error", "tab"]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `if (a) {
 /*tab*/b=c;
 /*tab*/function foo(d) {
@@ -54,6 +58,8 @@ function foo(d) {
 		examples: [{
 			correct: true,
 			rule: '["error", 4, { "ignoredNodes": ["ConditionalExpression"] }]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `var a = foo
       ? bar
       : baz;
@@ -64,6 +70,8 @@ var a = foo
 		}, {
 			correct: true,
 			rule: '["error", 4, { "ignoredNodes": ["CallExpression > FunctionExpression.callee > BlockStatement.body"] }]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `(function() {
 
 foo();
@@ -78,6 +86,8 @@ bar();
 		examples: [{
 			correct: false,
 			rule: '["error", 2, { "SwitchCase": 1 }]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `switch(a){
 case "a":
     break;
@@ -87,6 +97,8 @@ case "b":
 		}, {
 			correct: true,
 			rule: '["error", 2, { "SwitchCase": 1 }]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `switch(a){
   case "a":
     break;
@@ -101,6 +113,8 @@ case "b":
 		examples: [{
 			correct: false,
 			rule: '["error", 2, { "VariableDeclarator": 1 }]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `var a,
     b,
     c;
@@ -113,6 +127,8 @@ const a = 1,
 		}, {
 			correct: true,
 			rule: '["error", 2, { "VariableDeclarator": 1 }]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `var a,
   b,
   c;
@@ -125,6 +141,8 @@ const a = 1,
 		}, {
 			correct: false,
 			rule: '["error", 2, { "VariableDeclarator": "first" }]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `var a,
   b,
   c;
@@ -137,6 +155,8 @@ const a = 1,
 		}, {
 			correct: true,
 			rule: '["error", 2, { "VariableDeclarator": "first" }]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `var a,
     b,
     c;
@@ -149,6 +169,8 @@ const a = 1,
 		}, {
 			correct: true,
 			rule: '["error", 2, { "VariableDeclarator": { "var": 2, "let": 2, "const": 3 } }]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `var a,
     b,
     c;

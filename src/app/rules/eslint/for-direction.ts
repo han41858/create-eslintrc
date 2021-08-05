@@ -1,5 +1,5 @@
 import { Rule } from '../../common/interfaces';
-import { FixableType, Package, RuleCategory, RuleType } from '../../common/constants';
+import { FixableType, Package, RuleCategory, RuleType, SyntaxType } from '../../common/constants';
 
 export const ForDirectionRule: Rule = {
 	package: Package.ESLint,
@@ -18,6 +18,8 @@ export const ForDirectionRule: Rule = {
 	examples: [{
 		correct: false,
 		rule: '"error"',
+
+		syntax: SyntaxType.JavaScript,
 		code: `for (var i = 0; i < 10; i--) {
 }
 
@@ -26,6 +28,8 @@ for (var i = 10; i >= 0; i++) {
 	}, {
 		correct: true,
 		rule: '"error"',
+
+		syntax: SyntaxType.JavaScript,
 		code: `for (var i = 0; i < 10; i++) {
 }`
 	}]

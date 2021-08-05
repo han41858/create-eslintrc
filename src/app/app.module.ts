@@ -11,6 +11,7 @@ import { OptionSelectorComponent } from './components/option-selector/option-sel
 import { AdditionalOptionSelectorComponent } from './components/additional-option-selector/additional-option-selector.component';
 import { CommonConfigComponent } from './components/common-config/common-config.component';
 import { ResultPreviewComponent } from './components/result-preview/result-preview.component';
+import { CodeViewerComponent } from './components/code-viewer/code-viewer.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { ResultPreviewComponent } from './components/result-preview/result-previ
 		OptionSelectorComponent,
 		AdditionalOptionSelectorComponent,
 		CommonConfigComponent,
-		ResultPreviewComponent
+		ResultPreviewComponent,
+		CodeViewerComponent
 	],
 	imports: [
 		BrowserModule,

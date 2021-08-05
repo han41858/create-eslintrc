@@ -11,5 +11,7 @@
 		<code class="rule devFont">{{ example.rule }}</code>
 	</div>
 
-	<pre class="codeBlock lang-js"><code>{{ example.code }}</code></pre>
+	<div class="codeBlock">
+		<app-code-viewer [syntax]="example.syntax" [code]="example.code"></app-code-viewer>
+	</div>
 </ng-container>

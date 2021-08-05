@@ -1,5 +1,5 @@
 import { Rule } from '../../common/interfaces';
-import { FixableType, OptionType, Package, RuleCategory, RuleType } from '../../common/constants';
+import { FixableType, OptionType, Package, RuleCategory, RuleType, SyntaxType } from '../../common/constants';
 
 export const BlockSpacingRule: Rule = {
 	package: Package.ESLint,
@@ -26,11 +26,15 @@ export const BlockSpacingRule: Rule = {
 		examples: [{
 			correct: true,
 			rule: '"error"',
+
+			syntax: SyntaxType.JavaScript,
 			code: `function foo() { return true; }
 if (foo) { bar = 0; }`
 		}, {
 			correct: false,
 			rule: '"error"',
+
+			syntax: SyntaxType.JavaScript,
 			code: `function foo() {return true;}
 if (foo) { bar = 0;}
 function baz() {let i = 0;
@@ -44,11 +48,15 @@ function baz() {let i = 0;
 		examples: [{
 			correct: true,
 			rule: '["error", "never"]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `function foo() {return true;}
 if (foo) {bar = 0;}`
 		}, {
 			correct: false,
 			rule: '["error", "never"]',
+
+			syntax: SyntaxType.JavaScript,
 			code: `function foo() { return true; }
 if (foo) { bar = 0;}`
 		}]
