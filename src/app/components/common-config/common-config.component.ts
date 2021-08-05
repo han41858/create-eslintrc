@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 
 import { Environment, ErrorLevel, Package, RuleFileType, RuleOrder } from '../../common/constants';
 import { TextValue } from '../../common/interfaces';
 import { entriesToTextValue } from '../../common/util';
+import { RuleService } from '../../services';
 
 
 enum FormFieldName {
@@ -46,7 +47,10 @@ export class CommonConfigComponent implements OnInit {
 	packages: TextValue<Package>[];
 	ruleOrders: TextValue<RuleOrder>[];
 
-	constructor (private fb: FormBuilder) {
+	constructor (
+		private fb: FormBuilder,
+		private ruleSvc: RuleService
+	) {
 		this.fileTypes = entriesToTextValue(Object.entries(RuleFileType));
 		this.envArr = entriesToTextValue(Object.entries(Environment));
 		this.errorLevels = entriesToTextValue(Object.entries(ErrorLevel));
@@ -72,6 +76,40 @@ export class CommonConfigComponent implements OnInit {
 			}),
 			[FormFieldName.RuleOrder]: this.fb.control(RuleOrder.DocumentOrder)
 		});
+
+		setTimeout(() => {
+			// initial set
+			this.ruleSvc.setFileType(this.getFormValue(FormFieldName.FileType) as RuleFileType);
+		});
+	}
+
+	getFormValue<T> (field: FormFieldName, innerField?: FormFieldName): T | undefined {
+		let result: T | undefined;
+
+		const ctrl: AbstractControl | null = this.formGroup.get(field);
+
+		if (ctrl) {
+			if (innerField) {
+				const innerCtrl: AbstractControl | null = ctrl.get(innerField);
+
+				if (innerCtrl) {
+					result = innerCtrl.value;
+				}
+			}
+			else {
+				result = ctrl.value;
+			}
+		}
+
+		return result;
+	}
+
+	valueChanged (field: FormFieldName, innerField?: FormFieldName): void {
+		switch (field) {
+			case FormFieldName.FileType:
+				this.ruleSvc.setFileType(this.getFormValue(FormFieldName.FileType) as RuleFileType);
+				break;
+		}
 	}
 
 }

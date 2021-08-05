@@ -53,6 +53,12 @@ export enum RuleFileType {
 	InPackageJson = 'package.json'
 }
 
+export enum SyntaxType {
+	JavaScript = 'js',
+	JSON = 'json',
+	YAML = 'yaml'
+}
+
 export enum Environment {
 	Node = 'node',
 	Browser = 'browser'

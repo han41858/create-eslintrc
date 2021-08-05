@@ -7,7 +7,8 @@
 		<div class="inputContainer" *ngFor="let one of fileTypes">
 			<input type="radio" [formControlName]="FormFieldName.FileType"
 			       [name]="FormFieldName.FileType"
-			       [id]="one.value" [value]="one.value">
+			       [id]="one.value" [value]="one.value"
+			       (change)="valueChanged(FormFieldName.FileType)">
 			<ng-container *ngIf="one.value !== RuleFileType.InPackageJson;else inPackageJsonTemplate">
 				<label [for]="one.value" class="devFont">{{ one.text }} (.{{ one.value }})</label>
 			</ng-container>
