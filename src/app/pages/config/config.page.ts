@@ -83,8 +83,8 @@ export class ConfigPage implements OnInit {
 		});
 	}
 
-	getFormValue<T> (field: FormFieldName, innerField?: FormFieldName): T | undefined {
-		let result: T | undefined;
+	getFormCtrl (field: FormFieldName, innerField?: FormFieldName): AbstractControl | undefined {
+		let result: AbstractControl | undefined;
 
 		const ctrl: AbstractControl | null = this.formGroup.get(field);
 
@@ -93,12 +93,24 @@ export class ConfigPage implements OnInit {
 				const innerCtrl: AbstractControl | null = ctrl.get(innerField);
 
 				if (innerCtrl) {
-					result = innerCtrl.value;
+					result = innerCtrl;
 				}
 			}
 			else {
-				result = ctrl.value;
+				result = ctrl;
 			}
+		}
+
+		return result;
+	}
+
+	getFormValue<T> (field: FormFieldName, innerField?: FormFieldName): T | undefined {
+		let result: T | undefined;
+
+		const ctrl: AbstractControl | undefined = this.getFormCtrl(field, innerField);
+
+		if (ctrl) {
+			result = ctrl.value;
 		}
 
 		return result;

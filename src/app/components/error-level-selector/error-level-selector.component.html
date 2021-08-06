@@ -1,0 +1,17 @@
+<div class="wrapper">
+	<div class="inputContainer" *ngFor="let one of errorLevels"
+	     [class.selected]="one.value === formControl.value">
+		<input type="radio" [formControl]="formControl"
+		       (change)="writeValue(one.value)"
+		       name="errorLevel"
+		       [id]="one.value" [value]="one.value">
+
+		<ng-container *ngIf="one.value !== ErrorLevel.skip;else skipTemplate">
+			<label [for]="one.value" class="devFont">"{{ one.text }}"</label>
+		</ng-container>
+
+		<ng-template #skipTemplate>
+			<label [for]="one.value">skip</label>
+		</ng-template>
+	</div>
+</div>

@@ -33,19 +33,7 @@
 	<div class="group">
 		<h3>Default Error Level</h3>
 
-		<div class="inputContainer" *ngFor="let one of errorLevels">
-			<input type="radio" [formControlName]="FormFieldName.ErrorLevel"
-			       [name]="FormFieldName.ErrorLevel"
-			       [id]="one.value" [value]="one.value">
-
-			<ng-container *ngIf="one.value !== ErrorLevel.skip;else skipTemplate">
-				<label [for]="one.value" class="devFont">"{{ one.text }}"</label>
-			</ng-container>
-
-			<ng-template #skipTemplate>
-				<label [for]="one.value">skip</label>
-			</ng-template>
-		</div>
+		<app-error-level-selector [formControlName]="FormFieldName.ErrorLevel"></app-error-level-selector>
 	</div>
 
 	<div class="group">

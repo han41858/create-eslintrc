@@ -1,0 +1,30 @@
+.wrapper
+	display: flex
+
+	padding: 1rem
+
+	.inputContainer
+		border: 1px solid rgba(255, 255, 255, .2)
+		border-radius: 1rem
+
+		box-shadow: -3px -3px 6px white, 3px 3px 6px rgba(0, 0, 0, .2)
+
+		color: #aaa
+
+		input[type="radio"]
+			display: none
+
+		label
+			display: flex
+			cursor: pointer
+			padding: .4rem .8rem
+
+			user-select: none
+
+	.inputContainer.selected
+		box-shadow: inset 2px 2px 5px #b8b9be, inset -3px -3px 7px white
+
+		color: #666
+
+	.inputContainer:not(:first-child)
+		margin-left: 1rem

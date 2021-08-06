@@ -10,14 +10,15 @@ import { PageAndPreviewPage } from './pages/page-and-preview/page-and-preview.pa
 import { ConfigPage } from './pages/config/config.page';
 import { RulePage } from './pages/rule/rule.page';
 
+import { ErrorLevelSelectorComponent } from './components/error-level-selector/error-level-selector.component';
 
 import { RuleViewerComponent } from './components/rule-viewer/rule-viewer.component';
-import { ExampleViewerComponent } from './components/example-viewer/example-viewer.component';
 import { OptionSelectorComponent } from './components/option-selector/option-selector.component';
 import { AdditionalOptionSelectorComponent } from './components/additional-option-selector/additional-option-selector.component';
+import { CodeViewerComponent } from './components/code-viewer/code-viewer.component';
+import { ExampleViewerComponent } from './components/example-viewer/example-viewer.component';
 
 import { ResultPreviewComponent } from './components/result-preview/result-preview.component';
-import { CodeViewerComponent } from './components/code-viewer/code-viewer.component';
 
 
 @NgModule({
@@ -29,12 +30,15 @@ import { CodeViewerComponent } from './components/code-viewer/code-viewer.compon
 		ConfigPage,
 		RulePage,
 
+		ErrorLevelSelectorComponent,
+
 		RuleViewerComponent,
-		ExampleViewerComponent,
 		OptionSelectorComponent,
 		AdditionalOptionSelectorComponent,
-		ResultPreviewComponent,
-		CodeViewerComponent
+		CodeViewerComponent,
+		ExampleViewerComponent,
+
+		ResultPreviewComponent
 	],
 	imports: [
 		BrowserModule,
