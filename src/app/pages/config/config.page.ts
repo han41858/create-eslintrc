@@ -28,11 +28,10 @@ enum FormFieldName {
 
 
 @Component({
-	selector: 'app-config-form',
-	templateUrl: './common-config.component.html',
-	styleUrls: ['./common-config.component.sass']
+	templateUrl: './config.page.html',
+	styleUrls: ['./config.page.sass']
 })
-export class CommonConfigComponent implements OnInit {
+export class ConfigPage implements OnInit {
 
 	RuleFileType = RuleFileType;
 	ErrorLevel = ErrorLevel;
@@ -46,6 +45,7 @@ export class CommonConfigComponent implements OnInit {
 	errorLevels: TextValue<ErrorLevel>[];
 	packages: TextValue<Package>[];
 	ruleOrders: TextValue<RuleOrder>[];
+
 
 	constructor (
 		private fb: FormBuilder,

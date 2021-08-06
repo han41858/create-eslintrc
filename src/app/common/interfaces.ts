@@ -1,12 +1,4 @@
-import {
-	FixableType,
-	OptionType,
-	Package,
-	RuleCategory,
-	RuleFileType,
-	RuleType,
-	SyntaxType
-} from 'src/app/common/constants';
+import { FixableType, OptionType, Package, RuleCategory, RuleFileType, RuleType, SyntaxType } from './constants';
 
 
 export interface TextValue<T> {
