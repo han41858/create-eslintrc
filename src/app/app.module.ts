@@ -11,7 +11,7 @@ import { ConfigPage } from './pages/config/config.page';
 import { RulePage } from './pages/rule/rule.page';
 
 import { CheckboxGroupComponent } from './components/checkbox-group/checkbox-group.component';
-import { RadioSelectorComponent } from './components/radio-selector/radio-selector.component';
+import { RadioGroupComponent } from './components/radio-group/radio-group.component';
 import { ErrorLevelSelectorComponent } from './components/error-level-selector/error-level-selector.component';
 
 import { RuleViewerComponent } from './components/rule-viewer/rule-viewer.component';
@@ -33,7 +33,7 @@ import { ResultPreviewComponent } from './components/result-preview/result-previ
 		RulePage,
 
 		CheckboxGroupComponent,
-		RadioSelectorComponent,
+		RadioGroupComponent,
 		ErrorLevelSelectorComponent,
 
 		RuleViewerComponent,

@@ -7,16 +7,16 @@ type OnChangeFnc = <T>(value: T) => void;
 
 
 @Component({
-	selector: 'app-radio-selector',
-	templateUrl: './radio-selector.component.html',
-	styleUrls: ['./radio-selector.component.sass'],
+	selector: 'app-radio-group',
+	templateUrl: './radio-group.component.html',
+	styleUrls: ['./radio-group.component.sass'],
 	providers: [{
 		provide: NG_VALUE_ACCESSOR,
-		useExisting: RadioSelectorComponent,
+		useExisting: RadioGroupComponent,
 		multi: true
 	}]
 })
-export class RadioSelectorComponent<T> implements ControlValueAccessor {
+export class RadioGroupComponent<T> implements ControlValueAccessor {
 
 	currentValue: T | undefined;
 

@@ -4,9 +4,9 @@
 	<div class="group">
 		<h3>Config File Type</h3>
 
-		<app-radio-selector [formControlName]="FormFieldName.FileType"
-		                    [enums]="fileTypes"
-		                    [vertical]="true"></app-radio-selector>
+		<app-radio-group [formControlName]="FormFieldName.FileType"
+		                 [enums]="fileTypes"
+		                 [vertical]="true"></app-radio-group>
 	</div>
 
 	<div class="group">
@@ -52,9 +52,9 @@
 	<div class="group">
 		<h3>Rule Order</h3>
 
-		<app-radio-selector [formControlName]="FormFieldName.RuleOrder"
-		                    [enums]="ruleOrders"
-		                    [vertical]="true"></app-radio-selector>
+		<app-radio-group [formControlName]="FormFieldName.RuleOrder"
+		                 [enums]="ruleOrders"
+		                 [vertical]="true"></app-radio-group>
 	</div>
 
 </form>
