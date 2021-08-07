@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SyntaxType } from 'src/app/common/constants';
 
 
 @Component({
@@ -6,5 +7,8 @@ import { Component } from '@angular/core';
 	styleUrls: ['./start.page.sass']
 })
 export class StartPage {
+
+	exampleSyntax: SyntaxType = SyntaxType.JSON;
+	exampleCode: string = '{}';
 
 }

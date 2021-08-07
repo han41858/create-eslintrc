@@ -1,3 +1,12 @@
-<p>start</p>
+<div class="header">
+	<p class="title">Create Your Own</p>
+	<p class="fileName devFont">.eslintrc.json</p>
 
-<button [routerLink]="'/config'">Start</button>
+	<app-code-viewer class="exampleCode"
+	                 [syntax]="exampleSyntax"
+	                 [code]="exampleCode"></app-code-viewer>
+</div>
+
+<div class="buttonContainer">
+	<button class="btn primary big" [routerLink]="'/config'">Start</button>
+</div>
