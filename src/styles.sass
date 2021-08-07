@@ -10,14 +10,18 @@ body
 
 \:root
 	--color-primary: #1581fd
-	--color-normal: #ccc
+	--color-grey: #ccc
+	--color-grey-dark: #bbb
 
 	--input-size: 2rem
 	--inner-input-size: 1rem
 	--input-label-margin: .5rem
 
 	--box-shadow-outset: -3px -3px 6px rgba(255, 255, 255, .2), 3px 3px 6px rgba(0, 0, 0, .2)
+	--box-shadow-outset-more: -3px -3px 6px rgba(255, 255, 255, .5), 3px 3px 6px rgba(0, 0, 0, .5)
+
 	--box-shadow-inset: inset 2px 2px 5px rgba(0, 0, 0, .2), inset -3px -3px 7px rgba(255, 255, 255, .2)
+	--box-shadow-inset-more: inset 2px 2px 5px rgba(0, 0, 0, .5), inset -3px -3px 7px rgba(255, 255, 255, .5)
 
 
 .btn
@@ -27,7 +31,7 @@ body
 	margin: .2rem
 	padding: .4rem 1.2rem
 
-	color: var(--color-normal)
+	color: var(--color-grey)
 	font-size: 1rem
 
 	background: none
@@ -40,3 +44,20 @@ body
 .btn.primary
 	background: var(--color-primary)
 	color: white
+
+.input
+	border: none
+	border-radius: .6rem
+
+	background: transparent
+
+	outline: #1581fd
+
+	padding: .6rem
+
+	font-size: 1rem
+
+	box-shadow: var(--box-shadow-inset-more)
+
+.input::placeholder
+	color: var(--color-grey)
