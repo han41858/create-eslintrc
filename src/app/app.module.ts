@@ -10,6 +10,7 @@ import { PageAndPreviewPage } from './pages/page-and-preview/page-and-preview.pa
 import { ConfigPage } from './pages/config/config.page';
 import { RulePage } from './pages/rule/rule.page';
 
+import { CheckboxSelectorComponent } from './components/checkbox-selector/checkbox-selector.component';
 import { ErrorLevelSelectorComponent } from './components/error-level-selector/error-level-selector.component';
 
 import { RuleViewerComponent } from './components/rule-viewer/rule-viewer.component';
@@ -30,6 +31,7 @@ import { ResultPreviewComponent } from './components/result-preview/result-previ
 		ConfigPage,
 		RulePage,
 
+		CheckboxSelectorComponent,
 		ErrorLevelSelectorComponent,
 
 		RuleViewerComponent,

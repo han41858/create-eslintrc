@@ -22,12 +22,8 @@
 	<div class="group">
 		<h3>Environment</h3>
 
-		<form [formGroupName]="FormFieldName.Environment">
-			<div class="inputContainer" *ngFor="let one of envArr">
-				<input type="checkbox" [id]="one.value" [formControlName]="one.value">
-				<label [for]="one.value">{{ one.text }}</label>
-			</div>
-		</form>
+		<app-checkbox-selector [formControlName]="FormFieldName.Environment"
+		                       [enums]="envArr"></app-checkbox-selector>
 	</div>
 
 	<div class="group">

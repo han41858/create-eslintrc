@@ -1,0 +1,42 @@
+.wrapper
+	display: flex
+
+	.inputContainer
+		display: flex
+		align-items: center
+
+		margin: .2rem
+
+		.checkbox
+			display: flex
+			justify-content: center
+			align-items: center
+
+			width: var(--input-size)
+			height: var(--input-size)
+
+			border-radius: .4rem
+
+			box-shadow: var(--box-shadow-outset)
+
+			cursor: pointer
+
+			.check
+				width: 1.2rem
+				height: 1.2rem
+
+				fill: var(--color-normal)
+
+		.label
+			margin-left: .4rem
+
+			cursor: pointer
+
+			user-select: none
+
+	.inputContainer.active
+		.checkbox
+			box-shadow: var(--box-shadow-inset)
+
+			.check
+				fill: var(--color-primary)

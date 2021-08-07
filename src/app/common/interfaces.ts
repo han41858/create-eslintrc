@@ -1,6 +1,10 @@
 import { FixableType, OptionType, Package, RuleCategory, RuleFileType, RuleType, SyntaxType } from './constants';
 
 
+export interface TypedObject<T> {
+	[key: string]: T;
+}
+
 export interface TextValue<T> {
 	text: string;
 	value: T;

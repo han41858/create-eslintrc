@@ -16,9 +16,6 @@ enum FormFieldName {
 	RuleOrder = 'ruleOrder',
 
 	// inner fields
-	Node = 'node',
-	Browser = 'browser',
-
 	ESLint = 'eslint',
 	TypeScript = '@typescript-eslint',
 	Angular = '@angular-eslint/eslint-plugin',
@@ -34,7 +31,6 @@ enum FormFieldName {
 export class ConfigPage implements OnInit {
 
 	RuleFileType = RuleFileType;
-	ErrorLevel = ErrorLevel;
 
 	FormFieldName = FormFieldName;
 
@@ -61,10 +57,7 @@ export class ConfigPage implements OnInit {
 	ngOnInit (): void {
 		this.formGroup = this.fb.group({
 			[FormFieldName.FileType]: this.fb.control(RuleFileType.JSON),
-			[FormFieldName.Environment]: this.fb.group({
-				[FormFieldName.Node]: this.fb.control(false),
-				[FormFieldName.Browser]: this.fb.control(false)
-			}),
+			[FormFieldName.Environment]: this.fb.control([]),
 			[FormFieldName.ErrorLevel]: this.fb.control(ErrorLevel.error),
 			[FormFieldName.SkipRecommended]: this.fb.control(true),
 			[FormFieldName.Packages]: this.fb.group({
