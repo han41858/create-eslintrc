@@ -1,22 +1,12 @@
 <form [formGroup]="formGroup">
-<!--	<p>form.value : {{ formGroup.value | json  }}</p>-->
+	<!--	<p>form.value : {{ formGroup.value | json  }}</p>-->
 
 	<div class="group">
 		<h3>Config File Type</h3>
 
-		<div class="inputContainer" *ngFor="let one of fileTypes">
-			<input type="radio" [formControlName]="FormFieldName.FileType"
-			       [name]="FormFieldName.FileType"
-			       [id]="one.value" [value]="one.value"
-			       (change)="valueChanged(FormFieldName.FileType)">
-			<ng-container *ngIf="one.value !== RuleFileType.InPackageJson;else inPackageJsonTemplate">
-				<label [for]="one.value" class="devFont">{{ one.text }} (.{{ one.value }})</label>
-			</ng-container>
-
-			<ng-template #inPackageJsonTemplate>
-				<label [for]="one.value">in <span class="devFont">package.json</span></label>
-			</ng-template>
-		</div>
+		<app-radio-selector [formControlName]="FormFieldName.FileType"
+		                    [enums]="fileTypes"
+		                    [vertical]="true"></app-radio-selector>
 	</div>
 
 	<div class="group">
@@ -57,13 +47,9 @@
 	<div class="group">
 		<h3>Rule Order</h3>
 
-		<div class="inputContainer" *ngFor="let one of ruleOrders">
-			<input type="radio" [formControlName]="FormFieldName.RuleOrder"
-			       [name]="FormFieldName.RuleOrder"
-			       [id]="one.value" [value]="one.value">
-
-			<label [for]="one.value">{{ one.value }}</label>
-		</div>
+		<app-radio-selector [formControlName]="FormFieldName.RuleOrder"
+		                    [enums]="ruleOrders"
+		                    [vertical]="true"></app-radio-selector>
 	</div>
 
 </form>

@@ -1,0 +1,9 @@
+<div class="wrapper" [style.flex-direction]="vertical ? 'column' : 'row'">
+	<div *ngFor="let one of enums;let i=index"
+	     class="inputContainer" [class.active]="one.value === currentValue">
+		<div class="radio" (click)="writeValue(one.value)">
+			<div class="indicator"></div>
+		</div>
+		<span class="label" (click)="writeValue(one.value)">{{ one.text }}</span>
+	</div>
+</div>

@@ -42,13 +42,13 @@ export class RuleService {
 				break;
 
 			case RuleFileType.JSON:
-			case RuleFileType.InPackageJson:
+			case RuleFileType['in package.json']:
 				this.resultSet.fileType = RuleFileType.JSON;
 				this.resultSet.syntaxFileType = SyntaxType.JSON;
 				break;
 		}
 
-		if (fileType !== RuleFileType.InPackageJson) {
+		if (fileType !== RuleFileType['in package.json']) {
 			this.resultSet.fileName = '.eslintrc.' + fileType;
 		}
 

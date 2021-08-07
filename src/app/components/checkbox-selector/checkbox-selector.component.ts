@@ -19,7 +19,7 @@ type OnChangeFnc = <T>(values: T[]) => void;
 })
 export class CheckboxSelectorComponent<T> implements ControlValueAccessor {
 
-	currentValue: T[] = [];
+	private currentValue: T[] = [];
 
 	private onChangeFnc: OnChangeFnc | undefined;
 	private onTouchedFnc: OnChangeFnc | undefined;

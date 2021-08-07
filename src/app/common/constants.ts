@@ -45,12 +45,12 @@ export enum OptionType {
 
 // value is extension
 export enum RuleFileType {
+	JSON = 'json',
 	JavaScript = 'js',
 	ESM = 'cjs',
 	YAML = 'yaml',
 	YML = 'yml',
-	JSON = 'json',
-	InPackageJson = 'package.json'
+	'in package.json' = 'package.json'
 }
 
 export enum SyntaxType {

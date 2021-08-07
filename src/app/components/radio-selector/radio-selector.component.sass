@@ -7,25 +7,27 @@
 
 		margin: .2rem
 
-		.checkbox
+		.radio
 			display: flex
-			justify-content: center
 			align-items: center
+			justify-content: center
 
 			width: var(--input-size)
 			height: var(--input-size)
 
-			border-radius: .4rem
+			border-radius: var(--input-size)
 
 			box-shadow: var(--box-shadow-outset)
 
 			cursor: pointer
 
-			.check
+			.indicator
 				width: var(--inner-input-size)
 				height: var(--inner-input-size)
 
-				fill: var(--color-normal)
+				border-radius: var(--inner-input-size)
+
+				background: var(--color-normal)
 
 		.label
 			margin-left: var(--input-label-margin)
@@ -35,8 +37,8 @@
 			user-select: none
 
 	.inputContainer.active
-		.checkbox
+		.radio
 			box-shadow: var(--box-shadow-inset)
 
-			.check
-				fill: var(--color-primary)
+			.indicator
+				background: var(--color-primary)

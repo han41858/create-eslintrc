@@ -109,12 +109,4 @@ export class ConfigPage implements OnInit {
 		return result;
 	}
 
-	valueChanged (field: FormFieldName, innerField?: FormFieldName): void {
-		switch (field) {
-			case FormFieldName.FileType:
-				this.ruleSvc.setFileType(this.getFormValue(FormFieldName.FileType) as RuleFileType);
-				break;
-		}
-	}
-
 }
