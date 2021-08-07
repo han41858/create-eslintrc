@@ -36,8 +36,6 @@ export class RadioSelectorComponent<T> implements ControlValueAccessor {
 	}
 
 	writeValue (newValue: T): void {
-		console.warn('writValue()', newValue);
-
 		this.currentValue = newValue;
 
 		if (typeof this.onChangeFnc === 'function') {

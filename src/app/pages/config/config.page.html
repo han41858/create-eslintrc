@@ -12,8 +12,9 @@
 	<div class="group">
 		<h3>Environment</h3>
 
-		<app-checkbox-selector [formControlName]="FormFieldName.Environment"
-		                       [enums]="envArr"></app-checkbox-selector>
+		<app-checkbox-group [formControlName]="FormFieldName.Environment"
+		                    [enums]="envArr">
+		</app-checkbox-group>
 	</div>
 
 	<div class="group">
@@ -36,12 +37,16 @@
 		<!-- todo: more extension plugins -->
 		<h3>Target Packages</h3>
 
-		<form [formGroupName]="FormFieldName.Packages">
-			<div class="inputContainer" *ngFor="let one of packages">
-				<input type="checkbox" [id]="one.value" [formControlName]="one.value">
-				<label [for]="one.value">{{ one.text }} - <code class="language-">{{ one.value }}</code></label>
-			</div>
-		</form>
+		<app-checkbox-group [formControlName]="FormFieldName.Packages"
+		                    [enums]="packages"
+		                    [vertical]="true">
+			<ng-template #customTemplate let-data let-context="context">
+				<span class="label" (click)="context.toggleValue(data.value)">
+					{{ data.text }} -
+					<code class="language-">{{ data.value }}</code>
+				</span>
+			</ng-template>
+		</app-checkbox-group>
 	</div>
 
 	<div class="group">

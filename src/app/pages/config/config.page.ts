@@ -13,14 +13,7 @@ enum FormFieldName {
 	ErrorLevel = 'errorLevel',
 	SkipRecommended = 'skipRecommended',
 	Packages = 'packages',
-	RuleOrder = 'ruleOrder',
-
-	// inner fields
-	ESLint = 'eslint',
-	TypeScript = '@typescript-eslint',
-	Angular = '@angular-eslint/eslint-plugin',
-	React = 'eslint-plugin-react',
-	Vue = 'eslint-plugin-vue'
+	RuleOrder = 'ruleOrder'
 }
 
 
@@ -29,8 +22,6 @@ enum FormFieldName {
 	styleUrls: ['./config.page.sass']
 })
 export class ConfigPage implements OnInit {
-
-	RuleFileType = RuleFileType;
 
 	FormFieldName = FormFieldName;
 
@@ -60,47 +51,27 @@ export class ConfigPage implements OnInit {
 			[FormFieldName.Environment]: this.fb.control([]),
 			[FormFieldName.ErrorLevel]: this.fb.control(ErrorLevel.error),
 			[FormFieldName.SkipRecommended]: this.fb.control(true),
-			[FormFieldName.Packages]: this.fb.group({
-				[FormFieldName.ESLint]: this.fb.control(true),
-				[FormFieldName.TypeScript]: this.fb.control(false),
-				[FormFieldName.Angular]: this.fb.control(false),
-				[FormFieldName.React]: this.fb.control(false),
-				[FormFieldName.Vue]: this.fb.control(false)
-			}),
+			[FormFieldName.Packages]: this.fb.control([]),
 			[FormFieldName.RuleOrder]: this.fb.control(RuleOrder.DocumentOrder)
-		});
-
-		setTimeout(() => {
-			// initial set
-			this.ruleSvc.setFileType(this.getFormValue(FormFieldName.FileType) as RuleFileType);
 		});
 	}
 
-	getFormCtrl (field: FormFieldName, innerField?: FormFieldName): AbstractControl | undefined {
+	getFormCtrl (field: FormFieldName): AbstractControl | undefined {
 		let result: AbstractControl | undefined;
 
 		const ctrl: AbstractControl | null = this.formGroup.get(field);
 
 		if (ctrl) {
-			if (innerField) {
-				const innerCtrl: AbstractControl | null = ctrl.get(innerField);
-
-				if (innerCtrl) {
-					result = innerCtrl;
-				}
-			}
-			else {
-				result = ctrl;
-			}
+			result = ctrl;
 		}
 
 		return result;
 	}
 
-	getFormValue<T> (field: FormFieldName, innerField?: FormFieldName): T | undefined {
+	getFormValue<T> (field: FormFieldName): T | undefined {
 		let result: T | undefined;
 
-		const ctrl: AbstractControl | undefined = this.getFormCtrl(field, innerField);
+		const ctrl: AbstractControl | undefined = this.getFormCtrl(field);
 
 		if (ctrl) {
 			result = ctrl.value;

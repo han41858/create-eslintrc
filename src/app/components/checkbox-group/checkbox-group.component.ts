@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { TextValue } from '../../common/interfaces';
@@ -8,16 +8,16 @@ type OnChangeFnc = <T>(values: T[]) => void;
 
 
 @Component({
-	selector: 'app-checkbox-selector',
-	templateUrl: './checkbox-selector.component.html',
-	styleUrls: ['./checkbox-selector.component.sass'],
+	selector: 'app-checkbox-group',
+	templateUrl: './checkbox-group.component.html',
+	styleUrls: ['./checkbox-group.component.sass'],
 	providers: [{
 		provide: NG_VALUE_ACCESSOR,
-		useExisting: CheckboxSelectorComponent,
+		useExisting: CheckboxGroupComponent,
 		multi: true
 	}]
 })
-export class CheckboxSelectorComponent<T> implements ControlValueAccessor {
+export class CheckboxGroupComponent<T> implements ControlValueAccessor {
 
 	private currentValue: T[] = [];
 
@@ -25,6 +25,9 @@ export class CheckboxSelectorComponent<T> implements ControlValueAccessor {
 	private onTouchedFnc: OnChangeFnc | undefined;
 
 	@Input() enums: TextValue<T>[] | undefined;
+	@Input() vertical: boolean = false;
+
+	@ContentChild('customTemplate') headerTemplateRef: TemplateRef<unknown> | undefined;
 
 
 	registerOnChange (fn: OnChangeFnc): void {

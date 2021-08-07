@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper" [style.flex-direction]="vertical ? 'column' : 'row'">
 	<div *ngFor="let one of enums;let i=index"
 	     class="inputContainer" [class.active]="isIncluded(one.value)">
 		<div class="checkbox" (click)="toggleValue(one.value)">
@@ -12,6 +12,13 @@
 			         1.07l2.124,2.141c0.292,0.293,0.769,0.293,1.062,0l14.366-14.34c0.293-0.294,0.293-0.777,0-1.071L21.652,3.211z"/>
 			</svg>
 		</div>
-		<span class="label" (click)="toggleValue(one.value)">{{ one.text }}</span>
+
+		<ng-container *ngIf="headerTemplateRef;else simpleTemplate"
+		              [ngTemplateOutlet]="headerTemplateRef"
+		              [ngTemplateOutletContext]="{ $implicit: one, context: this }"></ng-container>
+
+		<ng-template #simpleTemplate>
+			<span class="label" (click)="toggleValue(one.value)">{{ one.text }}</span>
+		</ng-template>
 	</div>
 </div>
