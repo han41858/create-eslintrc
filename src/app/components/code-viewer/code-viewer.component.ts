@@ -24,7 +24,7 @@ export class CodeViewerComponent implements OnChanges {
 	}
 
 	ngOnChanges (changes: SimpleChanges): void {
-		if (this.code && this.syntax) {
+		if (this.code !== undefined && this.syntax) {
 			this.className = 'language-' + this.syntax;
 
 			const htmlStr: string = Prism.highlight(this.code, Prism.languages.javascript, 'javascript');
