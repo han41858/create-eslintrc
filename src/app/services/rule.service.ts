@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { Config, ObjectOption, ResultSet, Rule, RuleSelected, TypedObject } from '../common/interfaces';
-import { RuleFileType, SyntaxType } from '../common//constants';
+import { Environment, RuleFileType, SyntaxType } from '../common//constants';
 
 import { rules } from '../rules/eslint';
 
@@ -16,11 +16,6 @@ interface CreateRuleParam {
 const defaultConfig: Config = {
 	fileType: RuleFileType.JSON,
 	syntax: SyntaxType.JSON,
-	env: [],
-	extends: [
-		'eslint:recommended',
-		'plugin:@typescript-eslint/recommended'
-	],
 	indent: '\t'
 };
 
@@ -113,55 +108,91 @@ export class RuleService {
 	}
 
 	private static createJSONRuleCode (param: CreateRuleParam): string {
-		let codeObj: TypedObject<unknown> = {
-			extends: param.config.extends,
-			rules: param.rulesSelected.reduce((acc: TypedObject<unknown>, rule: RuleSelected): TypedObject<unknown> => {
-				if (!rule.option) {
-					acc[rule.name] = rule.errorLevel;
-				}
-				else if (!rule.additionalOptions) {
-					acc[rule.name] = [rule.errorLevel, rule.option.value];
-				}
-				else {
-					acc[rule.name] = [
-						rule.errorLevel,
-						rule.option.value,
-						rule.additionalOptions
-							.reduce((additionalAcc: TypedObject<unknown>, option: ObjectOption): TypedObject<unknown> => {
-								additionalAcc[option.property] = option.value;
+		const codeObj: TypedObject<unknown> = {};
 
-								return additionalAcc;
-							}, {})
-					];
-				}
+		if (param.config.env && param.config.env.length > 0) {
+			codeObj['env'] = param.config.env;
+		}
 
-				return acc;
-			}, {})
-		};
+		// if (param.config.extends && param.config.extends.length > 0) {
+		// 	codeObj['extends'] = param.config.extends;
+		// }
+
+		codeObj['rules'] = param.rulesSelected.reduce((acc: TypedObject<unknown>, rule: RuleSelected): TypedObject<unknown> => {
+			if (!rule.option) {
+				acc[rule.name] = rule.errorLevel;
+			}
+			else if (!rule.additionalOptions) {
+				acc[rule.name] = [rule.errorLevel, rule.option.value];
+			}
+			else {
+				acc[rule.name] = [
+					rule.errorLevel,
+					rule.option.value,
+					rule.additionalOptions
+						.reduce((additionalAcc: TypedObject<unknown>, option: ObjectOption): TypedObject<unknown> => {
+							additionalAcc[option.property] = option.value;
+
+							return additionalAcc;
+						}, {})
+				];
+			}
+
+			return acc;
+		}, {});
 
 		return JSON.stringify(codeObj, undefined, param.config.indent);
 	}
 
 	private static createJSRuleCode (param: CreateRuleParam): string {
-		return `function () {
-	return 'hello';
-}`;
-	}
+		let codeObj: TypedObject<unknown> = {};
 
-	private static createESMRuleCode (param: CreateRuleParam): string {
-		return `function () {
-	return 'hello';
-}`;
+		if (param.config.env && param.config.env.length > 0) {
+			codeObj['env'] = param.config.env;
+		}
+
+		// if (param.config.extends && param.config.extends.length > 0) {
+		// 	codeObj['extends'] = param.config.extends;
+		// }
+
+		codeObj['rules'] = {};
+
+		return 'module.exports = ' + JSON.stringify(codeObj, undefined, param.config.indent);
 	}
 
 	private static createYAMLRuleCode (param: CreateRuleParam): string {
-		return `env:
-    browser: true
-rules:
-    # Override default settings
-    eqeqeq: "warn"
-    strict: "off"
-    value: 999`;
+		let indent: string;
+
+		if (typeof param.config.indent === 'number') {
+			indent = ' '.repeat(param.config.indent);
+		}
+		else {
+			indent = param.config.indent;
+		}
+
+
+		let resultCode: string = '';
+
+		if (param.config.env && param.config.env.length > 0) {
+			resultCode += 'env:';
+
+			param.config.env.forEach((env: Environment): void => {
+				resultCode += `\n${ indent }${ env }: true`;
+			});
+
+			resultCode += '\n';
+		}
+
+		// if (param.config.extends && param.config.extends.length > 0) {
+		// 	resultCode += '\nextends:';
+		// 	param.config.extends.forEach((one: string): void => {
+		// 		resultCode += `\n${ indent }-${ one }`;
+		// 	});
+		//
+		// 	resultCode += '\n';
+		// }
+
+		return resultCode;
 	}
 
 	setConfig (param: {

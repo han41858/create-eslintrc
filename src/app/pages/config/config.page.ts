@@ -64,6 +64,14 @@ export class ConfigPage implements OnInit {
 				})
 			)
 			.subscribe();
+
+		this.getFormCtrl(FormFieldName.Environment)?.valueChanges
+			.pipe(
+				tap((newValue: Environment[]): void => {
+					this.valueChanged(FormFieldName.Environment, newValue);
+				})
+			)
+			.subscribe();
 	}
 
 	getFormCtrl (field: FormFieldName): AbstractControl | undefined {
@@ -91,11 +99,23 @@ export class ConfigPage implements OnInit {
 	}
 
 	valueChanged (field: FormFieldName.FileType, newValue: RuleFileType): void;
+	valueChanged (field: FormFieldName.Environment, newValue: Environment[]): void;
 	valueChanged (field: FormFieldName, newValue: unknown): void {
-		this.ruleSvc.setConfig({
-			key: 'fileType',
-			value: newValue as Config[keyof Config]
-		});
+		switch (field) {
+			case FormFieldName.FileType:
+				this.ruleSvc.setConfig({
+					key: 'fileType',
+					value: newValue as Config[keyof Config]
+				});
+				break;
+
+			case FormFieldName.Environment:
+				this.ruleSvc.setConfig({
+					key: 'env',
+					value: newValue as Config[keyof Config]
+				});
+				break;
+		}
 	}
 
 }

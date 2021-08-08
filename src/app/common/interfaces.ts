@@ -26,8 +26,8 @@ export interface Config {
 
 	indent: '\t' | ' ' | number;
 
-	env: Environment[];
-	extends: string[];
+	env?: Environment[];
+	extends?: string[];
 }
 
 export interface Rule {
