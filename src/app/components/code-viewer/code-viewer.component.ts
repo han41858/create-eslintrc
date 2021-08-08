@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import * as Prism from 'prismjs';
 
 import { SyntaxType } from '../..//common/constants';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 
 @Component({
@@ -17,7 +17,7 @@ export class CodeViewerComponent implements OnChanges {
 	@Input() code?: string;
 
 	className: string = '';
-	codeInternal: SafeHtml | undefined;
+	codeSanitized: SafeHtml | undefined;
 
 
 	constructor (private sanitizer: DomSanitizer) {
@@ -28,7 +28,11 @@ export class CodeViewerComponent implements OnChanges {
 			this.className = 'language-' + this.syntax;
 
 			const htmlStr: string = Prism.highlight(this.code, Prism.languages.javascript, 'javascript');
-			this.codeInternal = this.sanitizer.bypassSecurityTrustHtml(htmlStr);
+
+			// need 1 cycle
+			setTimeout(() => {
+				this.codeSanitized = this.sanitizer.bypassSecurityTrustHtml(htmlStr);
+			});
 		}
 	}
 
