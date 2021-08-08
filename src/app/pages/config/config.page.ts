@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 
+import { tap } from 'rxjs/operators';
+
 import { Environment, ErrorLevel, Package, RuleFileType, RuleOrder } from '../../common/constants';
-import { TextValue } from '../../common/interfaces';
+import { Config, TextValue } from '../../common/interfaces';
 import { entriesToTextValue } from '../../common/util';
 import { RuleService } from '../../services';
 
@@ -54,6 +56,14 @@ export class ConfigPage implements OnInit {
 			[FormFieldName.Packages]: this.fb.control([]),
 			[FormFieldName.RuleOrder]: this.fb.control(RuleOrder.DocumentOrder)
 		});
+
+		this.getFormCtrl(FormFieldName.FileType)?.valueChanges
+			.pipe(
+				tap((newValue: RuleFileType): void => {
+					this.valueChanged(FormFieldName.FileType, newValue);
+				})
+			)
+			.subscribe();
 	}
 
 	getFormCtrl (field: FormFieldName): AbstractControl | undefined {
@@ -78,6 +88,14 @@ export class ConfigPage implements OnInit {
 		}
 
 		return result;
+	}
+
+	valueChanged (field: FormFieldName.FileType, newValue: RuleFileType): void;
+	valueChanged (field: FormFieldName, newValue: unknown): void {
+		this.ruleSvc.setConfig({
+			key: 'fileType',
+			value: newValue as Config[keyof Config]
+		});
 	}
 
 }

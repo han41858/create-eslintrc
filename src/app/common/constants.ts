@@ -55,6 +55,7 @@ export enum RuleFileType {
 
 export enum SyntaxType {
 	JavaScript = 'js',
+	ESM = 'esm',
 	JSON = 'json',
 	YAML = 'yaml'
 }

@@ -1,4 +1,14 @@
-import { FixableType, OptionType, Package, RuleCategory, RuleFileType, RuleType, SyntaxType } from './constants';
+import {
+	Environment,
+	ErrorLevel,
+	FixableType,
+	OptionType,
+	Package,
+	RuleCategory,
+	RuleFileType,
+	RuleType,
+	SyntaxType
+} from './constants';
 
 
 export interface TypedObject<T> {
@@ -8,6 +18,16 @@ export interface TypedObject<T> {
 export interface TextValue<T> {
 	text: string;
 	value: T;
+}
+
+export interface Config {
+	fileType: RuleFileType;
+	syntax: SyntaxType;
+
+	indent: '\t' | ' ' | number;
+
+	env: Environment[];
+	extends: string[];
 }
 
 export interface Rule {
@@ -34,6 +54,15 @@ export interface Rule {
 
 	// root level on/off example
 	examples?: Example[];
+}
+
+export interface RuleSelected {
+	package: Package;
+	name: string;
+	errorLevel: ErrorLevel;
+
+	option?: Option;
+	additionalOptions?: ObjectOption[];
 }
 
 export interface Example {
@@ -79,6 +108,6 @@ export type Option = BooleanOption | NumberOption | StringOption | ObjectOption;
 export interface ResultSet {
 	fileName?: string;
 	fileType: RuleFileType;
-	syntaxFileType: SyntaxType;
+	syntaxType: SyntaxType;
 	code: string;
 }
