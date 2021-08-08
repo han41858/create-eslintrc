@@ -59,11 +59,6 @@ export class RuleService {
 				syntaxType = SyntaxType.JavaScript;
 				break;
 
-			case RuleFileType.ESM:
-				fileType = RuleFileType.JavaScript;
-				syntaxType = SyntaxType.ESM;
-				break;
-
 			case RuleFileType.YML:
 			case RuleFileType.YAML:
 				fileType = RuleFileType.YML;
@@ -100,10 +95,6 @@ export class RuleService {
 
 			case SyntaxType.JavaScript:
 				code = RuleService.createJSRuleCode(param);
-				break;
-
-			case SyntaxType.ESM:
-				code = RuleService.createESMRuleCode(param);
 				break;
 
 			case SyntaxType.YAML:

@@ -47,7 +47,7 @@ export enum OptionType {
 export enum RuleFileType {
 	JSON = 'json',
 	JavaScript = 'js',
-	ESM = 'cjs',
+	// ESM = 'cjs', // not support
 	YAML = 'yaml',
 	YML = 'yml',
 	'in package.json' = 'package.json'
@@ -55,7 +55,7 @@ export enum RuleFileType {
 
 export enum SyntaxType {
 	JavaScript = 'js',
-	ESM = 'esm',
+	// ESM = 'esm', // not support
 	JSON = 'json',
 	YAML = 'yaml'
 }
