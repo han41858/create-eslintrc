@@ -76,7 +76,7 @@ export enum RuleOrder {
 
 export enum LanguageCode {
 	'en' = 'en',
-	'kr-ko' = 'ko'
+	'ko-kr' = 'ko-kr'
 }
 
 export const DefaultLanguage: LanguageCode = LanguageCode.en;
@@ -91,6 +91,13 @@ export enum Message {
 	TargetPackages,
 	RuleOrder,
 
+	Language,
+
+	Previous,
+	Next,
+
 	Options,
-	AdditionalOptions
+	AdditionalOptions,
+
+	Result
 }

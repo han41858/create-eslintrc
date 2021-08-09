@@ -15,11 +15,18 @@ export const LanguageSet: {
 		TargetPackages: 'Target Packages',
 		RuleOrder: 'Rule Order',
 
+		Language: 'Language',
+
+		Previous: 'Previous',
+		Next: 'Next',
+
 		Options: 'Options',
-		AdditionalOptions: 'Additional Options'
+		AdditionalOptions: 'Additional Options',
+
+		Result: 'Result'
 	},
 
-	[LanguageCode['kr-ko']]: {
+	[LanguageCode['ko-kr']]: {
 		StartTitle: 'eslint 설정파일을 만들어 보세요.',
 		Start: '시작하기',
 
@@ -29,7 +36,14 @@ export const LanguageSet: {
 		TargetPackages: '대상 패키지',
 		RuleOrder: '룰 순서',
 
+		Language: '언어',
+
+		Previous: '이전',
+		Next: '다음',
+
 		Options: '옵션',
-		AdditionalOptions: '추가 옵션'
+		AdditionalOptions: '추가 옵션',
+
+		Result: '결과'
 	}
 };

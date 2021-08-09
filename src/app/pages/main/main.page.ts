@@ -1,8 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+
 import { Subscription } from 'rxjs';
-import { ResultSet } from 'src/app/common/interfaces';
-import { RuleService } from 'src/app/services';
 import { tap } from 'rxjs/operators';
+
+import { LanguageService, RuleService } from '../../services';
+import { ResultSet } from '../../common/interfaces';
+import { Message } from '../../common/constants';
 
 
 @Component({
@@ -11,13 +14,18 @@ import { tap } from 'rxjs/operators';
 })
 export class MainPage implements OnInit, OnDestroy {
 
+	Message = Message;
+
 	private resultSub: Subscription | undefined;
 	resultSet: ResultSet | undefined;
 
 	progressRatio: number = 0; // 0 ~ 1
 
 
-	constructor (private ruleSvc: RuleService) {
+	constructor (
+		public languageSvc: LanguageService,
+		private ruleSvc: RuleService
+	) {
 	}
 
 	ngOnInit (): void {

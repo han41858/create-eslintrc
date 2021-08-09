@@ -11,12 +11,16 @@ import { TypedObject } from '../common/interfaces';
 export class LanguageService {
 
 	// default
-	private languageCode: LanguageCode = DefaultLanguage;
+	private _languageCode: LanguageCode = DefaultLanguage;
 
 
 	// called by LanguageGuard
 	set (lang: LanguageCode): void {
-		this.languageCode = lang;
+		this._languageCode = lang;
+	}
+
+	get languageCode (): LanguageCode {
+		return this._languageCode;
 	}
 
 	getMsg (msg: Message): string | undefined {

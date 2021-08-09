@@ -24,9 +24,14 @@ $layout-margin: 1rem
 		height: $fade-bg-size
 
 	> .header
-		.title
-			font-size: 3rem
-			font-weight: bold
+		.top
+			display: flex
+			justify-content: space-between
+			align-items: center
+
+			.title
+				font-size: 3rem
+				font-weight: bold
 
 		.fadeBG
 			background: linear-gradient(rgba(var(--color-bg), 1), rgba(var(--color-bg), 0))

@@ -1,6 +1,10 @@
 <div class="wrapper">
 	<div class="header">
-		<p class="title devFont textInset">create-eslintrc</p>
+		<div class="top">
+			<p class="title devFont textInset">create-eslintrc</p>
+
+			<app-language-selector></app-language-selector>
+		</div>
 
 		<div class="divide horizontal"></div>
 		<div class="fadeBG"></div>
@@ -17,7 +21,7 @@
 			<div class="preview">
 				<div class="header">
 					<div class="left">
-						<h3>Result</h3>
+						<h3>{{ languageSvc.getMsg(Message.Result) }}</h3>
 						<span *ngIf="resultSet && resultSet.fileName">({{ resultSet.fileName }})</span>
 					</div>
 
@@ -42,8 +46,8 @@
 		</div>
 
 		<div class="buttons">
-			<button class="btn" type="button">previous</button>
-			<button class="btn" type="button">next</button>
+			<button class="btn" type="button">{{ languageSvc.getMsg(Message.Previous) }}</button>
+			<button class="btn" type="button">{{ languageSvc.getMsg(Message.Next) }}</button>
 		</div>
 	</div>
 </div>

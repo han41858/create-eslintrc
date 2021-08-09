@@ -15,6 +15,7 @@ import { RulePage } from './pages/rule/rule.page';
 import { CheckboxGroupComponent } from './components/checkbox-group/checkbox-group.component';
 import { RadioGroupComponent } from './components/radio-group/radio-group.component';
 import { ErrorLevelSelectorComponent } from './components/error-level-selector/error-level-selector.component';
+import { LanguageSelectorComponent } from './components/language-selector/language-selector.component';
 
 import { RuleViewerComponent } from './components/rule-viewer/rule-viewer.component';
 import { OptionSelectorComponent } from './components/option-selector/option-selector.component';
@@ -35,6 +36,7 @@ import { ExampleViewerComponent } from './components/example-viewer/example-view
 		CheckboxGroupComponent,
 		RadioGroupComponent,
 		ErrorLevelSelectorComponent,
+		LanguageSelectorComponent,
 
 		RuleViewerComponent,
 		OptionSelectorComponent,

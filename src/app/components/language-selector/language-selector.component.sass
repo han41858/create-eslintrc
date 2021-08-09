@@ -1,0 +1,77 @@
+$width: 14rem
+$height: 2.6rem
+
+$border-radius: 1rem
+
+$side-padding: 1.4rem
+
+
+.wrapper
+	position: relative
+
+	width: $width
+
+	.select
+		height: $height
+
+		padding-left: .8rem
+		padding-right: $side-padding
+
+		border: none
+		border-radius: $border-radius
+		outline: none
+
+		box-shadow: var(--box-shadow-outset)
+		background: none
+
+		cursor: pointer
+
+		.valueContainer
+			display: flex
+			align-items: center
+			justify-content: space-between
+
+			height: $height
+
+			.left
+				display: flex
+				align-items: center
+				justify-content: space-between
+
+				span
+					margin-left: .2rem
+
+			svg
+				width: 2rem
+				height: 2rem
+				transform: scaleY(-1)
+
+				.outline
+					fill: var(--color-grey-dark)
+
+				.bg
+					fill: var(--color-bg)
+
+	.options
+		position: absolute
+		flex-direction: column
+
+		width: $width
+
+		margin-top: .2rem
+
+		border-radius: $border-radius
+
+		box-shadow: 0 0 6px var(--color-grey-dark)
+
+		background: var(--color-bg)
+
+		.option
+			display: flex
+			align-items: center
+
+			height: 2rem
+
+			padding: .4rem $side-padding
+
+			cursor: pointer
