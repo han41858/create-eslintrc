@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { LanguageGuard } from './guards';
 
 import { StartPage } from './pages/start/start.page';
-import { PageAndPreviewPage } from './pages/page-and-preview/page-and-preview.page';
+import { MainPage } from './pages/main/main.page';
 import { ConfigPage } from './pages/config/config.page';
 import { RulePage } from './pages/rule/rule.page';
 
@@ -22,15 +22,13 @@ import { AdditionalOptionSelectorComponent } from './components/additional-optio
 import { CodeViewerComponent } from './components/code-viewer/code-viewer.component';
 import { ExampleViewerComponent } from './components/example-viewer/example-viewer.component';
 
-import { ResultPreviewComponent } from './components/result-preview/result-preview.component';
-
 
 @NgModule({
 	declarations: [
 		AppComponent,
 
 		StartPage,
-		PageAndPreviewPage,
+		MainPage,
 		ConfigPage,
 		RulePage,
 
@@ -42,9 +40,7 @@ import { ResultPreviewComponent } from './components/result-preview/result-previ
 		OptionSelectorComponent,
 		AdditionalOptionSelectorComponent,
 		CodeViewerComponent,
-		ExampleViewerComponent,
-
-		ResultPreviewComponent
+		ExampleViewerComponent
 	],
 	imports: [
 		BrowserModule,

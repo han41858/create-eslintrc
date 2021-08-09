@@ -1,0 +1,74 @@
+$fade-bg-size: .6rem
+$divide-size: .4rem
+
+$layout-margin: 1rem
+
+.wrapper
+	padding: $layout-margin
+
+	.divide
+		border-radius: $divide-size
+
+		box-shadow: var(--box-shadow-inset)
+
+	.divide.horizontal
+		height: $divide-size
+		width: 100%
+
+	.divide.vertical
+		width: $divide-size
+		height: 100%
+
+	.fadeBG
+		width: 100%
+		height: $fade-bg-size
+
+	> .header
+		.title
+			font-size: 3rem
+			font-weight: bold
+
+		.fadeBG
+			background: linear-gradient(rgba(var(--color-bg), 1), rgba(var(--color-bg), 0))
+
+	.contents
+		display: flex
+
+		.left
+			width: 70%
+
+		.right
+			display: flex
+			width: 30%
+
+			.preview
+				width: 100%
+
+				margin-left: $layout-margin
+
+				.header
+					display: flex
+					justify-content: space-between
+					align-items: baseline
+
+					.left
+						display: flex
+						align-items: baseline
+
+						*:not(:first-child)
+							margin-left: .6rem
+
+
+	> .footer
+		.fadeBG
+			background: linear-gradient(rgba(var(--color-bg), 0), rgba(var(--color-bg), 1))
+
+		.divide
+			margin-bottom: 1rem
+
+		.buttons
+			display: flex
+			justify-content: center
+
+			*:not(:first-child)
+				margin-left: 1rem

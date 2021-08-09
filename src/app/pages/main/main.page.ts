@@ -1,18 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-
 import { Subscription } from 'rxjs';
+import { ResultSet } from 'src/app/common/interfaces';
+import { RuleService } from 'src/app/services';
 import { tap } from 'rxjs/operators';
-
-import { RuleService } from '../../services';
-import { ResultSet } from '../../common/interfaces';
 
 
 @Component({
-	selector: 'app-result-preview',
-	templateUrl: './result-preview.component.html',
-	styleUrls: ['./result-preview.component.sass']
+	templateUrl: './main.page.html',
+	styleUrls: ['./main.page.sass']
 })
-export class ResultPreviewComponent implements OnInit, OnDestroy {
+export class MainPage implements OnInit, OnDestroy {
 
 	private resultSub: Subscription | undefined;
 	resultSet: ResultSet | undefined;

@@ -6,7 +6,7 @@ import { DefaultLanguage } from './common/constants';
 import { LanguageGuard } from './guards';
 
 import { StartPage } from './pages/start/start.page';
-import { PageAndPreviewPage } from './pages/page-and-preview/page-and-preview.page';
+import { MainPage } from './pages/main/main.page';
 import { ConfigPage } from './pages/config/config.page';
 import { RulePage } from './pages/rule/rule.page';
 
@@ -19,7 +19,7 @@ const routes: Routes = [
 			{ path: 'start', component: StartPage },
 
 			{
-				path: '', component: PageAndPreviewPage, children: [
+				path: '', component: MainPage, children: [
 					{ path: 'config', component: ConfigPage },
 					{ path: ':rule', component: RulePage }
 				]

@@ -6,9 +6,10 @@ h1, h2, h3, p, body
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace
 
 body
-	background: #efeeee
+	background: var(--color-bg)
 
 \:root
+	--color-bg: #efeeee
 	--color-primary: #1581fd
 	--color-grey: #ccc
 	--color-grey-dark: #bbb
@@ -23,6 +24,14 @@ body
 	--box-shadow-inset: inset 2px 2px 5px rgba(0, 0, 0, .2), inset -3px -3px 7px rgba(255, 255, 255, .2)
 	--box-shadow-inset-more: inset 2px 2px 5px rgba(0, 0, 0, .5), inset -3px -3px 7px rgba(255, 255, 255, .5)
 
+.textInset
+	background-color: var(--color-grey-dark)
+	color: transparent
+
+	text-shadow: 2px 2px 2px rgba(255, 255, 255, .5)
+	-webkit-background-clip: text
+	-moz-background-clip: text
+	background-clip: text
 
 .btn
 	border: none
