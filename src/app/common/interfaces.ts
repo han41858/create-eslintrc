@@ -33,7 +33,7 @@ export interface Config {
 export interface Rule {
 	package: Package;
 	name: string;
-	description: string;
+	description: TypedObject<string>; // key is Language
 
 	type: RuleType;
 	category: RuleCategory;

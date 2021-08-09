@@ -6,7 +6,8 @@
 		<span *ngIf="rule.fixable" class="fixable" title="fixable">🔧</span>
 	</div>
 
-	<p class="description">{{ rule.description }}</p>
+	<p class="description" *ngIf="descriptionSanitized" [innerHTML]="descriptionSanitized"></p>
+
 	<div class="version">
 		<span class="devFont">{{ rule.version }}</span>
 	</div>

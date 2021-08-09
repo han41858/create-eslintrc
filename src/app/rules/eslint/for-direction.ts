@@ -4,7 +4,8 @@ import { FixableType, Package, RuleCategory, RuleType, SyntaxType } from '../../
 export const ForDirectionRule: Rule = {
 	package: Package.ESLint,
 	name: 'for-direction',
-	description: 'enforce "for" loop update clause moving the counter in the right direction.',
+	// description: 'enforce "for" loop update clause moving the counter in the right direction.',
+	description: {},
 
 	type: RuleType.Problem,
 	category: RuleCategory.PossibleErrors,

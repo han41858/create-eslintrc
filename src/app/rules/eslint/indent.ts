@@ -4,7 +4,8 @@ import { FixableType, OptionType, Package, RuleCategory, RuleType, SyntaxType } 
 export const IndentRule: Rule = {
 	package: Package.ESLint,
 	name: 'indent',
-	description: 'enforce consistent indentation',
+	// description: 'enforce consistent indentation',
+	description: {},
 
 	type: RuleType.Layout,
 	category: RuleCategory.StylisticIssues,

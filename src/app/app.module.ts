@@ -42,7 +42,8 @@ import { ResultPreviewComponent } from './components/result-preview/result-previ
 		CodeViewerComponent,
 		ExampleViewerComponent,
 
-		ResultPreviewComponent],
+		ResultPreviewComponent
+	],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
@@ -50,7 +51,9 @@ import { ResultPreviewComponent } from './components/result-preview/result-previ
 		FormsModule,
 		ReactiveFormsModule
 	],
-	providers: [],
+	providers: [
+		LanguageGuard
+	],
 	bootstrap: [AppComponent]
 })
 export class AppModule {

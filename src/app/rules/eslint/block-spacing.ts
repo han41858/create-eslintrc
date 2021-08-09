@@ -4,7 +4,8 @@ import { FixableType, OptionType, Package, RuleCategory, RuleType, SyntaxType } 
 export const BlockSpacingRule: Rule = {
 	package: Package.ESLint,
 	name: 'block-spacing',
-	description: 'disallow or enforce spaces inside of blocks after opening block and before closing block',
+	// description: 'disallow or enforce spaces inside of blocks after opening block and before closing block',
+	description: {},
 
 	type: RuleType.Layout,
 	category: RuleCategory.StylisticIssues,

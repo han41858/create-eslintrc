@@ -72,3 +72,11 @@ export enum RuleOrder {
 	FromNewerVersion = 'from newer version',
 	Random = 'by random'
 }
+
+
+export enum Language {
+	'en' = 'en',
+	'kr-ko' = 'ko'
+}
+
+export const DefaultLanguage: Language = Language.en;
