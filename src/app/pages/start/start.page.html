@@ -1,5 +1,5 @@
 <div class="header">
-	<p class="title">Create Your Own</p>
+	<p class="title">{{ languageSvc.getMsg(Message.StartTitle) }}</p>
 	<p class="fileName devFont">.eslintrc.json</p>
 
 	<app-code-viewer class="exampleCode"
@@ -8,5 +8,5 @@
 </div>
 
 <div class="buttonContainer">
-	<button class="btn primary big" [routerLink]="'../config'">Start</button>
+	<button class="btn primary big" [routerLink]="'../config'">{{ languageSvc.getMsg(Message.Start) }}</button>
 </div>

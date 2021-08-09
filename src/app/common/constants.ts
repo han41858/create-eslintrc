@@ -74,9 +74,23 @@ export enum RuleOrder {
 }
 
 
-export enum Language {
+export enum LanguageCode {
 	'en' = 'en',
 	'kr-ko' = 'ko'
 }
 
-export const DefaultLanguage: Language = Language.en;
+export const DefaultLanguage: LanguageCode = LanguageCode.en;
+
+export enum Message {
+	StartTitle,
+	Start,
+
+	ConfigFileType,
+	Environment,
+	DefaultErrorLevel,
+	TargetPackages,
+	RuleOrder,
+
+	Options,
+	AdditionalOptions
+}

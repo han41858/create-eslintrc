@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { Rule } from '../../common/interfaces';
-import { Language } from '../../common/constants';
+import { LanguageCode } from '../../common/constants';
 
 
 @Component({
@@ -13,7 +13,7 @@ import { Language } from '../../common/constants';
 export class RuleViewerComponent implements OnInit {
 
 	@Input() rule: Rule | undefined;
-	@Input() language!: Language;
+	@Input() language!: LanguageCode;
 	descriptionSanitized: SafeHtml | undefined;
 
 	constructor (private sanitizer: DomSanitizer) {

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router } from '@angular/router';
 
-import { Language } from '../common/constants';
+import { LanguageCode } from '../common/constants';
+import { LanguageService } from '../services';
 
 
 @Injectable({
@@ -9,7 +10,10 @@ import { Language } from '../common/constants';
 })
 export class LanguageGuard implements CanActivate, CanActivateChild {
 
-	constructor (private router: Router) {
+	constructor (
+		private router: Router,
+		private languageSvc: LanguageService
+	) {
 	}
 
 	canActivate (route: ActivatedRouteSnapshot): boolean {
@@ -24,9 +28,12 @@ export class LanguageGuard implements CanActivate, CanActivateChild {
 		const languageCode: string | null | undefined = route?.paramMap.get('lang');
 
 		const isValid: boolean = !!languageCode
-			&& Object.values(Language).includes(languageCode as Language);
+			&& Object.values(LanguageCode).includes(languageCode as LanguageCode);
 
-		if (!isValid) {
+		if (isValid) {
+			this.languageSvc.set(languageCode as LanguageCode);
+		}
+		else {
 			setTimeout(async () => {
 				await this.router.navigate(['/']);
 			});

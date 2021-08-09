@@ -2,7 +2,7 @@
 	<!--	<p>form.value : {{ formGroup.value | json  }}</p>-->
 
 	<div class="group">
-		<h3>Config File Type</h3>
+		<h3>{{ languageSvc.getMsg(Message.ConfigFileType) }}</h3>
 
 		<app-radio-group [formControlName]="FormFieldName.FileType"
 		                 [enums]="fileTypes"
@@ -10,7 +10,7 @@
 	</div>
 
 	<div class="group">
-		<h3>Environment</h3>
+		<h3>{{ languageSvc.getMsg(Message.Environment) }}</h3>
 
 		<app-checkbox-group [formControlName]="FormFieldName.Environment"
 		                    [enums]="envArr">
@@ -18,7 +18,7 @@
 	</div>
 
 	<div class="group">
-		<h3>Default Error Level</h3>
+		<h3>{{ languageSvc.getMsg(Message.DefaultErrorLevel) }}</h3>
 
 		<app-error-level-selector [formControlName]="FormFieldName.ErrorLevel"></app-error-level-selector>
 	</div>
@@ -35,7 +35,7 @@
 
 	<div class="group">
 		<!-- todo: more extension plugins -->
-		<h3>Target Packages</h3>
+		<h3>{{ languageSvc.getMsg(Message.TargetPackages) }}</h3>
 
 		<app-checkbox-group [formControlName]="FormFieldName.Packages"
 		                    [enums]="packages"
@@ -50,7 +50,7 @@
 	</div>
 
 	<div class="group">
-		<h3>Rule Order</h3>
+		<h3>{{ languageSvc.getMsg(Message.RuleOrder) }}</h3>
 
 		<app-radio-group [formControlName]="FormFieldName.RuleOrder"
 		                 [enums]="ruleOrders"

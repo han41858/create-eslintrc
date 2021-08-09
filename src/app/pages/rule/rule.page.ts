@@ -6,7 +6,7 @@ import { tap } from 'rxjs/operators';
 import { RuleService } from '../../services';
 
 import { Rule } from '../../common/interfaces';
-import { Language } from '../../common/constants';
+import { LanguageCode } from '../../common/constants';
 
 
 @Component({
@@ -15,7 +15,7 @@ import { Language } from '../../common/constants';
 })
 export class RulePage implements OnInit {
 
-	language!: Language; // checked in LanguageGuard
+	language!: LanguageCode; // checked in LanguageGuard
 	rule: Rule | undefined;
 
 	constructor (
@@ -25,7 +25,7 @@ export class RulePage implements OnInit {
 	}
 
 	ngOnInit (): void {
-		this.language = this.route.parent?.snapshot?.paramMap.get('lang') as Language;
+		this.language = this.route.parent?.snapshot?.paramMap.get('lang') as LanguageCode;
 
 		this.route.paramMap
 			.pipe(

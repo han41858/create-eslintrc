@@ -3,10 +3,10 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 
 import { tap } from 'rxjs/operators';
 
-import { Environment, ErrorLevel, Package, RuleFileType, RuleOrder } from '../../common/constants';
+import { Environment, ErrorLevel, Message, Package, RuleFileType, RuleOrder } from '../../common/constants';
 import { Config, TextValue } from '../../common/interfaces';
 import { entriesToTextValue } from '../../common/util';
-import { RuleService } from '../../services';
+import { LanguageService, RuleService } from '../../services';
 
 
 enum FormFieldName {
@@ -25,6 +25,8 @@ enum FormFieldName {
 })
 export class ConfigPage implements OnInit {
 
+	Message = Message;
+
 	FormFieldName = FormFieldName;
 
 	formGroup!: FormGroup;
@@ -37,6 +39,7 @@ export class ConfigPage implements OnInit {
 
 
 	constructor (
+		public languageSvc: LanguageService,
 		private fb: FormBuilder,
 		private ruleSvc: RuleService
 	) {

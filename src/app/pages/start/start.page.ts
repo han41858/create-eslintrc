@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { DefaultLanguage, Language, SyntaxType } from '../../common/constants';
+import { LanguageService } from '../../services';
+
+import { DefaultLanguage, LanguageCode, Message, SyntaxType } from '../../common/constants';
 
 
 @Component({
@@ -10,13 +12,16 @@ import { DefaultLanguage, Language, SyntaxType } from '../../common/constants';
 })
 export class StartPage implements OnInit {
 
+	Message = Message;
+
 	exampleSyntax: SyntaxType = SyntaxType.JSON;
 	exampleCode: string = '{}';
 
-	language: Language | undefined;
+	language: LanguageCode | undefined;
 
 
 	constructor (
+		public languageSvc: LanguageService,
 		private route: ActivatedRoute,
 		private router: Router
 	) {
@@ -25,13 +30,13 @@ export class StartPage implements OnInit {
 	ngOnInit (): void {
 		const language: string | null = this.route.snapshot.paramMap.get('lang');
 
-		if (!language || !Object.values(Language).includes(language as Language)) {
+		if (!language || !Object.values(LanguageCode).includes(language as LanguageCode)) {
 			setTimeout(async () => {
 				await this.router.navigate(['/', DefaultLanguage]);
 			});
 		}
 		else {
-			this.language = language as Language;
+			this.language = language as LanguageCode;
 		}
 	}
 
