@@ -209,4 +209,10 @@ export class RuleService {
 		this.result$.next(newResultSet);
 	}
 
+	getRule (name: string): Rule | undefined {
+		return this.allRules.find((rule: Rule): boolean => {
+			return rule.name === name;
+		});
+	}
+
 }

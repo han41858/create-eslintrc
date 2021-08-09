@@ -3,6 +3,10 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 
 import { tap } from 'rxjs/operators';
 
+import { RuleService } from '../../services';
+
+import { Rule } from '../../common/interfaces';
+
 
 @Component({
 	templateUrl: './rule.page.html',
@@ -10,14 +14,23 @@ import { tap } from 'rxjs/operators';
 })
 export class RulePage implements OnInit {
 
-	constructor (private route: ActivatedRoute) {
+	rule: Rule | undefined;
+
+	constructor (
+		private route: ActivatedRoute,
+		private ruleSvc: RuleService
+	) {
 	}
 
 	ngOnInit (): void {
 		this.route.paramMap
 			.pipe(
 				tap((paramMap: ParamMap): void => {
-					console.log(paramMap.get('rule'));
+					const ruleName: string | null = paramMap.get('rule');
+
+					if (ruleName) {
+						this.rule = this.ruleSvc.getRule(ruleName);
+					}
 				})
 			)
 			.subscribe();
