@@ -14,6 +14,8 @@ export class MainPage implements OnInit, OnDestroy {
 	private resultSub: Subscription | undefined;
 	resultSet: ResultSet | undefined;
 
+	progressRatio: number = 0; // 0 ~ 1
+
 
 	constructor (private ruleSvc: RuleService) {
 	}

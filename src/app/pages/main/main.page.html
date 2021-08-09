@@ -35,6 +35,12 @@
 		<div class="fadeBG"></div>
 		<div class="divide horizontal"></div>
 
+		<div class="progress">
+			<div class="bg">
+				<div class="indicator" [style.width.%]="progressRatio * 100"></div>
+			</div>
+		</div>
+
 		<div class="buttons">
 			<button class="btn" type="button">previous</button>
 			<button class="btn" type="button">next</button>
