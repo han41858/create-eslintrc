@@ -17,7 +17,6 @@ import { RadioGroupComponent } from './components/radio-group/radio-group.compon
 import { ErrorLevelSelectorComponent } from './components/error-level-selector/error-level-selector.component';
 import { LanguageSelectorComponent } from './components/language-selector/language-selector.component';
 
-import { RuleViewerComponent } from './components/rule-viewer/rule-viewer.component';
 import { OptionSelectorComponent } from './components/option-selector/option-selector.component';
 import { AdditionalOptionSelectorComponent } from './components/additional-option-selector/additional-option-selector.component';
 import { CodeViewerComponent } from './components/code-viewer/code-viewer.component';
@@ -38,7 +37,6 @@ import { ExampleViewerComponent } from './components/example-viewer/example-view
 		ErrorLevelSelectorComponent,
 		LanguageSelectorComponent,
 
-		RuleViewerComponent,
 		OptionSelectorComponent,
 		AdditionalOptionSelectorComponent,
 		CodeViewerComponent,

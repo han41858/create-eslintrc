@@ -52,12 +52,12 @@ export class LanguageSelectorComponent implements OnInit {
 	}
 
 	languageChanged (newValue: LanguageCode): void {
-		console.log(this.router.url);
-
 		const [, , ruleName]: string[] = this.router.url.split('/');
 
 		setTimeout(async () => {
 			await this.router.navigate(['/', newValue, ruleName]);
+
+			this.currentLanguageCode = this.languageSvc.languageCode;
 		});
 	}
 
