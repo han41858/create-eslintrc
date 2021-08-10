@@ -111,3 +111,8 @@ export interface ResultSet {
 	syntaxType: SyntaxType;
 	code: string;
 }
+
+export interface PackageSelected {
+	packageName: string;
+	skipRecommended: boolean;
+}

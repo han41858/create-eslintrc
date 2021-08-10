@@ -1,5 +1,5 @@
 <form [formGroup]="formGroup">
-	<!--	<p>form.value : {{ formGroup.value | json  }}</p>-->
+<!--	<p>form.value : {{ formGroup.value | json  }}</p>-->
 
 	<div class="group">
 		<h3>{{ languageSvc.getMsg(Message.ConfigFileType) }}</h3>
@@ -10,7 +10,7 @@
 	</div>
 
 	<div class="group">
-		<h3>{{ languageSvc.getMsg(Message.Environment) }}</h3>
+		<h3 class="title">{{ languageSvc.getMsg(Message.Environment) }}</h3>
 
 		<app-checkbox-group [formControlName]="FormFieldName.Environment"
 		                    [enums]="envArr">
@@ -18,39 +18,48 @@
 	</div>
 
 	<div class="group">
-		<h3>{{ languageSvc.getMsg(Message.DefaultErrorLevel) }}</h3>
+		<h3 class="title">{{ languageSvc.getMsg(Message.DefaultErrorLevel) }}</h3>
 
 		<app-error-level-selector [formControlName]="FormFieldName.ErrorLevel"></app-error-level-selector>
 	</div>
 
-	<div class="group">
-		<h3>skip rules in <code class="lang-js">"extends": "eslint:recommended"</code></h3>
+	<div class="group targetPackages">
+		<h3 class="title">{{ languageSvc.getMsg(Message.TargetPackages) }}</h3>
 
-		<div class="inputContainer">
-			<input type="checkbox" [id]="FormFieldName.SkipRecommended"
-			       [formControlName]="FormFieldName.SkipRecommended">
-			<label [for]="FormFieldName.SkipRecommended">skip</label>
-		</div>
+		<table>
+			<thead>
+				<tr>
+					<th>{{ languageSvc.getMsg(Message.Category) }}</th>
+					<th>{{ languageSvc.getMsg(Message.NpmPackage) }}</th>
+					<th>{{ languageSvc.getMsg(Message.Select) }}</th>
+					<th>{{ languageSvc.getMsg(Message.SkipRecommended) }}</th>
+				</tr>
+			</thead>
+			<tbody [formGroupName]="FormFieldName.Packages">
+				<tr *ngFor="let packageObj of packages" [formGroupName]="packageObj.text">
+					<td>
+						{{ packageObj.text }}
+					</td>
+					<td>
+						<code class="language-">{{ packageObj.value }}</code>
+					</td>
+					<td>
+						<div class="checkboxContainer">
+							<app-checkbox class="checkbox" [formControlName]="0"></app-checkbox>
+						</div>
+					</td>
+					<td>
+						<div class="checkboxContainer">
+							<app-checkbox class="checkbox" [formControlName]="1"></app-checkbox>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
 	<div class="group">
-		<!-- todo: more extension plugins -->
-		<h3>{{ languageSvc.getMsg(Message.TargetPackages) }}</h3>
-
-		<app-checkbox-group [formControlName]="FormFieldName.Packages"
-		                    [enums]="packages"
-		                    [vertical]="true">
-			<ng-template #customTemplate let-data let-context="context">
-				<span class="label" (click)="context.toggleValue(data.value)">
-					{{ data.text }} -
-					<code class="language-">{{ data.value }}</code>
-				</span>
-			</ng-template>
-		</app-checkbox-group>
-	</div>
-
-	<div class="group">
-		<h3>{{ languageSvc.getMsg(Message.RuleOrder) }}</h3>
+		<h3 class="title">{{ languageSvc.getMsg(Message.RuleOrder) }}</h3>
 
 		<app-radio-group [formControlName]="FormFieldName.RuleOrder"
 		                 [enums]="ruleOrders"

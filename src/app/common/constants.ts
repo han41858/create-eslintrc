@@ -88,7 +88,13 @@ export enum Message {
 	ConfigFileType,
 	Environment,
 	DefaultErrorLevel,
+
 	TargetPackages,
+	Category,
+	NpmPackage,
+	Select,
+	SkipRecommended,
+
 	RuleOrder,
 
 	Language,

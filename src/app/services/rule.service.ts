@@ -2,7 +2,15 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
 
-import { Config, ObjectOption, ResultSet, Rule, RuleSelected, TypedObject } from '../common/interfaces';
+import {
+	Config,
+	ObjectOption,
+	PackageSelected,
+	ResultSet,
+	Rule,
+	RuleSelected,
+	TypedObject
+} from '../common/interfaces';
 import { Environment, Package, RuleFileType, SyntaxType } from '../common//constants';
 
 import { rules } from '../rules/eslint';
@@ -25,9 +33,10 @@ const defaultConfig: Config = {
 })
 export class RuleService {
 
-	private targetPackages: Package[] = [
-		Package.ESLint
-	];
+	private targetPackages: PackageSelected[] = [{
+		packageName: Package.ESLint,
+		skipRecommended: true
+	}];
 
 	private allRules: Rule[] = rules;
 	rulesSelected: RuleSelected[] = [];
@@ -213,7 +222,7 @@ export class RuleService {
 		this.result$.next(newResultSet);
 	}
 
-	setPackages (packages: Package[]): void {
+	setPackages (packages: PackageSelected[]): void {
 		this.targetPackages = packages;
 
 		this.rules$.next(this.getRules());
@@ -221,7 +230,12 @@ export class RuleService {
 
 	private getRules (): Rule[] {
 		return this.allRules.filter((rule: Rule): boolean => {
-			return this.targetPackages.includes(rule.package);
+			return this.targetPackages.some((targetPackage: PackageSelected): boolean => {
+				return targetPackage.packageName === rule.package
+				&& targetPackage.skipRecommended
+					? !rule.recommended
+					: true;
+			});
 		});
 		// TODO: sort
 	}

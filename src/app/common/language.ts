@@ -12,7 +12,13 @@ export const LanguageSet: {
 		ConfigFileType: 'Config File Type',
 		Environment: 'Environment',
 		DefaultErrorLevel: 'Default Error Level',
+
 		TargetPackages: 'Target Packages',
+		Category: 'Category',
+		NpmPackage: 'npm package',
+		Select: 'Select',
+		SkipRecommended: 'skip recommended',
+
 		RuleOrder: 'Rule Order',
 
 		Language: 'Language',
@@ -33,7 +39,13 @@ export const LanguageSet: {
 		ConfigFileType: '설정파일 종류',
 		Environment: '적용환경',
 		DefaultErrorLevel: '기본 에러 레벨',
+
 		TargetPackages: '대상 패키지',
+		Category: '분류',
+		NpmPackage: 'npm 패키지',
+		Select: '선택',
+		SkipRecommended: '추천 규칙 생략',
+
 		RuleOrder: '룰 순서',
 
 		Language: '언어',

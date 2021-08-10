@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
 import { tap } from 'rxjs/operators';
 
 import { Environment, ErrorLevel, Message, Package, RuleFileType, RuleOrder } from '../../common/constants';
-import { Config, TextValue } from '../../common/interfaces';
-import { entriesToTextValue, refreshPrism } from '../../common/util';
+import { Config, PackageSelected, TextValue, TypedObject } from '../../common/interfaces';
+import { entriesToTextValue } from '../../common/util';
 import { LanguageService, RuleService } from '../../services';
 
 
@@ -15,7 +15,7 @@ enum FormFieldName {
 	ErrorLevel = 'errorLevel',
 	SkipRecommended = 'skipRecommended',
 	Packages = 'packages',
-	RuleOrder = 'ruleOrder'
+	RuleOrder = 'ruleOrder',
 }
 
 
@@ -55,8 +55,17 @@ export class ConfigPage implements OnInit {
 			[FormFieldName.FileType]: this.fb.control(RuleFileType.JSON),
 			[FormFieldName.Environment]: this.fb.control([]),
 			[FormFieldName.ErrorLevel]: this.fb.control(ErrorLevel.error),
-			[FormFieldName.SkipRecommended]: this.fb.control(true),
-			[FormFieldName.Packages]: this.fb.control([Package.ESLint]),
+			[FormFieldName.Packages]: this.fb.group(
+				this.packages.reduce((acc: TypedObject<FormArray>, one: TextValue<Package>): TypedObject<FormArray> => {
+					acc[one.text] = this.fb.array(
+						one.value === Package.ESLint
+							? [true, true]
+							: [false, false]
+					);
+
+					return acc;
+				}, {})
+			),
 			[FormFieldName.RuleOrder]: this.fb.control(RuleOrder.DocumentOrder)
 		});
 
@@ -78,14 +87,26 @@ export class ConfigPage implements OnInit {
 
 		this.getFormCtrl(FormFieldName.Packages)?.valueChanges
 			.pipe(
-				tap((newValue: Package[]): void => {
-					this.valueChanged(FormFieldName.Packages, newValue);
+				tap((newValue: {
+					[key: string]: [boolean, boolean];
+				}): void => {
+					const packagesSelected: PackageSelected[] = this.packages.reduce((acc: PackageSelected[], packageObj: TextValue<Package>): PackageSelected[] => {
+						const [selected, skipRecommended]: [boolean, boolean] = newValue[packageObj.text];
+
+						if (selected) {
+							acc.push({
+								packageName: packageObj.value,
+								skipRecommended
+							});
+						}
+
+						return acc;
+					}, []);
+
+					this.valueChanged(FormFieldName.Packages, packagesSelected);
 				})
 			)
 			.subscribe();
-
-
-		refreshPrism();
 	}
 
 	getFormCtrl (field: FormFieldName): AbstractControl | undefined {
@@ -114,7 +135,7 @@ export class ConfigPage implements OnInit {
 
 	valueChanged (field: FormFieldName.FileType, newValue: RuleFileType): void;
 	valueChanged (field: FormFieldName.Environment, newValue: Environment[]): void;
-	valueChanged (field: FormFieldName.Packages, newValue: Package[]): void;
+	valueChanged (field: FormFieldName.Packages, newValue: PackageSelected[]): void;
 	valueChanged (field: FormFieldName, newValue: unknown): void {
 		switch (field) {
 			case FormFieldName.FileType:
@@ -132,7 +153,7 @@ export class ConfigPage implements OnInit {
 				break;
 
 			case FormFieldName.Packages:
-				this.ruleSvc.setPackages(newValue as Package[]);
+				this.ruleSvc.setPackages(newValue as PackageSelected[]);
 				break;
 		}
 	}
