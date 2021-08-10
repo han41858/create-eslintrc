@@ -12,6 +12,7 @@ import { MainPage } from './pages/main/main.page';
 import { ConfigPage } from './pages/config/config.page';
 import { RulePage } from './pages/rule/rule.page';
 
+import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { CheckboxGroupComponent } from './components/checkbox-group/checkbox-group.component';
 import { RadioGroupComponent } from './components/radio-group/radio-group.component';
 import { ErrorLevelSelectorComponent } from './components/error-level-selector/error-level-selector.component';
@@ -32,6 +33,7 @@ import { ExampleViewerComponent } from './components/example-viewer/example-view
 		ConfigPage,
 		RulePage,
 
+		CheckboxComponent,
 		CheckboxGroupComponent,
 		RadioGroupComponent,
 		ErrorLevelSelectorComponent,
@@ -52,7 +54,9 @@ import { ExampleViewerComponent } from './components/example-viewer/example-view
 	providers: [
 		LanguageGuard
 	],
-	bootstrap: [AppComponent]
+	bootstrap: [
+		AppComponent
+	]
 })
 export class AppModule {
 }

@@ -1,4 +1,4 @@
-.wrapper
+form
 	display: flex
 
 	.inputContainer
@@ -7,36 +7,7 @@
 
 		margin: .2rem
 
-		.checkbox
-			display: flex
-			justify-content: center
-			align-items: center
-
-			width: var(--input-size)
-			height: var(--input-size)
-
-			margin-right: var(--input-label-margin)
-
-			border-radius: .4rem
-
-			box-shadow: var(--box-shadow-outset)
-
-			cursor: pointer
-
-			.check
-				width: var(--inner-input-size)
-				height: var(--inner-input-size)
-
-				fill: var(--color-grey)
-
 		.label
 			cursor: pointer
 
 			user-select: none
-
-	.inputContainer.active
-		.checkbox
-			box-shadow: var(--box-shadow-inset)
-
-			.check
-				fill: var(--color-primary)
