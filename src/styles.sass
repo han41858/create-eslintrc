@@ -2,17 +2,18 @@
 h1, h2, h3, p, body
 	margin: 0
 
-.devFont
-	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace
-
 body
 	background: var(--color-bg)
+	color: var(--color-grey-darker)
 
 \:root
 	--color-bg: #efeeee
 	--color-primary: #1581fd
+
+	--color-grey-light: #eee
 	--color-grey: #ccc
 	--color-grey-dark: #aaa
+	--color-grey-darker: #999
 
 	--input-size: 2rem
 	--inner-input-size: 1rem
@@ -23,6 +24,9 @@ body
 
 	--box-shadow-inset: inset 2px 2px 5px rgba(0, 0, 0, .2), inset -3px -3px 7px rgba(255, 255, 255, .2)
 	--box-shadow-inset-more: inset 2px 2px 5px rgba(0, 0, 0, .5), inset -3px -3px 7px rgba(255, 255, 255, .5)
+
+.devFont
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', ui-monospace, monospace
 
 .textInset
 	background-color: var(--color-grey-dark)
@@ -40,6 +44,7 @@ body
 	margin: .2rem
 	padding: .6rem 1.2rem
 
+	font-weight: bold
 	font-size: 1rem
 
 	background: none
@@ -47,7 +52,7 @@ body
 	background-color: var(--color-grey-dark)
 	color: transparent
 
-	text-shadow: 2px 2px 2px rgba(255, 255, 255, .5)
+	text-shadow: 1px 1px 2px rgba(255, 255, 255, .5)
 	-webkit-background-clip: text
 	-moz-background-clip: text
 	background-clip: text
@@ -56,10 +61,13 @@ body
 
 	cursor: pointer
 
+.btn:hover
+	background-color: var(--color-primary)
+
 .btn.big
 	border-radius: 3rem
 
-	padding: .6rem 2rem
+	padding: 1rem 2rem
 
 	font-size: 2rem
 
@@ -67,8 +75,7 @@ body
 	box-shadow: var(--box-shadow-inset)
 
 .btn.primary
-	background: var(--color-primary)
-	color: white
+	background-color: var(--color-primary)
 
 .input
 	border: none

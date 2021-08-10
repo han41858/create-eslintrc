@@ -52,8 +52,16 @@ $side-padding: 1.4rem
 				.bg
 					fill: var(--color-bg)
 
+	.select:hover
+		.valueContainer
+			.value,
+			.dropdownIcon
+				background-color: var(--color-primary)
+
 	.options
 		position: absolute
+		z-index: 1
+
 		flex-direction: column
 
 		width: $width
@@ -62,7 +70,7 @@ $side-padding: 1.4rem
 
 		border-radius: $border-radius
 
-		box-shadow: 0 0 6px var(--color-grey-dark)
+		box-shadow: var(--box-shadow-outset)
 
 		background: var(--color-bg)
 
@@ -75,3 +83,28 @@ $side-padding: 1.4rem
 			padding: .4rem $side-padding
 
 			cursor: pointer
+
+		.option:hover
+			color: var(--color-primary)
+
+.wrapper.primaryColor
+	.select
+		.valueContainer
+			.value,
+			.dropdownIcon
+				background-color: #4a4a4a
+				text-shadow: 2px 2px 2px #1581fdd0
+
+	.select:hover
+		.valueContainer
+			.value,
+			.dropdownIcon
+				background-color: white
+
+	.options
+		background: var(--color-primary)
+
+		color: var(--color-grey)
+
+		.option:hover
+			color: var(--color-grey-light)

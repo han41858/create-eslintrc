@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 
 import { LanguageService } from '../../services';
 import { TextValue } from '../../common/interfaces';
@@ -21,6 +21,8 @@ export class LanguageSelectorComponent implements OnInit {
 			value: value
 		};
 	});
+
+	@Input() primaryColor: boolean = false;
 
 	selectShown: boolean = false;
 	currentLanguageCode: LanguageCode | undefined;

@@ -1,4 +1,5 @@
-<div class="wrapper" (click)="show(true, $event)">
+<div class="wrapper" [class.primaryColor]="primaryColor"
+     (click)="show(true, $event)">
 	<a #focusAnchor class="focusAnchor" href=""
 	   (blur)="show(false, $event)"></a>
 
@@ -54,10 +55,11 @@
 					</g>
 				</svg>
 
-				<span class="value">{{ languageSvc.getMsg(Message.Language) }}: {{ currentLanguageCode }}</span>
+				<span class="value textInset">{{ languageSvc.getMsg(Message.Language) }}
+					: {{ currentLanguageCode }}</span>
 			</div>
 
-			<span>▼</span>
+			<span class="dropdownIcon textInset">▼</span>
 		</div>
 	</div>
 

@@ -1,10 +1,18 @@
 <div class="header">
-	<p class="title">{{ languageSvc.getMsg(Message.StartTitle) }}</p>
-	<p class="fileName devFont">.eslintrc.json</p>
+	<div class="row languageContainer">
+		<app-language-selector [primaryColor]="true"></app-language-selector>
+	</div>
 
-	<app-code-viewer class="exampleCode"
-	                 [syntax]="exampleSyntax"
-	                 [code]="exampleCode"></app-code-viewer>
+	<div class="contents">
+		<p class="title textInset">{{ languageSvc.getMsg(Message.StartTitle) }}</p>
+		<p class="fileName devFont">.eslintrc.json</p>
+
+		<app-code-viewer class="exampleCode"
+		                 [syntax]="exampleSyntax"
+		                 [code]="exampleCode"></app-code-viewer>
+	</div>
+
+	<div class="row"></div>
 </div>
 
 <div class="buttonContainer">
