@@ -46,8 +46,14 @@
 		</div>
 
 		<div class="buttons">
-			<button class="btn" type="button">{{ languageSvc.getMsg(Message.Previous) }}</button>
-			<button class="btn" type="button">{{ languageSvc.getMsg(Message.Next) }}</button>
+			<button class="btn" type="button"
+			        *ngIf="previousLink" [routerLink]="previousLink">
+				{{ languageSvc.getMsg(Message.Previous) }}
+			</button>
+			<button class="btn" type="button"
+			        *ngIf="nextLink" [routerLink]="nextLink">
+				{{ languageSvc.getMsg(Message.Next) }}
+			</button>
 		</div>
 	</div>
 </div>

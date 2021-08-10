@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { Config, ObjectOption, ResultSet, Rule, RuleSelected, TypedObject } from '../common/interfaces';
-import { Environment, RuleFileType, SyntaxType } from '../common//constants';
+import { Environment, Package, RuleFileType, SyntaxType } from '../common//constants';
 
 import { rules } from '../rules/eslint';
 
@@ -25,6 +25,10 @@ const defaultConfig: Config = {
 })
 export class RuleService {
 
+	private targetPackages: Package[] = [
+		Package.ESLint
+	];
+
 	private allRules: Rule[] = rules;
 	rulesSelected: RuleSelected[] = [];
 
@@ -35,7 +39,7 @@ export class RuleService {
 	});
 
 
-	rules$: BehaviorSubject<Rule[]> = new BehaviorSubject<Rule[]>(this.allRules); // rules filtered
+	rules$: BehaviorSubject<Rule[]> = new BehaviorSubject<Rule[]>(this.getRules());
 	result$: BehaviorSubject<ResultSet> = new BehaviorSubject<ResultSet>(this.resultSet);
 
 
@@ -207,6 +211,19 @@ export class RuleService {
 		});
 
 		this.result$.next(newResultSet);
+	}
+
+	setPackages (packages: Package[]): void {
+		this.targetPackages = packages;
+
+		this.rules$.next(this.getRules());
+	}
+
+	private getRules (): Rule[] {
+		return this.allRules.filter((rule: Rule): boolean => {
+			return this.targetPackages.includes(rule.package);
+		});
+		// TODO: sort
 	}
 
 	getRule (name: string): Rule | undefined {

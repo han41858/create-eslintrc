@@ -56,7 +56,7 @@ export class ConfigPage implements OnInit {
 			[FormFieldName.Environment]: this.fb.control([]),
 			[FormFieldName.ErrorLevel]: this.fb.control(ErrorLevel.error),
 			[FormFieldName.SkipRecommended]: this.fb.control(true),
-			[FormFieldName.Packages]: this.fb.control([]),
+			[FormFieldName.Packages]: this.fb.control([Package.ESLint]),
 			[FormFieldName.RuleOrder]: this.fb.control(RuleOrder.DocumentOrder)
 		});
 
@@ -75,6 +75,15 @@ export class ConfigPage implements OnInit {
 				})
 			)
 			.subscribe();
+
+		this.getFormCtrl(FormFieldName.Packages)?.valueChanges
+			.pipe(
+				tap((newValue: Package[]): void => {
+					this.valueChanged(FormFieldName.Packages, newValue);
+				})
+			)
+			.subscribe();
+
 
 		refreshPrism();
 	}
@@ -105,6 +114,7 @@ export class ConfigPage implements OnInit {
 
 	valueChanged (field: FormFieldName.FileType, newValue: RuleFileType): void;
 	valueChanged (field: FormFieldName.Environment, newValue: Environment[]): void;
+	valueChanged (field: FormFieldName.Packages, newValue: Package[]): void;
 	valueChanged (field: FormFieldName, newValue: unknown): void {
 		switch (field) {
 			case FormFieldName.FileType:
@@ -119,6 +129,10 @@ export class ConfigPage implements OnInit {
 					key: 'env',
 					value: newValue as Config[keyof Config]
 				});
+				break;
+
+			case FormFieldName.Packages:
+				this.ruleSvc.setPackages(newValue as Package[]);
 				break;
 		}
 	}
