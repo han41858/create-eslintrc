@@ -5,7 +5,7 @@ import { tap } from 'rxjs/operators';
 
 import { Environment, ErrorLevel, Message, Package, RuleFileType, RuleOrder } from '../../common/constants';
 import { Config, TextValue } from '../../common/interfaces';
-import { entriesToTextValue } from '../../common/util';
+import { entriesToTextValue, refreshPrism } from '../../common/util';
 import { LanguageService, RuleService } from '../../services';
 
 
@@ -75,6 +75,8 @@ export class ConfigPage implements OnInit {
 				})
 			)
 			.subscribe();
+
+		refreshPrism();
 	}
 
 	getFormCtrl (field: FormFieldName): AbstractControl | undefined {
