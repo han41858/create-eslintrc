@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
-import { tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 
 import { Environment, ErrorLevel, Message, Package, RuleFileType, RuleOrder } from '../../common/constants';
 import { Config, PackageSelected, TextValue, TypedObject } from '../../common/interfaces';
@@ -13,7 +13,6 @@ enum FormFieldName {
 	FileType = 'fileType',
 	Environment = 'env',
 	ErrorLevel = 'errorLevel',
-	SkipRecommended = 'skipRecommended',
 	Packages = 'packages',
 	RuleOrder = 'ruleOrder',
 }
@@ -60,7 +59,10 @@ export class ConfigPage implements OnInit {
 					acc[one.text] = this.fb.array(
 						one.value === Package.ESLint
 							? [true, true]
-							: [false, false]
+							: [false, {
+								value: false,
+								disabled: true
+							}]
 					);
 
 					return acc;
@@ -87,22 +89,51 @@ export class ConfigPage implements OnInit {
 
 		this.getFormCtrl(FormFieldName.Packages)?.valueChanges
 			.pipe(
-				tap((newValue: {
+				map((newValue: {
 					[key: string]: [boolean, boolean];
-				}): void => {
-					const packagesSelected: PackageSelected[] = this.packages.reduce((acc: PackageSelected[], packageObj: TextValue<Package>): PackageSelected[] => {
+				}): PackageSelected[] => {
+					return this.packages.reduce((acc: PackageSelected[], packageObj: TextValue<Package>): PackageSelected[] => {
 						const [selected, skipRecommended]: [boolean, boolean] = newValue[packageObj.text];
 
 						if (selected) {
 							acc.push({
 								packageName: packageObj.value,
-								skipRecommended
+								skipRecommended: skipRecommended || false // disabled controller value : undefined
 							});
+						}
+
+						const packageFormGroup: AbstractControl | undefined = this.getFormCtrl(FormFieldName.Packages)?.get(packageObj.text) || undefined;
+
+						if (packageFormGroup) {
+							const recommendedCheckbox: AbstractControl | undefined = packageFormGroup.get('1') || undefined;
+
+							if (selected) {
+								if (recommendedCheckbox && recommendedCheckbox.disabled) {
+									recommendedCheckbox.enable({
+										emitEvent: false
+									});
+								}
+							}
+							else {
+								if (recommendedCheckbox && recommendedCheckbox.enabled) {
+									recommendedCheckbox.disable({
+										emitEvent: false
+									});
+								}
+							}
 						}
 
 						return acc;
 					}, []);
-
+				}),
+				distinctUntilChanged((x: PackageSelected[], y: PackageSelected[]): boolean => {
+					return x.length === y.length
+						&& x.every((one: PackageSelected, i: number): boolean => {
+							return one.packageName === y[i].packageName
+								&& one.skipRecommended === y[i].skipRecommended;
+						});
+				}),
+				tap((packagesSelected: PackageSelected[]) => {
 					this.valueChanged(FormFieldName.Packages, packagesSelected);
 				})
 			)

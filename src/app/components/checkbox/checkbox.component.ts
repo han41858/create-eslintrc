@@ -17,6 +17,7 @@ type OnChangeFnc = (value: boolean) => void;
 })
 export class CheckboxComponent implements ControlValueAccessor {
 
+	disabled: boolean = false;
 	value: boolean = false;
 
 	private onChangeFnc: OnChangeFnc | undefined;
@@ -29,6 +30,14 @@ export class CheckboxComponent implements ControlValueAccessor {
 
 	registerOnTouched (fn: OnChangeFnc): void {
 		this.onTouchedFnc = fn;
+	}
+
+	setDisabledState (isDisabled: boolean): void {
+		this.disabled = isDisabled;
+
+		if (this.value) {
+			this.writeValue(false);
+		}
 	}
 
 	writeValue (newValue: boolean | null): void {
@@ -44,7 +53,9 @@ export class CheckboxComponent implements ControlValueAccessor {
 	}
 
 	toggleValue (): void {
-		this.writeValue(!this.value);
+		if (!this.disabled) {
+			this.writeValue(!this.value);
+		}
 	}
 
 }
