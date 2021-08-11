@@ -6,6 +6,8 @@ export const LanguageSet: {
 	};
 } = {
 	[LanguageCode.en]: {
+		Language: 'Language',
+
 		StartTitle: 'Create Your Own',
 		Start: 'Start',
 
@@ -21,7 +23,11 @@ export const LanguageSet: {
 
 		RuleOrder: 'Rule Order',
 
-		Language: 'Language',
+		DocumentOrder: 'Document order',
+		Alphabetical: 'by Alphabetical',
+		FromOlderVersion: 'from older version',
+		FromNewerVersion: 'from newer version',
+		Random: 'Random',
 
 		Previous: 'Previous',
 		Next: 'Next',
@@ -33,6 +39,8 @@ export const LanguageSet: {
 	},
 
 	[LanguageCode['ko-kr']]: {
+		Language: '언어',
+
 		StartTitle: 'eslint 설정파일을 만들어 보세요.',
 		Start: '시작하기',
 
@@ -48,7 +56,11 @@ export const LanguageSet: {
 
 		RuleOrder: '룰 순서',
 
-		Language: '언어',
+		DocumentOrder: '문서 순서',
+		Alphabetical: '알파벳 순서',
+		FromOlderVersion: '오래된 버전부터',
+		FromNewerVersion: '최신 버전부터',
+		Random: '랜덤',
 
 		Previous: '이전',
 		Next: '다음',

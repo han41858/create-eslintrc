@@ -34,7 +34,7 @@ export class ConfigPage implements OnInit {
 	envArr: TextValue<Environment>[];
 	errorLevels: TextValue<ErrorLevel>[];
 	packages: TextValue<Package>[];
-	ruleOrders: TextValue<RuleOrder>[];
+	ruleOrders: TextValue<RuleOrder>[] | undefined;
 
 
 	constructor (
@@ -46,7 +46,6 @@ export class ConfigPage implements OnInit {
 		this.envArr = entriesToTextValue(Object.entries(Environment));
 		this.errorLevels = entriesToTextValue(Object.entries(ErrorLevel));
 		this.packages = entriesToTextValue(Object.entries(Package));
-		this.ruleOrders = entriesToTextValue(Object.entries(RuleOrder));
 	}
 
 	ngOnInit (): void {
@@ -70,6 +69,19 @@ export class ConfigPage implements OnInit {
 			),
 			[FormFieldName.RuleOrder]: this.fb.control(RuleOrder.DocumentOrder)
 		});
+
+		this.languageSvc.languageCode$
+			.pipe(
+				tap((): void => {
+					this.ruleOrders = Object.keys(RuleOrder).map((key: string): TextValue<RuleOrder> => {
+						return {
+							text: this.languageSvc.getMsg(key as unknown as Message) as string,
+							value: (RuleOrder as TypedObject<RuleOrder>)[key]
+						};
+					});
+				})
+			)
+			.subscribe();
 
 		this.getFormCtrl(FormFieldName.FileType)?.valueChanges
 			.pipe(

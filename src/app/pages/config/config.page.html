@@ -61,8 +61,10 @@
 	<div class="group">
 		<h3 class="title">{{ languageSvc.getMsg(Message.RuleOrder) }}</h3>
 
-		<app-radio-group [formControlName]="FormFieldName.RuleOrder"
+		<app-radio-group *ngIf="ruleOrders"
+		                 [formControlName]="FormFieldName.RuleOrder"
 		                 [enums]="ruleOrders"
-		                 [vertical]="true"></app-radio-group>
+		                 [vertical]="true">
+		</app-radio-group>
 	</div>
 </form>

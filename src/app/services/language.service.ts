@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { BehaviorSubject } from 'rxjs';
+
 import { DefaultLanguage, LanguageCode, Message } from '../common/constants';
 import { LanguageSet } from '../common/language';
 import { TypedObject } from '../common/interfaces';
@@ -10,17 +12,17 @@ import { TypedObject } from '../common/interfaces';
 })
 export class LanguageService {
 
-	// default
-	private _languageCode: LanguageCode = DefaultLanguage;
+	// for internal usage
+	private languageCode: LanguageCode = DefaultLanguage;
+
+	// for reaction
+	languageCode$: BehaviorSubject<LanguageCode> = new BehaviorSubject<LanguageCode>(this.languageCode);
 
 
 	// called by LanguageGuard
-	set (lang: LanguageCode): void {
-		this._languageCode = lang;
-	}
-
-	get languageCode (): LanguageCode {
-		return this._languageCode;
+	set (languageCode: LanguageCode): void {
+		this.languageCode = languageCode;
+		this.languageCode$.next(languageCode);
 	}
 
 	getMsg (msg: Message): string | undefined {
@@ -35,9 +37,10 @@ export class LanguageService {
 				});
 
 			if (foundResult) {
-				const [key] = foundResult as [string, number];
+				// key2 for enum value
+				const [key1, key2] = foundResult as [string, number];
 
-				result = languageSet[key];
+				result = languageSet[key1] || languageSet[key2];
 			}
 		}
 

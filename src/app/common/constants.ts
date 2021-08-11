@@ -65,12 +65,13 @@ export enum Environment {
 	Browser = 'browser'
 }
 
+// same with related Message key
 export enum RuleOrder {
-	DocumentOrder = 'document order',
-	Alphabetical = 'by alphabetical',
-	FromOlderVersion = 'from older version',
-	FromNewerVersion = 'from newer version',
-	Random = 'by random'
+	DocumentOrder = 'DocumentOrder',
+	Alphabetical = 'Alphabetical',
+	FromOlderVersion = 'FromOlderVersion',
+	FromNewerVersion = 'FromNewerVersion',
+	Random = 'Random'
 }
 
 
@@ -82,6 +83,8 @@ export enum LanguageCode {
 export const DefaultLanguage: LanguageCode = LanguageCode.en;
 
 export enum Message {
+	Language,
+
 	StartTitle,
 	Start,
 
@@ -97,7 +100,11 @@ export enum Message {
 
 	RuleOrder,
 
-	Language,
+	DocumentOrder,
+	Alphabetical,
+	FromOlderVersion,
+	FromNewerVersion,
+	Random,
 
 	Previous,
 	Next,
