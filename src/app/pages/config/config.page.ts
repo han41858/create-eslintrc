@@ -150,6 +150,14 @@ export class ConfigPage implements OnInit {
 				})
 			)
 			.subscribe();
+
+		this.getFormCtrl(FormFieldName.RuleOrder)?.valueChanges
+			.pipe(
+				tap((newValue: RuleOrder): void => {
+					this.valueChanged(FormFieldName.RuleOrder, newValue);
+				})
+			)
+			.subscribe();
 	}
 
 	getFormCtrl (field: FormFieldName): AbstractControl | undefined {
@@ -179,6 +187,7 @@ export class ConfigPage implements OnInit {
 	valueChanged (field: FormFieldName.FileType, newValue: RuleFileType): void;
 	valueChanged (field: FormFieldName.Environment, newValue: Environment[]): void;
 	valueChanged (field: FormFieldName.Packages, newValue: PackageSelected[]): void;
+	valueChanged (field: FormFieldName.RuleOrder, newValue: RuleOrder): void;
 	valueChanged (field: FormFieldName, newValue: unknown): void {
 		switch (field) {
 			case FormFieldName.FileType:
@@ -197,6 +206,10 @@ export class ConfigPage implements OnInit {
 
 			case FormFieldName.Packages:
 				this.ruleSvc.setPackages(newValue as PackageSelected[]);
+				break;
+
+			case FormFieldName.RuleOrder:
+				this.ruleSvc.setRuleOrder(newValue as RuleOrder);
 				break;
 		}
 	}

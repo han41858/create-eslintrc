@@ -11,7 +11,7 @@ import {
 	RuleSelected,
 	TypedObject
 } from '../common/interfaces';
-import { Environment, Package, RuleFileType, SyntaxType } from '../common//constants';
+import { Environment, Package, RuleFileType, RuleOrder, SyntaxType } from '../common//constants';
 
 import { rules } from '../rules/eslint';
 
@@ -37,6 +37,8 @@ export class RuleService {
 		packageName: Package.ESLint,
 		skipRecommended: true
 	}];
+
+	private ruleOrder: RuleOrder = RuleOrder.DocumentOrder;
 
 	private allRules: Rule[] = rules;
 	rulesSelected: RuleSelected[] = [];
@@ -228,16 +230,65 @@ export class RuleService {
 		this.rules$.next(this.getRules());
 	}
 
+	setRuleOrder (ruleOrder: RuleOrder): void {
+		this.ruleOrder = ruleOrder;
+
+		this.rules$.next(this.getRules());
+	}
+
 	private getRules (): Rule[] {
-		return this.allRules.filter((rule: Rule): boolean => {
-			return this.targetPackages.some((targetPackage: PackageSelected): boolean => {
-				return targetPackage.packageName === rule.package
-				&& targetPackage.skipRecommended
-					? !rule.recommended
-					: true;
+		return this.allRules
+			.filter((rule: Rule): boolean => {
+				return this.targetPackages.some((targetPackage: PackageSelected): boolean => {
+					return targetPackage.packageName === rule.package
+					&& targetPackage.skipRecommended
+						? !rule.recommended
+						: true;
+				});
+			})
+			.sort((a: Rule, b: Rule): number => {
+				let result: number = 0;
+
+				switch (this.ruleOrder) {
+					case RuleOrder.DocumentOrder:
+						result = 0; // not sort
+						break;
+
+					case RuleOrder.Alphabetical:
+						result = a.name < b.name
+							? -1
+							: 1;
+						break;
+
+					case RuleOrder.FromOlderVersion: {
+						const [majorA, minorA, patchA] = a.version.split('.').map((value: string): number => parseInt(value));
+						const valueA: number = majorA * 10000 + minorA * 100 + patchA;
+
+						const [majorB, minorB, patchB] = b.version.split('.').map((value: string): number => parseInt(value));
+						const valueB: number = majorB * 10000 + minorB * 100 + patchB;
+
+						result = valueA - valueB;
+						break;
+					}
+
+					case RuleOrder.FromNewerVersion: {
+						const [majorA, minorA, patchA] = a.version.split('.').map((value: string): number => parseInt(value));
+						const valueA: number = majorA * 10000 + minorA * 100 + patchA;
+
+						const [majorB, minorB, patchB] = b.version.split('.').map((value: string): number => parseInt(value));
+						const valueB: number = majorB * 10000 + minorB * 100 + patchB;
+
+						result = valueB - valueA;
+						break;
+					}
+
+					case RuleOrder.Random:
+						result = Math.random() - .5;
+						break;
+				}
+
+				return result;
 			});
-		});
-		// TODO: sort
 	}
 
 	getRule (name: string): Rule | undefined {
