@@ -52,7 +52,7 @@ export const LanguageSet: {
 		Category: '분류',
 		NpmPackage: 'npm 패키지',
 		Select: '선택',
-		SkipRecommended: '추천 규칙 생략',
+		SkipRecommended: '추천 규칙 건너뛰기',
 
 		RuleOrder: '룰 순서',
 
