@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { TextValue } from '../../common/interfaces';
@@ -26,6 +26,7 @@ export class RadioGroupComponent<T> implements ControlValueAccessor {
 	@Input() enums: TextValue<T>[] | undefined;
 	@Input() vertical: boolean = false;
 
+	@ContentChild('customTemplate') headerTemplateRef: TemplateRef<unknown> | undefined;
 
 	registerOnChange (fn: OnChangeFnc): void {
 		this.onChangeFnc = fn;

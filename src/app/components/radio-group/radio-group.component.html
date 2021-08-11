@@ -4,6 +4,13 @@
 		<div class="radio" (click)="writeValue(one.value)">
 			<div class="indicator"></div>
 		</div>
-		<span class="label" (click)="writeValue(one.value)">{{ one.text }}</span>
+
+		<ng-container *ngIf="headerTemplateRef;else simpleTemplate"
+		              [ngTemplateOutlet]="headerTemplateRef"
+		              [ngTemplateOutletContext]="{ $implicit: one, context: this }"></ng-container>
+
+		<ng-template #simpleTemplate>
+			<span class="label" (click)="writeValue(one.value)">{{ one.text }}</span>
+		</ng-template>
 	</div>
 </div>
