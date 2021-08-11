@@ -24,7 +24,7 @@ export class MainPage implements OnInit, OnDestroy {
 	private streamsSub: Subscription | undefined;
 	resultSet: ResultSet | undefined;
 
-	progressRatio: number = 0; // 0 ~ 1
+	currentIndex: number | undefined;
 
 
 	constructor (
@@ -55,7 +55,9 @@ export class MainPage implements OnInit, OnDestroy {
 		)
 			.pipe(
 				tap((): void => {
-					this.refreshRules();
+					this.currentIndex = this.getCurrentRuleIndex();
+
+					this.refreshButtonLinks();
 				})
 			)
 			.subscribe();
@@ -74,7 +76,29 @@ export class MainPage implements OnInit, OnDestroy {
 		this.streamsSub?.unsubscribe();
 	}
 
-	refreshRules (): void {
+	private getCurrentRuleIndex (): number {
+		let result: number | undefined;
+
+		if (this.rules && this.rules.length > 0) {
+			const currentRuleName: string | null = this.route.children[0].snapshot.paramMap.get('rule');
+
+			if (currentRuleName) {
+				const currentRule: Rule | undefined = this.rules.find((rule: Rule): boolean => {
+					return rule.name === currentRuleName;
+				});
+
+				if (currentRule) {
+					result = this.rules.indexOf(currentRule);
+				}
+			}
+		}
+
+		return result !== undefined
+			? result // include 0
+			: -1;
+	}
+
+	refreshButtonLinks (): void {
 		if (this.rules && this.rules.length > 0) {
 			const currentRuleName: string | null = this.route.children[0].snapshot.paramMap.get('rule');
 
@@ -84,29 +108,22 @@ export class MainPage implements OnInit, OnDestroy {
 				this.nextLink = this.rules[0].name;
 			}
 			else {
-				for (const rule of this.rules) {
-					if (rule.name === currentRuleName) {
+				const currentRuleIndex: number = this.getCurrentRuleIndex();
 
-						const index: number = this.rules.indexOf(rule);
+				if (currentRuleIndex === 0) {
+					this.previousLink = 'config';
+				}
+				else {
+					this.previousLink = this.rules[currentRuleIndex - 1].name;
+				}
 
-						if (index === 0) {
-							this.previousLink = 'config';
-						}
-						else {
-							this.previousLink = this.rules[index - 1].name;
-						}
+				const nextRule: Rule | undefined = this.rules[currentRuleIndex + 1];
 
-						const nextRule: Rule | undefined = this.rules[index + 1];
-
-						if (nextRule) {
-							this.nextLink = nextRule.name;
-						}
-						else {
-							this.nextLink = undefined; // TODO: final result
-						}
-
-						break;
-					}
+				if (nextRule) {
+					this.nextLink = nextRule.name;
+				}
+				else {
+					this.nextLink = undefined; // TODO: final result
 				}
 			}
 		}

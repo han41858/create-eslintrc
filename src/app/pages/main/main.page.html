@@ -41,7 +41,14 @@
 
 		<div class="progress">
 			<div class="bg">
-				<div class="indicator" [style.width.%]="progressRatio * 100"></div>
+				<ng-container *ngIf="currentIndex !== undefined && rules">
+					<div class="indicator"
+					     [style.width.%]="(currentIndex+1)/rules.length * 100"></div>
+
+					<div class="countContainer">
+						<span class="count">{{ currentIndex + 1 }} / {{ rules.length }}</span>
+					</div>
+				</ng-container>
 			</div>
 		</div>
 

@@ -83,6 +83,10 @@ $layout-margin: 1rem
 				display: flex
 				flex: 1
 
+				position: relative
+
+				height: calc(1rem + .2rem)
+
 				border-radius: 1rem
 
 				margin: .2rem
@@ -107,6 +111,20 @@ $layout-margin: 1rem
 					box-shadow: var(--box-shadow-outset)
 
 					transition: width 100ms
+
+				.countContainer
+					position: absolute
+					// top margin for text vertical alignment
+					top: -.1rem
+					left: 0
+
+					width: 100%
+
+					text-align: center
+
+					.count
+						font-size: .9rem
+						color: var(--color-grey-lighter)
 
 		.buttons
 			display: flex
