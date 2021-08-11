@@ -1,6 +1,8 @@
-import { TextValue } from './interfaces';
+import { ElementRef } from '@angular/core';
 
 import * as Prism from 'prismjs';
+
+import { TextValue } from './interfaces';
 
 
 export const entriesToTextValue = <T> (entries: [string, T][]): TextValue<T>[] => {
@@ -12,6 +14,6 @@ export const entriesToTextValue = <T> (entries: [string, T][]): TextValue<T>[] =
 	});
 };
 
-export const refreshPrism = (): void => {
-	Prism.highlightAll();
+export const refreshPrism = (ele: ElementRef<HTMLElement>): void => {
+	Prism.highlightElement(ele.nativeElement);
 };
