@@ -5,7 +5,6 @@ import { BehaviorSubject } from 'rxjs';
 import {
 	Config,
 	ObjectOption,
-	Option,
 	PackageSelected,
 	ResultSet,
 	Rule,
@@ -250,22 +249,18 @@ export class RuleService {
 		this.rules$.next(this.getRules());
 	}
 
-	addRule (param: {
-		rule: Rule,
-		errorLevel: ErrorLevel,
-		option?: Option
-	}): void {
+	addRule (param: RuleSelected): void {
 		if (param.errorLevel === ErrorLevel.skip) {
 			// remove
 			this.rulesSelected = this.rulesSelected.filter((rule: RuleSelected): boolean => {
-				return !(param.rule.package === rule.package
-					&& param.rule.name === rule.name);
+				return !(param.package === rule.package
+					&& param.name === rule.name);
 			});
 		}
 		else {
 			const target: RuleSelected | undefined = this.rulesSelected.find((rule: RuleSelected): boolean => {
-				return param.rule.package === rule.package
-					&& param.rule.name === rule.name;
+				return param.package === rule.package
+					&& param.name === rule.name;
 			});
 
 			if (target) {
@@ -276,8 +271,8 @@ export class RuleService {
 			else {
 				// add
 				this.rulesSelected.push({
-					package: param.rule.package,
-					name: param.rule.name,
+					package: param.package,
+					name: param.name,
 					errorLevel: param.errorLevel,
 
 					option: param.option

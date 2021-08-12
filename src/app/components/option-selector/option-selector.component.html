@@ -1,8 +1,7 @@
-<p>currentValue: {{ currentValue | json }}</p>
-
 <ng-container *ngIf="rule">
 	<ng-container *ngIf="rule.options && rule.options.length > 0;else simpleOnOff">
-		<div class="option" *ngFor="let option of rule.options;let i=index">
+		<div class="option" *ngFor="let option of rule.options;let i=index"
+		     [class.disabled]="disabled">
 			<div class="radioBtn" [class.selected]="selectedIndex === i"
 			     (click)="writeValueInternal(i, option, option.value)">
 				<div class="indicator"></div>
@@ -17,7 +16,7 @@
 				</ng-container>
 
 				<ng-container *ngSwitchCase="OptionType.StringFixed">
-					<code class="lang-js"
+					<code class="label lang-js"
 					      (click)="writeValueInternal(i, option, option.value)">"{{ option.value }}"</code>
 				</ng-container>
 

@@ -1,4 +1,4 @@
-<p>form.value: {{ formGroup?.value | json }}</p>
+<!--<p>form.value: {{ formGroup?.value | json }}</p>-->
 
 <div *ngIf="rule">
 	<div class="info">
@@ -22,7 +22,9 @@
 		<app-error-level-selector [formControlName]="FormFieldName.ErrorLevel"></app-error-level-selector>
 
 		<h2 class="optionsHeader">{{ languageSvc.getMsg(Message.Options) }}</h2>
-		<app-option-selector [rule]="rule" [formControlName]="FormFieldName.Option"></app-option-selector>
+		<app-option-selector [rule]="rule"
+		                     [formControlName]="FormFieldName.Option"
+		                     [disabled]="getFormCtrl(FormFieldName.Option)?.disabled || false"></app-option-selector>
 
 		<ng-container *ngIf="rule.additionalOptions">
 			<h2 class="additionalOptionsHeader">{{ languageSvc.getMsg(Message.AdditionalOptions) }}</h2>

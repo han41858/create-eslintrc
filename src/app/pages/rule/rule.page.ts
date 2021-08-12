@@ -3,11 +3,11 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
 
 import { LanguageService, RuleService } from '../../services';
 
-import { ObjectOption, Option, Rule } from '../../common/interfaces';
+import { ObjectOption, Option, Rule, RuleSelected } from '../../common/interfaces';
 import { ErrorLevel, LanguageCode, Message } from '../../common/constants';
 
 import { ErrorLevelSelectorComponent } from 'src/app/components/error-level-selector/error-level-selector.component';
@@ -17,6 +17,12 @@ enum FormFieldName {
 	ErrorLevel = 'ErrorLevel',
 	Option = 'Option',
 	AdditionalOptions = 'AdditionalOptions'
+}
+
+interface FormValue {
+	[FormFieldName.ErrorLevel]: ErrorLevel;
+	[FormFieldName.Option]: Option | undefined;
+	[FormFieldName.AdditionalOptions]: ObjectOption[] | undefined;
 }
 
 
@@ -75,32 +81,87 @@ export class RulePage implements OnInit {
 
 		this.formGroup = this.fb.group({
 			[FormFieldName.ErrorLevel]: this.fb.control(ErrorLevel.skip),
-			[FormFieldName.Option]: this.fb.control(null),
-			[FormFieldName.AdditionalOptions]: this.fb.array([])
+			[FormFieldName.Option]: this.fb.control({
+				value: null,
+				disabled: true
+			}),
+			[FormFieldName.AdditionalOptions]: null
 		});
 
 		this.formGroup.valueChanges
 			.pipe(
-				tap((newValue: {
-					[FormFieldName.ErrorLevel]: ErrorLevel;
-					[FormFieldName.Option]: Option | undefined;
-					[FormFieldName.AdditionalOptions]: ObjectOption[]
-				}): void => {
-					const errorLevel: ErrorLevel = newValue[FormFieldName.ErrorLevel];
-					const option: Option | undefined = newValue[FormFieldName.Option];
-					// TODO
-					// const additionalOptions: ObjectOption[] = newValue[FormFieldName.AdditionalOptions];
+				map((newValue: FormValue): RuleSelected | undefined => {
+					let ruleSelected: Partial<RuleSelected> | undefined;
 
 					if (this.rule) {
-						this.ruleSvc.addRule({
-							rule: this.rule,
-							errorLevel: errorLevel,
-							option: option
-						});
+						const errorLevel: ErrorLevel = newValue[FormFieldName.ErrorLevel];
+
+						ruleSelected = {
+							package: this.rule.package,
+							name: this.rule.name,
+
+							errorLevel: errorLevel
+						};
+
+
+						const optionCtrl: AbstractControl | undefined = this.getFormCtrl(FormFieldName.Option);
+						const additionalOptionsCtrl: AbstractControl | undefined = this.getFormCtrl(FormFieldName.AdditionalOptions);
+
+						if (errorLevel === ErrorLevel.skip
+							|| errorLevel === ErrorLevel.off) {
+							if (optionCtrl && optionCtrl.enabled) {
+								optionCtrl.disable();
+							}
+
+							if (additionalOptionsCtrl && additionalOptionsCtrl.enabled) {
+								additionalOptionsCtrl.disable();
+							}
+						}
+						else {
+							if (optionCtrl) {
+								if (optionCtrl.disabled) {
+									optionCtrl.enable();
+								}
+								else {
+									ruleSelected.option = newValue[FormFieldName.Option] || undefined;
+								}
+							}
+
+							if (additionalOptionsCtrl) {
+								if (additionalOptionsCtrl.disabled) {
+									additionalOptionsCtrl.enable();
+								}
+								else {
+									ruleSelected.additionalOptions = newValue[FormFieldName.AdditionalOptions] || undefined;
+								}
+							}
+						}
 					}
+
+					return ruleSelected as RuleSelected | undefined;
+				}),
+				filter((newRule: RuleSelected | undefined): newRule is RuleSelected => !!newRule),
+				distinctUntilChanged((a: RuleSelected, b: RuleSelected): boolean => {
+					// if false, passes to next
+					return a.package === b.package
+						&& a.name === b.name
+						&& a.errorLevel === b.errorLevel
+						&& !!a.option === !!b.option
+						&& JSON.stringify(a.option) === JSON.stringify(b.option)
+						&& !!a.additionalOptions === !!b.additionalOptions
+						&& JSON.stringify(a.additionalOptions) === JSON.stringify(b.additionalOptions);
+				}),
+				map((newRule: RuleSelected): void => {
+					this.ruleSvc.addRule(newRule);
+
+					// returns nothing
 				})
 			)
 			.subscribe();
+	}
+
+	getFormCtrl (field: FormFieldName): AbstractControl | undefined {
+		return this.formGroup?.get(field) || undefined;
 	}
 
 	getFormValue<T> (field: FormFieldName): T | undefined {

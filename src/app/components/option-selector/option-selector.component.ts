@@ -5,7 +5,7 @@ import { OptionType } from '../../common/constants';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 
-type OnChangeFnc = (option: Option) => void;
+type OnChangeFnc = (option: Option | undefined) => void;
 
 
 @Component({
@@ -29,6 +29,7 @@ export class OptionSelectorComponent implements ControlValueAccessor {
 
 	selectedIndex: number | undefined;
 	currentValue: Option | undefined;
+	disabled: boolean = false;
 
 
 	registerOnChange (fn: OnChangeFnc): void {
@@ -39,42 +40,57 @@ export class OptionSelectorComponent implements ControlValueAccessor {
 		this.onTouchedFnc = fn;
 	}
 
-	writeValueInternal (index: number, option: Option, newValue: unknown): void {
-		this.selectedIndex = index;
+	setDisabledState (isDisabled: boolean) {
+		this.disabled = isDisabled;
 
-		let newOption: Option;
-
-		switch (option.type) {
-			case OptionType.NumberVariable:
-				newOption = {
-					type: OptionType.NumberVariable,
-					value: +(newValue as number)
-				};
-				break;
-
-			case OptionType.StringFixed:
-				newOption = {
-					type: OptionType.StringFixed,
-					value: newValue as string
-				};
-				break;
-
-			case OptionType.StringVariable:
-				newOption = {
-					type: OptionType.StringVariable,
-					value: newValue as string
-				};
-				break;
-
-			default:
-				newOption = option;
+		if (this.currentValue) {
+			this.writeValue(undefined);
 		}
-
-		this.writeValue(newOption);
 	}
 
-	writeValue (option: Option): void {
+	writeValueInternal (index: number, option: Option, newValue: unknown): void {
+		if (!this.disabled) {
+			this.selectedIndex = index;
+
+			let newOption: Option;
+
+			switch (option.type) {
+				case OptionType.NumberVariable:
+					newOption = {
+						type: OptionType.NumberVariable,
+						value: +(newValue as number)
+					};
+					break;
+
+				case OptionType.StringFixed:
+					newOption = {
+						type: OptionType.StringFixed,
+						value: newValue as string
+					};
+					break;
+
+				case OptionType.StringVariable:
+					newOption = {
+						type: OptionType.StringVariable,
+						value: newValue as string
+					};
+					break;
+
+				default:
+					newOption = option;
+			}
+
+			this.writeValue(newOption);
+		}
+	}
+
+	writeValue (option: Option | undefined): void {
 		this.currentValue = option;
+
+		if (!option) {
+			// clear
+			this.selectedIndex = undefined;
+		}
 
 		if (typeof this.onChangeFnc === 'function') {
 			this.onChangeFnc(option);
