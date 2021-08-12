@@ -32,6 +32,7 @@ export const LanguageSet: {
 		Previous: 'Previous',
 		Next: 'Next',
 
+		ErrorLevel: 'Error Level',
 		Options: 'Options',
 		AdditionalOptions: 'Additional Options',
 
@@ -65,6 +66,7 @@ export const LanguageSet: {
 		Previous: '이전',
 		Next: '다음',
 
+		ErrorLevel: '에러 레벨',
 		Options: '옵션',
 		AdditionalOptions: '추가 옵션',
 

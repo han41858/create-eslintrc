@@ -1,8 +1,8 @@
 <div class="wrapper" [style.flex-direction]="vertical ? 'column' : 'row'">
 	<div *ngFor="let one of enums;let i=index"
 	     class="inputContainer"
-	     [class.active]="one.value === currentValue">
-		<div class="radio" (click)="writeValue(one.value)"
+	     [class.selected]="one.value === currentValue">
+		<div class="radioBtn" (click)="writeValue(one.value)"
 		     [style]="getRadioButtonStyle()">
 			<div class="indicator"></div>
 		</div>

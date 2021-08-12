@@ -16,8 +16,44 @@
 	code
 		padding: .2rem !important
 
+	.radioBtn
+		display: flex
+		align-items: center
+		justify-content: center
+
+		width: var(--input-size)
+		height: var(--input-size)
+
+		margin-right: var(--input-label-margin)
+
+		border-radius: var(--input-size)
+
+		box-shadow: var(--box-shadow-outset)
+
+		cursor: pointer
+
+		.indicator
+			width: var(--inner-input-size)
+			height: var(--inner-input-size)
+
+			border-radius: var(--inner-input-size)
+
+			background: var(--color-grey)
+
+		.label
+			cursor: pointer
+
+			user-select: none
+
+	.radioBtn.selected
+		box-shadow: var(--box-shadow-inset)
+
+		.indicator
+			background: var(--color-primary)
 
 	.numberFixed, .numberVariable
 		input
 			width: 4rem
-			padding: .2rem
+
+	.stringFixed
+		cursor: pointer

@@ -1,22 +1,32 @@
-<ng-container *ngIf="rule">
-	<div class="header">
-		<h1 class="name devFont">{{ rule.name }}</h1>
+<p>form.value: {{ formGroup?.value | json }}</p>
 
-		<span *ngIf="rule.recommended" class="recommended" title="recommended">👍</span>
-		<span *ngIf="rule.fixable" class="fixable" title="fixable">🔧</span>
+<div *ngIf="rule">
+	<div class="info">
+		<div class="header">
+			<h1 class="name"><code class="language-">{{ rule.name }}</code></h1>
+
+			<span *ngIf="rule.recommended" class="recommended" title="recommended">👍</span>
+			<span *ngIf="rule.fixable" class="fixable" title="fixable">🔧</span>
+		</div>
+
+		<p class="description" *ngIf="descriptionSanitized" [innerHTML]="descriptionSanitized"></p>
+
+		<div class="version">
+			<span class="devFont">{{ rule.version }}</span>
+		</div>
 	</div>
 
-	<p class="description" *ngIf="descriptionSanitized" [innerHTML]="descriptionSanitized"></p>
+	<form *ngIf="formGroup" [formGroup]="formGroup">
+		<h2 class="errorLevel">{{ languageSvc.getMsg(Message.ErrorLevel) }}</h2>
 
-	<div class="version">
-		<span class="devFont">{{ rule.version }}</span>
-	</div>
+		<app-error-level-selector [formControlName]="FormFieldName.ErrorLevel"></app-error-level-selector>
 
-	<h2 class="optionsHeader">{{ languageSvc.getMsg(Message.Options) }}</h2>
-	<app-option-selector [rule]="rule"></app-option-selector>
+		<h2 class="optionsHeader">{{ languageSvc.getMsg(Message.Options) }}</h2>
+		<app-option-selector [rule]="rule" [formControlName]="FormFieldName.Option"></app-option-selector>
 
-	<ng-container *ngIf="rule.additionalOptions">
-		<h2 class="additionalOptionsHeader">{{ languageSvc.getMsg(Message.AdditionalOptions) }}</h2>
-		<app-additional-option-selector [rule]="rule"></app-additional-option-selector>
-	</ng-container>
-</ng-container>
+		<ng-container *ngIf="rule.additionalOptions">
+			<h2 class="additionalOptionsHeader">{{ languageSvc.getMsg(Message.AdditionalOptions) }}</h2>
+			<app-additional-option-selector [rule]="rule"></app-additional-option-selector>
+		</ng-container>
+	</form>
+</div>

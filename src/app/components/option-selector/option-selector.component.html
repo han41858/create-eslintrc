@@ -1,21 +1,29 @@
+<p>currentValue: {{ currentValue }}</p>
+
 <ng-container *ngIf="rule">
 	<ng-container *ngIf="rule.options && rule.options.length > 0;else simpleOnOff">
 		<div class="option" *ngFor="let option of rule.options;let i=index">
-			<input type="radio" [id]="rule.name + i" [name]="rule.name">
+			<div class="radioBtn" [class.selected]="selectedIndex === i"
+			     (click)="writeValueInternal(i, option, option.value)">
+				<div class="indicator"></div>
+			</div>
 
 			<div [class]="option.type" [ngSwitch]="option.type">
 				<ng-container *ngSwitchCase="OptionType.NumberVariable">
-					<input type="number" [value]="option.value">
+					<input #input type="number" class="input"
+					       [value]="option.value"
+					       (focus)="writeValueInternal(i, option, input.value)"
+					       (change)="writeValueInternal(i, option, input.value)">
 				</ng-container>
 
 				<ng-container *ngSwitchCase="OptionType.StringFixed">
-					<label [for]="rule.name + i">
-						<code class="lang-js">"{{ option.value }}"</code>
-					</label>
+					<code class="lang-js"
+					      (click)="writeValueInternal(i, option, option.value)">"{{ option.value }}"</code>
 				</ng-container>
 
 				<ng-container *ngSwitchCase="OptionType.StringVariable">
-					<input type="text" [value]="option.value">
+					<input #input type="text" [value]="option.value"
+					       (change)="writeValueInternal(i, option, input.value)">
 				</ng-container>
 			</div>
 		</div>

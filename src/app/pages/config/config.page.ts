@@ -52,7 +52,7 @@ export class ConfigPage implements OnInit {
 		this.formGroup = this.fb.group({
 			[FormFieldName.FileType]: this.fb.control(RuleFileType.JSON),
 			[FormFieldName.Environment]: this.fb.control([]),
-			[FormFieldName.ErrorLevel]: this.fb.control(ErrorLevel.error),
+			[FormFieldName.ErrorLevel]: this.fb.control(ErrorLevel.skip),
 			[FormFieldName.Packages]: this.fb.group(
 				this.packages.reduce((acc: TypedObject<FormArray>, one: TextValue<Package>): TypedObject<FormArray> => {
 					acc[one.text] = this.fb.array(

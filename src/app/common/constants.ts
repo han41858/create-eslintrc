@@ -109,6 +109,7 @@ export enum Message {
 	Previous,
 	Next,
 
+	ErrorLevel,
 	Options,
 	AdditionalOptions,
 
