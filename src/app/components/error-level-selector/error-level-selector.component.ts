@@ -27,7 +27,7 @@ export class ErrorLevelSelectorComponent implements ControlValueAccessor {
 	ErrorLevel = ErrorLevel;
 	errorLevels: TextValue<ErrorLevel>[];
 
-	formControl: FormControl = new FormControl(ErrorLevel.error);
+	formControl: FormControl = new FormControl(ErrorLevel.skip);
 	@Output() change: EventEmitter<ErrorLevel> = new EventEmitter<ErrorLevel>();
 
 
@@ -44,6 +44,10 @@ export class ErrorLevelSelectorComponent implements ControlValueAccessor {
 	}
 
 	writeValue (newValue: ErrorLevel): void {
+		if (this.formControl) {
+			this.formControl.setValue(newValue);
+		}
+
 		if (typeof this.onChangeFnc === 'function') {
 			this.onChangeFnc(newValue);
 		}
