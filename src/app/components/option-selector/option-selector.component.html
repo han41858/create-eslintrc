@@ -1,4 +1,4 @@
-<p>currentValue: {{ currentValue }}</p>
+<p>currentValue: {{ currentValue | json }}</p>
 
 <ng-container *ngIf="rule">
 	<ng-container *ngIf="rule.options && rule.options.length > 0;else simpleOnOff">

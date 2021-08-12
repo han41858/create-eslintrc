@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -6,9 +7,9 @@ import { tap } from 'rxjs/operators';
 
 import { LanguageService, RuleService } from '../../services';
 
-import { Rule } from '../../common/interfaces';
+import { ObjectOption, Option, Rule } from '../../common/interfaces';
 import { ErrorLevel, LanguageCode, Message } from '../../common/constants';
-import { FormBuilder, FormGroup } from '@angular/forms';
+
 import { ErrorLevelSelectorComponent } from 'src/app/components/error-level-selector/error-level-selector.component';
 
 
@@ -74,9 +75,44 @@ export class RulePage implements OnInit {
 
 		this.formGroup = this.fb.group({
 			[FormFieldName.ErrorLevel]: this.fb.control(ErrorLevel.skip),
-			[FormFieldName.Option]: this.fb.control([null]),
+			[FormFieldName.Option]: this.fb.control(null),
 			[FormFieldName.AdditionalOptions]: this.fb.array([])
 		});
+
+		this.formGroup.valueChanges
+			.pipe(
+				tap((newValue: {
+					[FormFieldName.ErrorLevel]: ErrorLevel;
+					[FormFieldName.Option]: Option | undefined;
+					[FormFieldName.AdditionalOptions]: ObjectOption[]
+				}): void => {
+					const errorLevel: ErrorLevel = newValue[FormFieldName.ErrorLevel];
+					const option: Option | undefined = newValue[FormFieldName.Option];
+					// TODO
+					// const additionalOptions: ObjectOption[] = newValue[FormFieldName.AdditionalOptions];
+
+					if (this.rule) {
+						this.ruleSvc.addRule({
+							rule: this.rule,
+							errorLevel: errorLevel,
+							option: option
+						});
+					}
+				})
+			)
+			.subscribe();
+	}
+
+	getFormValue<T> (field: FormFieldName): T | undefined {
+		let result: T | undefined;
+
+		const ctrl: AbstractControl | undefined = this.formGroup?.get(field) || undefined;
+
+		if (ctrl) {
+			result = ctrl.value;
+		}
+
+		return result;
 	}
 
 	private refreshDescription (): void {

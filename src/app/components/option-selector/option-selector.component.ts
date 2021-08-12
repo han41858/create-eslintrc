@@ -28,7 +28,7 @@ export class OptionSelectorComponent implements ControlValueAccessor {
 	private onTouchedFnc: OnChangeFnc | undefined;
 
 	selectedIndex: number | undefined;
-	currentValue: string | number | undefined;
+	currentValue: Option | undefined;
 
 
 	registerOnChange (fn: OnChangeFnc): void {
@@ -40,34 +40,45 @@ export class OptionSelectorComponent implements ControlValueAccessor {
 	}
 
 	writeValueInternal (index: number, option: Option, newValue: unknown): void {
-		console.log('writeValueInternal()', {
-			index,
-			option,
-			newValue
-		});
 		this.selectedIndex = index;
 
-		let newValueSanitized: unknown;
+		let newOption: Option;
 
 		switch (option.type) {
 			case OptionType.NumberVariable:
-				newValueSanitized = +(newValue as number);
+				newOption = {
+					type: OptionType.NumberVariable,
+					value: +(newValue as number)
+				};
+				break;
+
+			case OptionType.StringFixed:
+				newOption = {
+					type: OptionType.StringFixed,
+					value: newValue as string
+				};
+				break;
+
+			case OptionType.StringVariable:
+				newOption = {
+					type: OptionType.StringVariable,
+					value: newValue as string
+				};
 				break;
 
 			default:
-				newValueSanitized = newValue;
+				newOption = option;
 		}
 
-		this.writeValue(newValueSanitized);
+		this.writeValue(newOption);
 	}
 
-	writeValue (newValue: unknown): void {
-		console.log('writeValue()', newValue);
-		this.currentValue = newValue as string;
+	writeValue (option: Option): void {
+		this.currentValue = option;
 
-		// if (typeof this.onChangeFnc === 'function') {
-		// 	this.onChangeFnc(newValue);
-		// }
+		if (typeof this.onChangeFnc === 'function') {
+			this.onChangeFnc(option);
+		}
 	}
 
 }

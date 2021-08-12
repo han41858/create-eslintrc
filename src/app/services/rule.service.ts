@@ -5,13 +5,14 @@ import { BehaviorSubject } from 'rxjs';
 import {
 	Config,
 	ObjectOption,
+	Option,
 	PackageSelected,
 	ResultSet,
 	Rule,
 	RuleSelected,
 	TypedObject
 } from '../common/interfaces';
-import { Environment, Package, RuleFileType, RuleOrder, SyntaxType } from '../common//constants';
+import { Environment, ErrorLevel, Package, RuleFileType, RuleOrder, SyntaxType } from '../common//constants';
 
 import { rules } from '../rules/eslint';
 
@@ -21,17 +22,17 @@ interface CreateRuleParam {
 	rulesSelected: RuleSelected[];
 }
 
-const defaultConfig: Config = {
-	fileType: RuleFileType.JSON,
-	syntax: SyntaxType.JSON,
-	indent: '\t'
-};
-
 
 @Injectable({
 	providedIn: 'root'
 })
 export class RuleService {
+
+	private config: Config = {
+		fileType: RuleFileType.JSON,
+		syntax: SyntaxType.JSON,
+		indent: '\t'
+	};
 
 	private targetPackages: PackageSelected[] = [{
 		packageName: Package.ESLint,
@@ -40,14 +41,12 @@ export class RuleService {
 
 	private ruleOrder: RuleOrder = RuleOrder.DocumentOrder;
 
+
 	private allRules: Rule[] = rules;
 	rulesSelected: RuleSelected[] = [];
 
 	// create with default option
-	private resultSet: ResultSet = this.createResultSet({
-		config: defaultConfig,
-		rulesSelected: []
-	});
+	private resultSet: ResultSet = this.createResultSet();
 
 
 	rules$: BehaviorSubject<Rule[]> = new BehaviorSubject<Rule[]>(this.getRules());
@@ -93,7 +92,16 @@ export class RuleService {
 		};
 	}
 
-	private createResultSet (param: CreateRuleParam): ResultSet {
+	private emitResultSet (): void {
+		this.result$.next(this.createResultSet());
+	}
+
+	private createResultSet (): ResultSet {
+		const param: CreateRuleParam = {
+			config: this.config,
+			rulesSelected: this.rulesSelected
+		};
+
 		const { fileType, syntaxType, fileName } = RuleService.sanitizeType(param.config);
 
 		let code: string;
@@ -134,23 +142,32 @@ export class RuleService {
 		// }
 
 		codeObj['rules'] = param.rulesSelected.reduce((acc: TypedObject<unknown>, rule: RuleSelected): TypedObject<unknown> => {
-			if (!rule.option) {
-				acc[rule.name] = rule.errorLevel;
+			if (rule.errorLevel === ErrorLevel.skip) {
+				throw new Error('skip rule');
 			}
-			else if (!rule.additionalOptions) {
-				acc[rule.name] = [rule.errorLevel, rule.option.value];
+
+			if (rule.errorLevel === ErrorLevel.off) {
+				acc[rule.name] = ErrorLevel.off;
 			}
 			else {
-				acc[rule.name] = [
-					rule.errorLevel,
-					rule.option.value,
-					rule.additionalOptions
-						.reduce((additionalAcc: TypedObject<unknown>, option: ObjectOption): TypedObject<unknown> => {
-							additionalAcc[option.property] = option.value;
+				if (!rule.option) {
+					acc[rule.name] = [rule.errorLevel];
+				}
+				else if (!rule.additionalOptions) {
+					acc[rule.name] = [rule.errorLevel, rule.option.value];
+				}
+				else {
+					acc[rule.name] = [
+						rule.errorLevel,
+						rule.option.value,
+						rule.additionalOptions
+							.reduce((additionalAcc: TypedObject<unknown>, option: ObjectOption): TypedObject<unknown> => {
+								additionalAcc[option.property] = option.value;
 
-							return additionalAcc;
-						}, {})
-				];
+								return additionalAcc;
+							}, {})
+					];
+				}
 			}
 
 			return acc;
@@ -214,14 +231,11 @@ export class RuleService {
 		key: 'fileType' | 'env',
 		value: Config[keyof Config]
 	}): void {
-		const newResultSet: ResultSet = this.createResultSet({
-			config: Object.assign(defaultConfig, {
-				[param.key]: param.value
-			}),
-			rulesSelected: this.rulesSelected
+		this.config = Object.assign(this.config, {
+			[param.key]: param.value
 		});
 
-		this.result$.next(newResultSet);
+		this.emitResultSet();
 	}
 
 	setPackages (packages: PackageSelected[]): void {
@@ -234,6 +248,46 @@ export class RuleService {
 		this.ruleOrder = ruleOrder;
 
 		this.rules$.next(this.getRules());
+	}
+
+	addRule (param: {
+		rule: Rule,
+		errorLevel: ErrorLevel,
+		option?: Option
+	}): void {
+		if (param.errorLevel === ErrorLevel.skip) {
+			// remove
+			this.rulesSelected = this.rulesSelected.filter((rule: RuleSelected): boolean => {
+				return !(param.rule.package === rule.package
+					&& param.rule.name === rule.name);
+			});
+		}
+		else {
+			const target: RuleSelected | undefined = this.rulesSelected.find((rule: RuleSelected): boolean => {
+				return param.rule.package === rule.package
+					&& param.rule.name === rule.name;
+			});
+
+			if (target) {
+				// modify
+				target.errorLevel = param.errorLevel;
+				target.option = param.option;
+			}
+			else {
+				// add
+				this.rulesSelected.push({
+					package: param.rule.package,
+					name: param.rule.name,
+					errorLevel: param.errorLevel,
+
+					option: param.option
+				});
+			}
+		}
+
+		// sort in create
+
+		this.emitResultSet();
 	}
 
 	private getRules (): Rule[] {
