@@ -29,7 +29,6 @@ export class RadioGroupComponent<T> implements ControlValueAccessor {
 	@Input() radioTopMargin: string | undefined; // default center
 
 	@ContentChild('customTemplate') headerTemplateRef: TemplateRef<unknown> | undefined;
-	@Input() customEnums: unknown[] | undefined;
 
 
 	registerOnChange (fn: OnChangeFnc): void {
