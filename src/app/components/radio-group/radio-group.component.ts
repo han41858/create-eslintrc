@@ -1,7 +1,7 @@
 import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { TextValue } from '../../common/interfaces';
+import { TextValue, TypedObject } from '../../common/interfaces';
 
 type OnChangeFnc = <T>(value: T) => void;
 
@@ -24,9 +24,13 @@ export class RadioGroupComponent<T> implements ControlValueAccessor {
 	private onTouchedFnc: OnChangeFnc | undefined;
 
 	@Input() enums: TextValue<T>[] | undefined;
+
 	@Input() vertical: boolean = false;
+	@Input() radioTopMargin: string | undefined; // default center
 
 	@ContentChild('customTemplate') headerTemplateRef: TemplateRef<unknown> | undefined;
+	@Input() customEnums: unknown[] | undefined;
+
 
 	registerOnChange (fn: OnChangeFnc): void {
 		this.onChangeFnc = fn;
@@ -43,4 +47,18 @@ export class RadioGroupComponent<T> implements ControlValueAccessor {
 			this.onChangeFnc(newValue);
 		}
 	}
+
+	getRadioButtonStyle (): TypedObject<string> {
+		const styleObj: TypedObject<string> = {};
+
+		if (this.radioTopMargin) {
+			styleObj['margin-top'] = this.radioTopMargin;
+		}
+		else {
+			styleObj['align-items'] = 'center';
+		}
+
+		return styleObj;
+	}
+
 }

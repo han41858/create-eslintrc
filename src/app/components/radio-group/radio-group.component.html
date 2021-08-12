@@ -1,16 +1,36 @@
 <div class="wrapper" [style.flex-direction]="vertical ? 'column' : 'row'">
-	<div *ngFor="let one of enums;let i=index"
-	     class="inputContainer" [class.active]="one.value === currentValue">
-		<div class="radio" (click)="writeValue(one.value)">
-			<div class="indicator"></div>
+	<ng-container *ngIf="enums;else customEnumsTemplate">
+		<div *ngFor="let one of enums;let i=index"
+		     class="inputContainer"
+		     [class.active]="one.value === currentValue">
+			<div class="radio" (click)="writeValue(one.value)"
+			     [style]="getRadioButtonStyle()">
+				<div class="indicator"></div>
+			</div>
+
+			<ng-container *ngIf="headerTemplateRef;else simpleTemplate"
+			              [ngTemplateOutlet]="headerTemplateRef"
+			              [ngTemplateOutletContext]="{ $implicit: one, context: this, index: i }"></ng-container>
+
+			<ng-template #simpleTemplate>
+				<span class="label" (click)="writeValue(one.value)">{{ one.text }}</span>
+			</ng-template>
 		</div>
+	</ng-container>
 
-		<ng-container *ngIf="headerTemplateRef;else simpleTemplate"
-		              [ngTemplateOutlet]="headerTemplateRef"
-		              [ngTemplateOutletContext]="{ $implicit: one, context: this }"></ng-container>
+	<!-- entire external template, not TextValue object -->
+	<ng-template #customEnumsTemplate>
+		<div *ngFor="let one of customEnums;let i=index"
+		     class="inputContainer"
+		     [class.active]="$any(one).value === currentValue">
+			<div class="radio" (click)="writeValue($any(one).value)"
+			     [style]="getRadioButtonStyle()">
+				<div class="indicator"></div>
+			</div>
 
-		<ng-template #simpleTemplate>
-			<span class="label" (click)="writeValue(one.value)">{{ one.text }}</span>
-		</ng-template>
-	</div>
+			<ng-container *ngIf="headerTemplateRef"
+			              [ngTemplateOutlet]="headerTemplateRef"
+			              [ngTemplateOutletContext]="{ $implicit: one, context: this, index: i }"></ng-container>
+		</div>
+	</ng-template>
 </div>
