@@ -346,4 +346,10 @@ export class RuleService {
 		});
 	}
 
+	getRuleSelected (name: string): RuleSelected | undefined {
+		return this.rulesSelected.find((rule: RuleSelected): boolean => {
+			return rule.name === name;
+		});
+	}
+
 }

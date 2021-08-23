@@ -85,15 +85,29 @@ export class OptionSelectorComponent implements ControlValueAccessor {
 	}
 
 	writeValue (option: Option | undefined): void {
-		this.currentValue = option;
+		if (this.currentValue?.value !== option?.value) {
+			this.currentValue = option;
 
-		if (!option) {
-			// clear
-			this.selectedIndex = undefined;
-		}
+			if (this.rule && this.rule.options && option) {
+				const target: Option | undefined = this.rule.options.find((refOption): boolean => {
+					return refOption.value === option.value;
+				});
 
-		if (typeof this.onChangeFnc === 'function') {
-			this.onChangeFnc(option);
+				if (target) {
+					this.selectedIndex = this.rule.options.indexOf(target);
+				}
+				else {
+					this.selectedIndex = undefined;
+				}
+			}
+			else {
+				this.selectedIndex = undefined;
+			}
+
+
+			if (typeof this.onChangeFnc === 'function') {
+				this.onChangeFnc(option);
+			}
 		}
 	}
 

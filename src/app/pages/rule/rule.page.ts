@@ -3,14 +3,15 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
+import { delay, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
 
 import { LanguageService, RuleService } from '../../services';
 
 import { ObjectOption, Option, Rule, RuleSelected } from '../../common/interfaces';
 import { ErrorLevel, LanguageCode, Message } from '../../common/constants';
 
-import { ErrorLevelSelectorComponent } from 'src/app/components/error-level-selector/error-level-selector.component';
+import { ErrorLevelSelectorComponent } from '../../components/error-level-selector/error-level-selector.component';
+import { OptionSelectorComponent } from '../../components/option-selector/option-selector.component';
 
 
 enum FormFieldName {
@@ -42,6 +43,7 @@ export class RulePage implements OnInit {
 
 	formGroup: FormGroup | undefined;
 	@ViewChild(ErrorLevelSelectorComponent) errorLevelSelector: ErrorLevelSelectorComponent | undefined;
+	@ViewChild(OptionSelectorComponent) optionSelector: OptionSelectorComponent | undefined;
 
 	constructor (
 		public languageSvc: LanguageService,
@@ -65,15 +67,21 @@ export class RulePage implements OnInit {
 
 		this.route.paramMap
 			.pipe(
-				tap((paramMap: ParamMap): void => {
-					const ruleName: string | null = paramMap.get('rule');
+				map((paramMap: ParamMap): string | undefined => {
+					const ruleName: string | undefined = paramMap.get('rule') || undefined;
 
 					if (ruleName) {
 						this.rule = this.ruleSvc.getRule(ruleName);
 
 						this.refreshDescription();
+					}
 
-						this.resetForm();
+					return ruleName;
+				}),
+				delay(0), // next cycle
+				tap((ruleName: string | undefined) => {
+					if (ruleName) {
+						this.resetForm(ruleName);
 					}
 				})
 			)
@@ -189,22 +197,25 @@ export class RulePage implements OnInit {
 		}
 	}
 
-	private resetForm (): void {
-		const defaultErrorLevel: ErrorLevel = ErrorLevel.skip;
+	private resetForm (ruleName: string): void {
+		const ruleSelected: RuleSelected | undefined = this.ruleSvc.getRuleSelected(ruleName);
 
 		if (this.formGroup) {
-			this.formGroup.reset({
-				[FormFieldName.ErrorLevel]: defaultErrorLevel,
-				[FormFieldName.Option]: null,
-				[FormFieldName.AdditionalOptions]: null
-			}, {
-				onlySelf: true
+			const defaultErrorLevel: ErrorLevel = ErrorLevel.skip;
+
+			const newValue = {
+				[FormFieldName.ErrorLevel]: ruleSelected?.errorLevel || defaultErrorLevel,
+				[FormFieldName.Option]: ruleSelected?.option || null,
+				[FormFieldName.AdditionalOptions]: ruleSelected?.additionalOptions || null
+			};
+
+			this.formGroup.reset(newValue, {
+				emitEvent: false
 			});
 
 
-			if (this.errorLevelSelector) {
-				this.errorLevelSelector.writeValue(defaultErrorLevel);
-			}
+			this.errorLevelSelector?.writeValue(newValue[FormFieldName.ErrorLevel]);
+			this.optionSelector?.writeValue(newValue[FormFieldName.Option] || undefined);
 		}
 	}
 
