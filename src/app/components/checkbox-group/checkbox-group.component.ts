@@ -94,11 +94,21 @@ export class CheckboxGroupComponent<T> implements OnInit, ControlValueAccessor, 
 		// check by array
 		if (
 			this.currentValue.length !== newValue.length
-			|| this.currentValue.some((cur: T, i: number) => {
+			|| this.currentValue.some((cur: T, i: number): boolean => {
 				return cur !== newValue[i];
 			})
 		) {
 			this.currentValue = newValue;
+
+			this.enums?.forEach((enumObj: TextValue<T>, i: number): void => {
+				const ctrl: AbstractControl | undefined = this.formGroup?.get('' + i) || undefined;
+
+				ctrl?.setValue(newValue.includes(enumObj.value), {
+					onlySelf: true,
+					emitEvent: false
+				});
+			});
+
 
 			if (typeof this.onChangeFnc === 'function') {
 				this.onChangeFnc(newValue);
