@@ -11,9 +11,18 @@ import {
 	RuleSelected,
 	TypedObject
 } from '../common/interfaces';
-import { Environment, ErrorLevel, Package, RuleFileType, RuleOrder, SyntaxType } from '../common//constants';
+import {
+	Environment,
+	ErrorLevel,
+	Package,
+	RuleFileType,
+	RuleOrder,
+	StorageKey,
+	SyntaxType
+} from '../common//constants';
 
 import { rules } from '../rules/eslint';
+import { getStorage, setStorage } from '../common/util';
 
 
 interface CreateRuleParam {
@@ -27,11 +36,7 @@ interface CreateRuleParam {
 })
 export class RuleService {
 
-	private config: Config = {
-		fileType: RuleFileType.JSON,
-		syntax: SyntaxType.JSON,
-		indent: '\t'
-	};
+	config: Config;
 
 	private targetPackages: PackageSelected[] = [{
 		packageName: Package.ESLint,
@@ -42,15 +47,46 @@ export class RuleService {
 
 
 	private allRules: Rule[] = rules;
+	private rulesForStream: Rule[];
 	rulesSelected: RuleSelected[] = [];
 
 	// create with default option
-	private resultSet: ResultSet = this.createResultSet();
+	private resultSet: ResultSet;
 
 
-	rules$: BehaviorSubject<Rule[]> = new BehaviorSubject<Rule[]>(this.getRules());
-	result$: BehaviorSubject<ResultSet> = new BehaviorSubject<ResultSet>(this.resultSet);
+	rules$: BehaviorSubject<Rule[]>;
+	result$: BehaviorSubject<ResultSet>;
 
+
+	constructor () {
+		const configInStorage: Config | undefined = getStorage(StorageKey.Config);
+
+		this.config = {
+			fileType: configInStorage?.fileType || RuleFileType.JSON,
+			syntax: configInStorage?.syntax || SyntaxType.JSON,
+
+			indent: configInStorage?.indent || '\t',
+
+			env: configInStorage?.env || [],
+			packages: configInStorage?.packages || [{ packageName: 'eslint', skipRecommended: true }],
+
+			ruleOrder: configInStorage?.ruleOrder || RuleOrder.DocumentOrder
+		};
+
+		setStorage(StorageKey.Config, this.config);
+
+
+		const ruleNames: string[] | undefined = getStorage(StorageKey.RuleNames);
+		this.rulesForStream = this.getRules(ruleNames);
+
+		this.rulesSelected = getStorage(StorageKey.RulesSelected) || [];
+
+
+		this.rules$ = new BehaviorSubject<Rule[]>(this.rulesForStream);
+
+		this.resultSet = this.createResultSet();
+		this.result$ = new BehaviorSubject<ResultSet>(this.resultSet);
+	}
 
 	private static sanitizeType (config: Config): {
 		fileType: RuleFileType;
@@ -227,26 +263,28 @@ export class RuleService {
 	}
 
 	setConfig (param: {
-		key: 'fileType' | 'env',
+		key: keyof Config,
 		value: Config[keyof Config]
 	}): void {
 		this.config = Object.assign(this.config, {
 			[param.key]: param.value
 		});
 
+		switch (param.key) {
+			case 'fileType': {
+				const { syntaxType } = RuleService.sanitizeType(this.config);
+
+				this.config.syntax = syntaxType;
+				break;
+			}
+
+			case 'ruleOrder':
+				break;
+		}
+
+		setStorage(StorageKey.Config, this.config);
+
 		this.emitResultSet();
-	}
-
-	setPackages (packages: PackageSelected[]): void {
-		this.targetPackages = packages;
-
-		this.rules$.next(this.getRules());
-	}
-
-	setRuleOrder (ruleOrder: RuleOrder): void {
-		this.ruleOrder = ruleOrder;
-
-		this.rules$.next(this.getRules());
 	}
 
 	addRule (param: RuleSelected): void {
@@ -283,9 +321,11 @@ export class RuleService {
 		// sort in create
 
 		this.emitResultSet();
+
+		console.warn('save rules selected');
 	}
 
-	private getRules (): Rule[] {
+	private getRules (ruleNames?: string[]): Rule[] {
 		return this.allRules
 			.filter((rule: Rule): boolean => {
 				return this.targetPackages.some((targetPackage: PackageSelected): boolean => {

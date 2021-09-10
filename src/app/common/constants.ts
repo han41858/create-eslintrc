@@ -114,3 +114,11 @@ export enum Message {
 
 	Result
 }
+
+export const StorageRootKey: string = 'create-eslintrc';
+
+export enum StorageKey {
+	Config = 'config',
+	RuleNames = 'ruleNames',
+	RulesSelected = 'rulesSelected'
+}

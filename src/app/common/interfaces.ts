@@ -6,7 +6,9 @@ import {
 	Package,
 	RuleCategory,
 	RuleFileType,
+	RuleOrder,
 	RuleType,
+	StorageKey,
 	SyntaxType
 } from './constants';
 
@@ -20,6 +22,12 @@ export interface TextValue<T> {
 	value: T;
 }
 
+export interface StorageRootObj {
+	[StorageKey.Config]?: Config;
+	[StorageKey.RuleNames]?: string[];
+	[StorageKey.RulesSelected]?: RuleSelected[];
+}
+
 export interface Config {
 	fileType: RuleFileType;
 	syntax: SyntaxType;
@@ -27,6 +35,10 @@ export interface Config {
 	indent: '\t' | ' ' | number;
 
 	env?: Environment[];
+
+	packages?: PackageSelected[];
+	ruleOrder?: RuleOrder;
+
 	extends?: string[];
 }
 
@@ -115,4 +127,10 @@ export interface ResultSet {
 export interface PackageSelected {
 	packageName: string;
 	skipRecommended: boolean;
+}
+
+export interface AppState {
+	config: Config;
+	rulesSelected: RuleSelected[];
+	ruleNames: string[];
 }

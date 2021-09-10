@@ -46,24 +46,36 @@ export class ConfigPage implements OnInit {
 	}
 
 	ngOnInit (): void {
+		const config: Config = this.ruleSvc.config;
+
 		this.formGroup = this.fb.group({
-			[FormFieldName.FileType]: this.fb.control(RuleFileType.JSON),
-			[FormFieldName.Environment]: this.fb.control([]),
+			[FormFieldName.FileType]: this.fb.control(config.fileType),
+			[FormFieldName.Environment]: this.fb.control(config.env),
 			[FormFieldName.Packages]: this.fb.group(
 				this.packages.reduce((acc: TypedObject<FormArray>, one: TextValue<Package>): TypedObject<FormArray> => {
+					const target: PackageSelected | undefined = config.packages?.find((_package: PackageSelected): boolean => {
+						return _package.packageName === one.value;
+					});
+
+					const selected: boolean = !!target;
+					const skipRecommended: boolean = !!target?.skipRecommended;
+
 					acc[one.text] = this.fb.array(
-						one.value === Package.ESLint
-							? [true, true]
-							: [false, {
-								value: false,
-								disabled: true
-							}]
+						[
+							selected,
+							selected
+								? skipRecommended
+								: {
+									value: false,
+									disabled: true
+								}
+						]
 					);
 
 					return acc;
 				}, {})
 			),
-			[FormFieldName.RuleOrder]: this.fb.control(RuleOrder.DocumentOrder)
+			[FormFieldName.RuleOrder]: this.fb.control(config.ruleOrder)
 		});
 
 		this.languageSvc.languageCode$
@@ -201,11 +213,17 @@ export class ConfigPage implements OnInit {
 				break;
 
 			case FormFieldName.Packages:
-				this.ruleSvc.setPackages(newValue as PackageSelected[]);
+				this.ruleSvc.setConfig({
+					key: 'packages',
+					value: newValue as Config[keyof Config]
+				});
 				break;
 
 			case FormFieldName.RuleOrder:
-				this.ruleSvc.setRuleOrder(newValue as RuleOrder);
+				this.ruleSvc.setConfig({
+					key: 'ruleOrder',
+					value: newValue as RuleOrder
+				});
 				break;
 		}
 	}
