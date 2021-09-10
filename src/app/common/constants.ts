@@ -90,7 +90,6 @@ export enum Message {
 
 	ConfigFileType,
 	Environment,
-	DefaultErrorLevel,
 
 	TargetPackages,
 	Category,

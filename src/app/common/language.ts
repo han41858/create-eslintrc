@@ -13,7 +13,6 @@ export const LanguageSet: {
 
 		ConfigFileType: 'Config File Type',
 		Environment: 'Environment',
-		DefaultErrorLevel: 'Default Error Level',
 
 		TargetPackages: 'Target Packages',
 		Category: 'Category',
@@ -47,7 +46,6 @@ export const LanguageSet: {
 
 		ConfigFileType: '설정파일 종류',
 		Environment: '적용환경',
-		DefaultErrorLevel: '기본 에러 레벨',
 
 		TargetPackages: '대상 패키지',
 		Category: '분류',

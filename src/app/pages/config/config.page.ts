@@ -3,7 +3,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/for
 
 import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 
-import { Environment, ErrorLevel, Message, Package, RuleFileType, RuleOrder } from '../../common/constants';
+import { Environment, Message, Package, RuleFileType, RuleOrder } from '../../common/constants';
 import { Config, PackageSelected, TextValue, TypedObject } from '../../common/interfaces';
 import { entriesToTextValue } from '../../common/util';
 import { LanguageService, RuleService } from '../../services';
@@ -12,7 +12,6 @@ import { LanguageService, RuleService } from '../../services';
 enum FormFieldName {
 	FileType = 'fileType',
 	Environment = 'env',
-	ErrorLevel = 'errorLevel',
 	Packages = 'packages',
 	RuleOrder = 'ruleOrder',
 }
@@ -32,7 +31,6 @@ export class ConfigPage implements OnInit {
 
 	fileTypes: TextValue<RuleFileType>[];
 	envArr: TextValue<Environment>[];
-	errorLevels: TextValue<ErrorLevel>[];
 	packages: TextValue<Package>[];
 	ruleOrders: TextValue<RuleOrder>[] | undefined;
 
@@ -44,7 +42,6 @@ export class ConfigPage implements OnInit {
 	) {
 		this.fileTypes = entriesToTextValue(Object.entries(RuleFileType));
 		this.envArr = entriesToTextValue(Object.entries(Environment));
-		this.errorLevels = entriesToTextValue(Object.entries(ErrorLevel));
 		this.packages = entriesToTextValue(Object.entries(Package));
 	}
 
@@ -52,7 +49,6 @@ export class ConfigPage implements OnInit {
 		this.formGroup = this.fb.group({
 			[FormFieldName.FileType]: this.fb.control(RuleFileType.JSON),
 			[FormFieldName.Environment]: this.fb.control([]),
-			[FormFieldName.ErrorLevel]: this.fb.control(ErrorLevel.skip),
 			[FormFieldName.Packages]: this.fb.group(
 				this.packages.reduce((acc: TypedObject<FormArray>, one: TextValue<Package>): TypedObject<FormArray> => {
 					acc[one.text] = this.fb.array(
