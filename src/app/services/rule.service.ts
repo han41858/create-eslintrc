@@ -11,15 +11,7 @@ import {
 	RuleSelected,
 	TypedObject
 } from '../common/interfaces';
-import {
-	Environment,
-	ErrorLevel,
-	Package,
-	RuleFileType,
-	RuleOrder,
-	StorageKey,
-	SyntaxType
-} from '../common//constants';
+import { Environment, ErrorLevel, RuleFileType, RuleOrder, StorageKey, SyntaxType } from '../common//constants';
 
 import { rules } from '../rules/eslint';
 import { getStorage, setStorage } from '../common/util';
@@ -38,23 +30,15 @@ export class RuleService {
 
 	config: Config;
 
-	private targetPackages: PackageSelected[] = [{
-		packageName: Package.ESLint,
-		skipRecommended: true
-	}];
-
-	private ruleOrder: RuleOrder = RuleOrder.DocumentOrder;
-
-
 	private allRules: Rule[] = rules;
-	private rulesForStream: Rule[];
+	private rulesForStream!: Rule[];
 	rulesSelected: RuleSelected[] = [];
 
 	// create with default option
 	private resultSet: ResultSet;
 
 
-	rules$: BehaviorSubject<Rule[]>;
+	rules$!: BehaviorSubject<Rule[]>;
 	result$: BehaviorSubject<ResultSet>;
 
 
@@ -75,14 +59,10 @@ export class RuleService {
 
 		setStorage(StorageKey.Config, this.config);
 
-
 		const ruleNames: string[] | undefined = getStorage(StorageKey.RuleNames);
-		this.rulesForStream = this.getRules(ruleNames);
+		this.refreshRuleList(ruleNames);
 
 		this.rulesSelected = getStorage(StorageKey.RulesSelected) || [];
-
-
-		this.rules$ = new BehaviorSubject<Rule[]>(this.rulesForStream);
 
 		this.resultSet = this.createResultSet();
 		this.result$ = new BehaviorSubject<ResultSet>(this.resultSet);
@@ -278,7 +258,9 @@ export class RuleService {
 				break;
 			}
 
+			case 'packages':
 			case 'ruleOrder':
+				this.refreshRuleList();
 				break;
 		}
 
@@ -287,7 +269,20 @@ export class RuleService {
 		this.emitResultSet();
 	}
 
-	addRule (param: RuleSelected): void {
+	refreshRuleList (ruleNames?: string[]): void {
+		this.rulesForStream = this.getRules(ruleNames);
+
+		setStorage(StorageKey.RuleNames, this.rulesForStream.map((rule: Rule): string => rule.name));
+
+		if (!this.rules$) {
+			this.rules$ = new BehaviorSubject<Rule[]>(this.rulesForStream);
+		}
+		else {
+			this.rules$.next(this.rulesForStream);
+		}
+	}
+
+	selectRule (param: RuleSelected): void {
 		if (param.errorLevel === ErrorLevel.skip) {
 			// remove
 			this.rulesSelected = this.rulesSelected.filter((rule: RuleSelected): boolean => {
@@ -326,58 +321,73 @@ export class RuleService {
 	}
 
 	private getRules (ruleNames?: string[]): Rule[] {
-		return this.allRules
-			.filter((rule: Rule): boolean => {
-				return this.targetPackages.some((targetPackage: PackageSelected): boolean => {
-					return targetPackage.packageName === rule.package
-					&& targetPackage.skipRecommended
-						? !rule.recommended
-						: true;
+		let rules: Rule[];
+
+		if (ruleNames) {
+			rules = ruleNames
+				.map((ruleName: string): Rule | undefined => {
+					return this.allRules.find((refRule: Rule): boolean => refRule.name === ruleName);
+				})
+				.filter((rule: Rule | undefined): rule is Rule => {
+					return !!rule;
 				});
-			})
-			.sort((a: Rule, b: Rule): number => {
-				let result: number = 0;
+		}
+		else {
+			rules = this.allRules
+				.filter((rule: Rule): boolean => {
+					return this.config.packages.some((targetPackage: PackageSelected): boolean => {
+						return targetPackage.packageName === rule.package
+						&& targetPackage.skipRecommended
+							? !rule.recommended
+							: true;
+					});
+				})
+				.sort((a: Rule, b: Rule): number => {
+					let result: number = 0;
 
-				switch (this.ruleOrder) {
-					case RuleOrder.DocumentOrder:
-						result = 0; // not sort
-						break;
+					switch (this.config.ruleOrder) {
+						case RuleOrder.DocumentOrder:
+							result = 0; // not sort
+							break;
 
-					case RuleOrder.Alphabetical:
-						result = a.name < b.name
-							? -1
-							: 1;
-						break;
+						case RuleOrder.Alphabetical:
+							result = a.name < b.name
+								? -1
+								: 1;
+							break;
 
-					case RuleOrder.FromOlderVersion: {
-						const [majorA, minorA, patchA] = a.version.split('.').map((value: string): number => parseInt(value));
-						const valueA: number = majorA * 10000 + minorA * 100 + patchA;
+						case RuleOrder.FromOlderVersion: {
+							const [majorA, minorA, patchA] = a.version.split('.').map((value: string): number => parseInt(value));
+							const valueA: number = majorA * 10000 + minorA * 100 + patchA;
 
-						const [majorB, minorB, patchB] = b.version.split('.').map((value: string): number => parseInt(value));
-						const valueB: number = majorB * 10000 + minorB * 100 + patchB;
+							const [majorB, minorB, patchB] = b.version.split('.').map((value: string): number => parseInt(value));
+							const valueB: number = majorB * 10000 + minorB * 100 + patchB;
 
-						result = valueA - valueB;
-						break;
+							result = valueA - valueB;
+							break;
+						}
+
+						case RuleOrder.FromNewerVersion: {
+							const [majorA, minorA, patchA] = a.version.split('.').map((value: string): number => parseInt(value));
+							const valueA: number = majorA * 10000 + minorA * 100 + patchA;
+
+							const [majorB, minorB, patchB] = b.version.split('.').map((value: string): number => parseInt(value));
+							const valueB: number = majorB * 10000 + minorB * 100 + patchB;
+
+							result = valueB - valueA;
+							break;
+						}
+
+						case RuleOrder.Random:
+							result = Math.random() - .5;
+							break;
 					}
 
-					case RuleOrder.FromNewerVersion: {
-						const [majorA, minorA, patchA] = a.version.split('.').map((value: string): number => parseInt(value));
-						const valueA: number = majorA * 10000 + minorA * 100 + patchA;
+					return result;
+				});
+		}
 
-						const [majorB, minorB, patchB] = b.version.split('.').map((value: string): number => parseInt(value));
-						const valueB: number = majorB * 10000 + minorB * 100 + patchB;
-
-						result = valueB - valueA;
-						break;
-					}
-
-					case RuleOrder.Random:
-						result = Math.random() - .5;
-						break;
-				}
-
-				return result;
-			});
+		return rules;
 	}
 
 	getRule (name: string): Rule | undefined {
