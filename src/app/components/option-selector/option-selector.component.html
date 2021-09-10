@@ -16,7 +16,8 @@
 				</ng-container>
 
 				<ng-container *ngSwitchCase="OptionType.StringFixed">
-					<code class="label lang-js"
+					<code #code
+					      class="label lang-js"
 					      (click)="writeValueInternal(i, option, option.value)">"{{ option.value }}"</code>
 				</ng-container>
 

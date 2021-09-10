@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { Option, Rule } from '../../common/interfaces';
 import { OptionType } from '../../common/constants';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { refreshPrism } from '../../common/util';
 
 
 type OnChangeFnc = (option: Option | undefined) => void;
@@ -18,7 +19,7 @@ type OnChangeFnc = (option: Option | undefined) => void;
 		multi: true
 	}]
 })
-export class OptionSelectorComponent implements ControlValueAccessor {
+export class OptionSelectorComponent implements ControlValueAccessor, OnChanges {
 
 	OptionType = OptionType;
 
@@ -31,6 +32,19 @@ export class OptionSelectorComponent implements ControlValueAccessor {
 	currentValue: Option | undefined;
 	disabled: boolean = false;
 
+	@ViewChildren('code') codeElements: QueryList<ElementRef> | undefined;
+
+
+	ngOnChanges (changes: SimpleChanges): void {
+		if (this.rule) {
+			// wait 1 cycle to binding
+			setTimeout(() => {
+				this.codeElements?.forEach((one: ElementRef): void => {
+					refreshPrism(one);
+				});
+			});
+		}
+	}
 
 	registerOnChange (fn: OnChangeFnc): void {
 		this.onChangeFnc = fn;
