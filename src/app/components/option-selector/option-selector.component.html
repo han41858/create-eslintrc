@@ -1,5 +1,5 @@
 <ng-container *ngIf="rule">
-	<ng-container *ngIf="rule.options && rule.options.length > 0;else simpleOnOff">
+	<ng-container *ngIf="rule.options && rule.options.length > 0">
 		<div class="option" *ngFor="let option of rule.options;let i=index"
 		     [class.disabled]="disabled">
 			<div class="radioBtn" [class.selected]="selectedIndex === i"
@@ -28,21 +28,6 @@
 			</div>
 		</div>
 	</ng-container>
-
-	<ng-template #simpleOnOff>
-		<div class="option">
-			<div class="boolean">
-				<input type="radio" [id]="rule.name + '_on'" [name]="rule.name">
-				<label [for]="rule.name + '_on'">on</label>
-			</div>
-		</div>
-		<div class="option">
-			<div class="boolean">
-				<input type="radio" [id]="rule.name + '_off'" [name]="rule.name">
-				<label [for]="rule.name + '_off'">off</label>
-			</div>
-		</div>
-	</ng-template>
 
 	<app-example-viewer *ngFor="let example of rule.examples"
 	                    [example]="example"></app-example-viewer>
