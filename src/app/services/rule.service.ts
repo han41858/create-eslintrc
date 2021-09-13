@@ -161,28 +161,23 @@ export class RuleService {
 				throw new Error('skip rule');
 			}
 
-			if (rule.errorLevel === ErrorLevel.off) {
-				acc[rule.name] = ErrorLevel.off;
+			if (!rule.option) {
+				acc[rule.name] = rule.errorLevel;
+			}
+			else if (!rule.additionalOptions) {
+				acc[rule.name] = [rule.errorLevel, rule.option.value];
 			}
 			else {
-				if (!rule.option) {
-					acc[rule.name] = [rule.errorLevel];
-				}
-				else if (!rule.additionalOptions) {
-					acc[rule.name] = [rule.errorLevel, rule.option.value];
-				}
-				else {
-					acc[rule.name] = [
-						rule.errorLevel,
-						rule.option.value,
-						rule.additionalOptions
-							.reduce((additionalAcc: TypedObject<unknown>, option: ObjectOption): TypedObject<unknown> => {
-								additionalAcc[option.property] = option.value;
+				acc[rule.name] = [
+					rule.errorLevel,
+					rule.option.value,
+					rule.additionalOptions
+						.reduce((additionalAcc: TypedObject<unknown>, option: ObjectOption): TypedObject<unknown> => {
+							additionalAcc[option.property] = option.value;
 
-								return additionalAcc;
-							}, {})
-					];
-				}
+							return additionalAcc;
+						}, {})
+				];
 			}
 
 			return acc;
