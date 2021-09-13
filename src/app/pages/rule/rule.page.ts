@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { delay, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
 
 import { LanguageService, RuleService } from '../../services';
 
@@ -37,6 +37,7 @@ export class RulePage implements OnInit {
 	FormFieldName = FormFieldName;
 
 	languageCode!: LanguageCode; // checked in LanguageGuard
+
 	rule: Rule | undefined;
 
 	descriptionSanitized: SafeHtml | undefined;
@@ -55,6 +56,15 @@ export class RulePage implements OnInit {
 	}
 
 	ngOnInit (): void {
+		this.formGroup = this.fb.group({
+			[FormFieldName.ErrorLevel]: this.fb.control(null),
+			[FormFieldName.Option]: this.fb.control({
+				value: null,
+				disabled: true
+			}),
+			[FormFieldName.AdditionalOptions]: null
+		});
+
 		this.route.parent?.paramMap
 			.pipe(
 				tap((paramMap: ParamMap): void => {
@@ -74,32 +84,20 @@ export class RulePage implements OnInit {
 						this.rule = this.ruleSvc.getRule(ruleName);
 
 						this.refreshDescription();
+						this.resetForm(ruleName);
+
+						this.refreshFormDisableState();
 					}
 
 					return ruleName;
-				}),
-				delay(0), // next cycle
-				tap((ruleName: string | undefined) => {
-					if (ruleName) {
-						this.resetForm(ruleName);
-					}
 				})
 			)
 			.subscribe();
 
-		this.formGroup = this.fb.group({
-			[FormFieldName.ErrorLevel]: this.fb.control(ErrorLevel.skip),
-			[FormFieldName.Option]: this.fb.control({
-				value: null,
-				disabled: true
-			}),
-			[FormFieldName.AdditionalOptions]: null
-		});
-
 		this.formGroup.valueChanges
 			.pipe(
 				map((newValue: FormValue): RuleSelected | undefined => {
-					let ruleSelected: Partial<RuleSelected> | undefined;
+					let ruleSelected: RuleSelected | undefined;
 
 					if (this.rule) {
 						const errorLevel: ErrorLevel = newValue[FormFieldName.ErrorLevel];
@@ -108,42 +106,13 @@ export class RulePage implements OnInit {
 							package: this.rule.package,
 							name: this.rule.name,
 
-							errorLevel: errorLevel
+							errorLevel: errorLevel,
+
+							option: newValue[FormFieldName.Option] || undefined,
+							additionalOptions: newValue[FormFieldName.AdditionalOptions] || undefined
 						};
 
-
-						const optionCtrl: AbstractControl | undefined = this.getFormCtrl(FormFieldName.Option);
-						const additionalOptionsCtrl: AbstractControl | undefined = this.getFormCtrl(FormFieldName.AdditionalOptions);
-
-						if (errorLevel === ErrorLevel.skip
-							|| errorLevel === ErrorLevel.off) {
-							if (optionCtrl && optionCtrl.enabled) {
-								optionCtrl.disable();
-							}
-
-							if (additionalOptionsCtrl && additionalOptionsCtrl.enabled) {
-								additionalOptionsCtrl.disable();
-							}
-						}
-						else {
-							if (optionCtrl) {
-								if (optionCtrl.disabled) {
-									optionCtrl.enable();
-								}
-								else {
-									ruleSelected.option = newValue[FormFieldName.Option] || undefined;
-								}
-							}
-
-							if (additionalOptionsCtrl) {
-								if (additionalOptionsCtrl.disabled) {
-									additionalOptionsCtrl.enable();
-								}
-								else {
-									ruleSelected.additionalOptions = newValue[FormFieldName.AdditionalOptions] || undefined;
-								}
-							}
-						}
+						this.refreshFormDisableState();
 					}
 
 					return ruleSelected as RuleSelected | undefined;
@@ -160,7 +129,7 @@ export class RulePage implements OnInit {
 						&& JSON.stringify(a.additionalOptions) === JSON.stringify(b.additionalOptions);
 				}),
 				map((newRule: RuleSelected): void => {
-					this.ruleSvc.addRule(newRule);
+					this.ruleSvc.selectRule(newRule);
 
 					// returns nothing
 				})
@@ -216,6 +185,40 @@ export class RulePage implements OnInit {
 
 			this.errorLevelSelector?.writeValue(newValue[FormFieldName.ErrorLevel]);
 			this.optionSelector?.writeValue(newValue[FormFieldName.Option] || undefined);
+		}
+	}
+
+	private refreshFormDisableState (): void {
+		const errorLevelCtrl: AbstractControl | undefined = this.getFormCtrl(FormFieldName.ErrorLevel);
+		const optionCtrl: AbstractControl | undefined = this.getFormCtrl(FormFieldName.Option);
+		const additionalOptionsCtrl: AbstractControl | undefined = this.getFormCtrl(FormFieldName.AdditionalOptions);
+
+		if (errorLevelCtrl) {
+			const errorLevel: ErrorLevel = errorLevelCtrl.value;
+
+			if (errorLevel === ErrorLevel.skip
+				|| errorLevel === ErrorLevel.off) {
+				if (optionCtrl && optionCtrl.enabled) {
+					optionCtrl.disable();
+				}
+
+				if (additionalOptionsCtrl && additionalOptionsCtrl.enabled) {
+					additionalOptionsCtrl.disable();
+				}
+			}
+			else {
+				if (optionCtrl) {
+					if (optionCtrl.disabled) {
+						optionCtrl.enable();
+					}
+				}
+
+				if (additionalOptionsCtrl) {
+					if (additionalOptionsCtrl.disabled) {
+						additionalOptionsCtrl.enable();
+					}
+				}
+			}
 		}
 	}
 

@@ -315,9 +315,9 @@ export class RuleService {
 
 		// sort in create
 
-		this.emitResultSet();
+		setStorage(StorageKey.RulesSelected, this.rulesSelected);
 
-		console.warn('save rules selected');
+		this.emitResultSet();
 	}
 
 	private getRules (ruleNames?: string[]): Rule[] {

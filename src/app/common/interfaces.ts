@@ -34,10 +34,10 @@ export interface Config {
 
 	indent: '\t' | ' ' | number;
 
-	env?: Environment[];
+	env: Environment[];
 
-	packages?: PackageSelected[];
-	ruleOrder?: RuleOrder;
+	packages: PackageSelected[];
+	ruleOrder: RuleOrder;
 
 	extends?: string[];
 }
