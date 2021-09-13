@@ -36,7 +36,7 @@ export class RulePage implements OnInit {
 	Message = Message;
 	FormFieldName = FormFieldName;
 
-	languageCode!: LanguageCode; // checked in LanguageGuard
+	languageCode: LanguageCode | undefined;
 
 	rule: Rule | undefined;
 
@@ -65,16 +65,6 @@ export class RulePage implements OnInit {
 			[FormFieldName.AdditionalOptions]: null
 		});
 
-		this.route.parent?.paramMap
-			.pipe(
-				tap((paramMap: ParamMap): void => {
-					this.languageCode = paramMap.get('lang') as LanguageCode;
-
-					this.refreshDescription();
-				})
-			)
-			.subscribe();
-
 		this.route.paramMap
 			.pipe(
 				map((paramMap: ParamMap): string | undefined => {
@@ -90,6 +80,16 @@ export class RulePage implements OnInit {
 					}
 
 					return ruleName;
+				})
+			)
+			.subscribe();
+
+		this.languageSvc.languageCode$
+			.pipe(
+				tap((languageCode: LanguageCode): void => {
+					this.languageCode = languageCode;
+
+					this.refreshDescription();
 				})
 			)
 			.subscribe();

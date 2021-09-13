@@ -3,7 +3,7 @@ import { ElementRef } from '@angular/core';
 import * as Prism from 'prismjs';
 
 import { Config, RuleSelected, StorageRootObj, TextValue } from './interfaces';
-import { StorageKey, StorageRootKey } from './constants';
+import { LanguageCode, StorageKey, StorageRootKey } from './constants';
 
 
 export const entriesToTextValue = <T> (entries: [string, T][]): TextValue<T>[] => {
@@ -39,6 +39,7 @@ const _setStorageRootObj = (rootObj: StorageRootObj): void => {
 	localStorage.setItem(StorageRootKey, JSON.stringify(rootObj));
 };
 
+export function setStorage (key: StorageKey.Language, opj: LanguageCode): void;
 export function setStorage (key: StorageKey.Config, opj: Config): void;
 export function setStorage (key: StorageKey.RulesSelected, obj: RuleSelected[]): void;
 export function setStorage (key: StorageKey.RuleNames, obj: string[]): void;
@@ -46,6 +47,10 @@ export function setStorage (key: keyof StorageRootObj, obj: unknown): void {
 	const rootObj: StorageRootObj = _getStorageRootObj();
 
 	switch (key) {
+		case StorageKey.Language:
+			rootObj[StorageKey.Language] = obj as LanguageCode;
+			break;
+
 		case StorageKey.Config:
 			rootObj[StorageKey.Config] = obj as Config;
 			break;
@@ -63,6 +68,7 @@ export function setStorage (key: keyof StorageRootObj, obj: unknown): void {
 }
 
 
+export function getStorage (key: StorageKey.Language): LanguageCode | undefined;
 export function getStorage (key: StorageKey.Config): Config | undefined;
 export function getStorage (key: StorageKey.RulesSelected): RuleSelected[] | undefined;
 export function getStorage (key: StorageKey.RuleNames): string[] | undefined;

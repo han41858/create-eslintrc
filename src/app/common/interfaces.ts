@@ -2,6 +2,7 @@ import {
 	Environment,
 	ErrorLevel,
 	FixableType,
+	LanguageCode,
 	OptionType,
 	Package,
 	RuleCategory,
@@ -23,6 +24,7 @@ export interface TextValue<T> {
 }
 
 export interface StorageRootObj {
+	[StorageKey.Language]?: LanguageCode;
 	[StorageKey.Config]?: Config;
 	[StorageKey.RuleNames]?: string[];
 	[StorageKey.RulesSelected]?: RuleSelected[];

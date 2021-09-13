@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
 
-import { DefaultLanguage, LanguageCode, Message } from '../common/constants';
+import { DefaultLanguage, LanguageCode, Message, StorageKey } from '../common/constants';
 import { LanguageSet } from '../common/language';
 import { TypedObject } from '../common/interfaces';
+import { getStorage, setStorage } from '../common/util';
 
 
 @Injectable({
@@ -12,17 +13,23 @@ import { TypedObject } from '../common/interfaces';
 })
 export class LanguageService {
 
-	// for internal usage
-	private languageCode: LanguageCode = DefaultLanguage;
+	private languageCode: LanguageCode;
 
 	// for reaction
-	languageCode$: BehaviorSubject<LanguageCode> = new BehaviorSubject<LanguageCode>(this.languageCode);
+	languageCode$: BehaviorSubject<LanguageCode>;
 
+
+	constructor () {
+		this.languageCode = getStorage(StorageKey.Language) || DefaultLanguage;
+		this.languageCode$ = new BehaviorSubject<LanguageCode>(this.languageCode);
+	}
 
 	// called by LanguageGuard
 	set (languageCode: LanguageCode): void {
 		this.languageCode = languageCode;
-		this.languageCode$.next(languageCode);
+		this.languageCode$.next(this.languageCode);
+
+		setStorage(StorageKey.Language, this.languageCode);
 	}
 
 	getMsg (msg: Message): string | undefined {

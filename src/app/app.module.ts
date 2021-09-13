@@ -5,8 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { LanguageGuard } from './guards';
-
 import { StartPage } from './pages/start/start.page';
 import { MainPage } from './pages/main/main.page';
 import { ConfigPage } from './pages/config/config.page';
@@ -50,9 +48,6 @@ import { ExampleViewerComponent } from './components/example-viewer/example-view
 
 		FormsModule,
 		ReactiveFormsModule
-	],
-	providers: [
-		LanguageGuard
 	],
 	bootstrap: [
 		AppComponent

@@ -1,5 +1,4 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -34,10 +33,7 @@ export class LanguageSelectorComponent implements OnInit, OnDestroy {
 	@ViewChild('focusAnchor') focusAnchor: ElementRef<HTMLAnchorElement> | undefined;
 
 
-	constructor (
-		public languageSvc: LanguageService,
-		private router: Router
-	) {
+	constructor (public languageSvc: LanguageService) {
 	}
 
 	ngOnInit (): void {
@@ -68,11 +64,9 @@ export class LanguageSelectorComponent implements OnInit, OnDestroy {
 	}
 
 	languageChanged (newValue: LanguageCode): void {
-		const [, , ruleName]: string[] = this.router.url.split('/');
-
-		setTimeout(async () => {
-			await this.router.navigate(['/', newValue, ruleName]);
-		});
+		if (this.currentLanguageCode !== newValue) {
+			this.languageSvc.set(newValue);
+		}
 	}
 
 }

@@ -1,43 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component } from '@angular/core';
 
 import { LanguageService } from '../../services';
 
-import { DefaultLanguage, LanguageCode, Message, SyntaxType } from '../../common/constants';
+import { Message, SyntaxType } from '../../common/constants';
 
 
 @Component({
 	templateUrl: './start.page.html',
 	styleUrls: ['./start.page.sass']
 })
-export class StartPage implements OnInit {
+export class StartPage {
 
 	Message = Message;
 
 	exampleSyntax: SyntaxType = SyntaxType.JSON;
 	exampleCode: string = '{}';
 
-	language: LanguageCode | undefined;
 
-
-	constructor (
-		public languageSvc: LanguageService,
-		private route: ActivatedRoute,
-		private router: Router
-	) {
-	}
-
-	ngOnInit (): void {
-		const language: string | null = this.route.snapshot.paramMap.get('lang');
-
-		if (!language || !Object.values(LanguageCode).includes(language as LanguageCode)) {
-			setTimeout(async () => {
-				await this.router.navigate(['/', DefaultLanguage]);
-			});
-		}
-		else {
-			this.language = language as LanguageCode;
-		}
+	constructor (public languageSvc: LanguageService) {
 	}
 
 }
