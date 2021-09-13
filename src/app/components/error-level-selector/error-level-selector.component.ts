@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { TextValue } from '../../common/interfaces';
@@ -28,7 +28,6 @@ export class ErrorLevelSelectorComponent implements ControlValueAccessor {
 	errorLevels: TextValue<ErrorLevel>[];
 
 	formControl: FormControl = new FormControl(ErrorLevel.skip);
-	@Output() change: EventEmitter<ErrorLevel> = new EventEmitter<ErrorLevel>();
 
 
 	constructor () {

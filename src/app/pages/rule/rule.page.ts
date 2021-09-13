@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
+import { debounceTime, filter, map, tap } from 'rxjs/operators';
 
 import { LanguageService, RuleService } from '../../services';
 
@@ -96,38 +96,28 @@ export class RulePage implements OnInit {
 
 		this.formGroup.valueChanges
 			.pipe(
-				map((newValue: FormValue): RuleSelected | undefined => {
+				tap(() => {
+					this.refreshFormDisableState();
+				}),
+				debounceTime(10), // wait additional value changing
+				map((): RuleSelected | undefined => {
 					let ruleSelected: RuleSelected | undefined;
 
 					if (this.rule) {
-						const errorLevel: ErrorLevel = newValue[FormFieldName.ErrorLevel];
-
 						ruleSelected = {
 							package: this.rule.package,
 							name: this.rule.name,
 
-							errorLevel: errorLevel,
+							errorLevel: this.getFormValue(FormFieldName.ErrorLevel),
 
-							option: newValue[FormFieldName.Option] || undefined,
-							additionalOptions: newValue[FormFieldName.AdditionalOptions] || undefined
+							option: this.getFormValue(FormFieldName.Option),
+							additionalOptions: this.getFormValue(FormFieldName.AdditionalOptions)
 						};
-
-						this.refreshFormDisableState();
 					}
 
 					return ruleSelected as RuleSelected | undefined;
 				}),
 				filter((newRule: RuleSelected | undefined): newRule is RuleSelected => !!newRule),
-				distinctUntilChanged((a: RuleSelected, b: RuleSelected): boolean => {
-					// if false, passes to next
-					return a.package === b.package
-						&& a.name === b.name
-						&& a.errorLevel === b.errorLevel
-						&& !!a.option === !!b.option
-						&& JSON.stringify(a.option) === JSON.stringify(b.option)
-						&& !!a.additionalOptions === !!b.additionalOptions
-						&& JSON.stringify(a.additionalOptions) === JSON.stringify(b.additionalOptions);
-				}),
 				map((newRule: RuleSelected): void => {
 					this.ruleSvc.selectRule(newRule);
 
@@ -141,6 +131,9 @@ export class RulePage implements OnInit {
 		return this.formGroup?.get(field) || undefined;
 	}
 
+	getFormValue<T> (field: FormFieldName.ErrorLevel): ErrorLevel; // always exists
+	getFormValue<T> (field: FormFieldName.Option): Option | undefined;
+	getFormValue<T> (field: FormFieldName.AdditionalOptions): ObjectOption[] | undefined;
 	getFormValue<T> (field: FormFieldName): T | undefined {
 		let result: T | undefined;
 
@@ -200,6 +193,8 @@ export class RulePage implements OnInit {
 				|| errorLevel === ErrorLevel.off) {
 				if (optionCtrl && optionCtrl.enabled) {
 					optionCtrl.disable();
+
+					optionCtrl.setValue(null);
 				}
 
 				if (additionalOptionsCtrl && additionalOptionsCtrl.enabled) {
@@ -210,6 +205,11 @@ export class RulePage implements OnInit {
 				if (optionCtrl) {
 					if (optionCtrl.disabled) {
 						optionCtrl.enable();
+
+						// set default option
+						if (this.rule?.options?.[0]) {
+							optionCtrl.setValue(this.rule.options[0]);
+						}
 					}
 				}
 
