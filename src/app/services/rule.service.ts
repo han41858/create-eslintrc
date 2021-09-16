@@ -171,13 +171,16 @@ export class RuleService {
 				acc[rule.name] = [
 					rule.errorLevel,
 					rule.option.value,
-					rule.additionalOptions
-						.reduce((additionalAcc: TypedObject<unknown>, option: ObjectOption): TypedObject<unknown> => {
-							additionalAcc[option.property] = option.value;
+					rule.additionalOptions?.length > 0
+						? rule.additionalOptions
+							.reduce((additionalAcc: TypedObject<unknown>, option: ObjectOption): TypedObject<unknown> => {
+								// additionalAcc[option.property] = option.value;
+								additionalAcc[option.property] = 'todo'; // TODO
 
-							return additionalAcc;
-						}, {})
-				];
+								return additionalAcc;
+							}, {})
+						: undefined
+				].filter((one) => !!one);
 			}
 
 			return acc;
@@ -295,6 +298,7 @@ export class RuleService {
 				// modify
 				target.errorLevel = param.errorLevel;
 				target.option = param.option;
+				target.additionalOptions = param.additionalOptions;
 			}
 			else {
 				// add
@@ -303,7 +307,8 @@ export class RuleService {
 					name: param.name,
 					errorLevel: param.errorLevel,
 
-					option: param.option
+					option: param.option,
+					additionalOptions: param.additionalOptions
 				});
 			}
 		}
