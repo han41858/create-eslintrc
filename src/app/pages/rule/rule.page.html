@@ -12,7 +12,7 @@
 		<p class="description" *ngIf="descriptionSanitized" [innerHTML]="descriptionSanitized"></p>
 
 		<div class="version">
-			<span class="devFont">{{ rule.version }}</span>
+			<span class="devFont">{{ languageSvc.getMsg(Message.Version)}}: {{ rule.version }}</span>
 		</div>
 	</div>
 

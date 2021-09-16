@@ -110,11 +110,14 @@ export enum Message {
 	Previous,
 	Next,
 
+	Version,
+
 	ErrorLevel,
 	Options,
 	AdditionalOptions,
 
-	Result
+	Result,
+	Download
 }
 
 export const StorageRootKey: string = 'create-eslintrc';

@@ -25,7 +25,8 @@
 						<span *ngIf="resultSet && resultSet.fileName">({{ resultSet.fileName }})</span>
 					</div>
 
-					<button class="btn" type="button" *ngIf="resultSet">Download</button>
+					<button class="btn" type="button"
+					        *ngIf="resultSet">{{ languageSvc.getMsg(Message.Download) }}</button>
 				</div>
 
 				<app-code-viewer *ngIf="resultSet"

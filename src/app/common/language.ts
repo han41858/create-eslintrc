@@ -31,11 +31,14 @@ export const LanguageSet: {
 		Previous: 'Previous',
 		Next: 'Next',
 
+		Version: 'Version',
+
 		ErrorLevel: 'Error Level',
 		Options: 'Options',
 		AdditionalOptions: 'Additional Options',
 
-		Result: 'Result'
+		Result: 'Result',
+		Download: 'Download'
 	},
 
 	[LanguageCode['ko-kr']]: {
@@ -61,6 +64,8 @@ export const LanguageSet: {
 		FromNewerVersion: '최신 버전부터',
 		Random: '랜덤',
 
+		Version: '버전',
+
 		Previous: '이전',
 		Next: '다음',
 
@@ -68,6 +73,7 @@ export const LanguageSet: {
 		Options: '옵션',
 		AdditionalOptions: '추가 옵션',
 
-		Result: '결과'
+		Result: '결과',
+		Download: '다운로드'
 	}
 };
