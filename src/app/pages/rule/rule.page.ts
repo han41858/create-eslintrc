@@ -3,12 +3,12 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { debounceTime, filter, map, tap } from 'rxjs/operators';
+import { debounceTime, delay, filter, map, tap } from 'rxjs/operators';
 
 import { LanguageService, RuleService } from '../../services';
 
 import { ObjectOption, Option, Rule, RuleSelected } from '../../common/interfaces';
-import { ErrorLevel, LanguageCode, Message } from '../../common/constants';
+import { DefaultErrorLevel, ErrorLevel, LanguageCode, Message } from '../../common/constants';
 
 import { ErrorLevelSelectorComponent } from '../../components/error-level-selector/error-level-selector.component';
 import { OptionSelectorComponent } from '../../components/option-selector/option-selector.component';
@@ -22,8 +22,8 @@ enum FormFieldName {
 
 interface FormValue {
 	[FormFieldName.ErrorLevel]: ErrorLevel;
-	[FormFieldName.Option]: Option | undefined;
-	[FormFieldName.AdditionalOptions]: ObjectOption[] | undefined;
+	[FormFieldName.Option]: Option | null;
+	[FormFieldName.AdditionalOptions]: ObjectOption[] | null;
 }
 
 
@@ -42,9 +42,13 @@ export class RulePage implements OnInit {
 
 	descriptionSanitized: SafeHtml | undefined;
 
-	formGroup: FormGroup | undefined;
+	formGroup: FormGroup;
+	freezeFormReaction: boolean = false;
+	freezeSave: boolean = false;
+
 	@ViewChild(ErrorLevelSelectorComponent) errorLevelSelector: ErrorLevelSelectorComponent | undefined;
 	@ViewChild(OptionSelectorComponent) optionSelector: OptionSelectorComponent | undefined;
+
 
 	constructor (
 		public languageSvc: LanguageService,
@@ -53,9 +57,6 @@ export class RulePage implements OnInit {
 		private sanitizer: DomSanitizer,
 		private fb: FormBuilder
 	) {
-	}
-
-	ngOnInit (): void {
 		this.formGroup = this.fb.group({
 			[FormFieldName.ErrorLevel]: this.fb.control(null),
 			[FormFieldName.Option]: this.fb.control({
@@ -64,42 +65,109 @@ export class RulePage implements OnInit {
 			}),
 			[FormFieldName.AdditionalOptions]: null
 		});
+	}
 
+	ngOnInit (): void {
+		// rule changed
 		this.route.paramMap
 			.pipe(
 				map((paramMap: ParamMap): string | undefined => {
-					const ruleName: string | undefined = paramMap.get('rule') || undefined;
+					return paramMap.get('rule') || undefined;
+				}),
+				filter((ruleName: string | undefined): ruleName is string => !!ruleName),
+				map((ruleName: string): string => {
+					this.freezeFormReaction = true;
+					this.freezeSave = true;
 
-					if (ruleName) {
-						this.rule = this.ruleSvc.getRule(ruleName);
+					this.rule = this.ruleSvc.getRule(ruleName);
 
-						this.refreshDescription();
-						this.resetForm(ruleName);
+					if (this.rule) {
+						const optionCtrl: AbstractControl = this.getFormCtrl(FormFieldName.Option);
 
-						this.refreshFormDisableState();
+						if (this.rule.options) {
+							if (optionCtrl.disabled) {
+								optionCtrl.enable();
+							}
+						}
+						else {
+							if (optionCtrl.enabled) {
+								optionCtrl.disable();
+							}
+						}
+
+						const additionalOptionCtrl: AbstractControl = this.getFormCtrl(FormFieldName.AdditionalOptions);
+
+						if (this.rule.additionalOptions) {
+							if (additionalOptionCtrl.disabled) {
+								additionalOptionCtrl.enable();
+							}
+						}
+						else {
+							if (additionalOptionCtrl.enabled) {
+								additionalOptionCtrl.disable();
+							}
+						}
 					}
 
 					return ruleName;
+				}),
+				delay(0), // wait 1 cycle to enable/disable form control
+				tap((ruleName: string): void => {
+					const ruleSelected: RuleSelected | undefined = this.ruleSvc.getRuleSelected(ruleName);
+
+					this.formGroup.reset({
+						[FormFieldName.ErrorLevel]: ruleSelected?.errorLevel || DefaultErrorLevel,
+						[FormFieldName.Option]: ruleSelected?.option,
+						[FormFieldName.AdditionalOptions]: ruleSelected?.additionalOptions
+					});
+
+					this.freezeFormReaction = false;
+					this.freezeSave = false;
 				})
 			)
 			.subscribe();
 
-		this.languageSvc.languageCode$
+		// error level changed
+		this.getFormCtrl(FormFieldName.ErrorLevel).valueChanges
 			.pipe(
-				tap((languageCode: LanguageCode): void => {
-					this.languageCode = languageCode;
+				filter(() => !this.freezeFormReaction),
+				map((newValue: ErrorLevel) => {
+					const optionCtrl: AbstractControl = this.getFormCtrl(FormFieldName.Option);
 
-					this.refreshDescription();
+					let optionEnabled: boolean = false;
+
+					if (newValue === ErrorLevel.skip
+						|| newValue === ErrorLevel.off) {
+						if (optionCtrl.enabled) {
+							optionCtrl.disable();
+						}
+					}
+					else {
+						if (optionCtrl.disabled) {
+							optionCtrl.enable();
+
+							optionEnabled = true;
+						}
+					}
+
+					return {
+						optionEnabled
+						// additionalOptionEnabled
+					};
+				}),
+				delay(0), // wait 1 cycle to enable/disable form control
+				tap((param): void => {
+					if (param.optionEnabled) {
+						this.getFormCtrl(FormFieldName.Option).setValue(this.rule?.options?.[0]);
+					}
 				})
 			)
 			.subscribe();
 
 		this.formGroup.valueChanges
 			.pipe(
-				tap(() => {
-					this.refreshFormDisableState();
-				}),
-				debounceTime(10), // wait additional value changing
+				filter(() => !this.freezeSave),
+				debounceTime(10), // wait additional form value changing
 				map((): RuleSelected | undefined => {
 					let ruleSelected: RuleSelected | undefined;
 
@@ -125,10 +193,20 @@ export class RulePage implements OnInit {
 				})
 			)
 			.subscribe();
+
+		this.languageSvc.languageCode$
+			.pipe(
+				tap((languageCode: LanguageCode): void => {
+					this.languageCode = languageCode;
+
+					this.refreshDescription();
+				})
+			)
+			.subscribe();
 	}
 
-	getFormCtrl (field: FormFieldName): AbstractControl | undefined {
-		return this.formGroup?.get(field) || undefined;
+	getFormCtrl (field: FormFieldName): AbstractControl {
+		return this.formGroup.get(field) as AbstractControl;
 	}
 
 	getFormValue<T> (field: FormFieldName.ErrorLevel): ErrorLevel; // always exists
@@ -137,11 +215,8 @@ export class RulePage implements OnInit {
 	getFormValue<T> (field: FormFieldName): T | undefined {
 		let result: T | undefined;
 
-		const ctrl: AbstractControl | undefined = this.formGroup?.get(field) || undefined;
-
-		if (ctrl) {
-			result = ctrl.value;
-		}
+		const ctrl: AbstractControl = this.getFormCtrl(field);
+		result = ctrl.value || undefined;
 
 		return result;
 	}
@@ -155,69 +230,6 @@ export class RulePage implements OnInit {
 				description = description.replace(/<code>/g, '<code class="language-html">');
 
 				this.descriptionSanitized = this.sanitizer.bypassSecurityTrustHtml(description);
-			}
-		}
-	}
-
-	private resetForm (ruleName: string): void {
-		const ruleSelected: RuleSelected | undefined = this.ruleSvc.getRuleSelected(ruleName);
-
-		if (this.formGroup) {
-			const defaultErrorLevel: ErrorLevel = ErrorLevel.skip;
-
-			const newValue = {
-				[FormFieldName.ErrorLevel]: ruleSelected?.errorLevel || defaultErrorLevel,
-				[FormFieldName.Option]: ruleSelected?.option || null,
-				[FormFieldName.AdditionalOptions]: ruleSelected?.additionalOptions || null
-			};
-
-			this.formGroup.reset(newValue, {
-				emitEvent: false
-			});
-
-
-			this.errorLevelSelector?.writeValue(newValue[FormFieldName.ErrorLevel]);
-			this.optionSelector?.writeValue(newValue[FormFieldName.Option] || undefined);
-		}
-	}
-
-	private refreshFormDisableState (): void {
-		const errorLevelCtrl: AbstractControl | undefined = this.getFormCtrl(FormFieldName.ErrorLevel);
-		const optionCtrl: AbstractControl | undefined = this.getFormCtrl(FormFieldName.Option);
-		const additionalOptionsCtrl: AbstractControl | undefined = this.getFormCtrl(FormFieldName.AdditionalOptions);
-
-		if (errorLevelCtrl) {
-			const errorLevel: ErrorLevel = errorLevelCtrl.value;
-
-			if (errorLevel === ErrorLevel.skip
-				|| errorLevel === ErrorLevel.off) {
-				if (optionCtrl && optionCtrl.enabled) {
-					optionCtrl.disable();
-
-					optionCtrl.setValue(null);
-				}
-
-				if (additionalOptionsCtrl && additionalOptionsCtrl.enabled) {
-					additionalOptionsCtrl.disable();
-				}
-			}
-			else {
-				if (optionCtrl) {
-					if (optionCtrl.disabled) {
-						optionCtrl.enable();
-
-						// set default option
-						if (this.rule?.options?.[0]) {
-							optionCtrl.setValue(this.rule.options[0]);
-						}
-					}
-				}
-
-				if (additionalOptionsCtrl) {
-					if (additionalOptionsCtrl.disabled) {
-						additionalOptionsCtrl.enable();
-					}
-				}
 			}
 		}
 	}

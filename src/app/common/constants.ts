@@ -33,6 +33,8 @@ export enum ErrorLevel {
 	error = 'error'
 }
 
+export const DefaultErrorLevel: ErrorLevel = ErrorLevel.skip;
+
 export enum OptionType {
 	Boolean = 'boolean',
 	NumberFixed = 'numberFixed',
