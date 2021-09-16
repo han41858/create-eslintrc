@@ -11,3 +11,13 @@ form
 			cursor: pointer
 
 			user-select: none
+
+form.vertical
+	flex-direction: column
+
+	.inputContainer:not(:first-child)
+		margin-top: .4rem
+
+form:not(.vertical)
+	.inputContainer:not(:first-child)
+		margin-left: .6rem

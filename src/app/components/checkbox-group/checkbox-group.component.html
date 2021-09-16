@@ -1,5 +1,5 @@
 <form *ngIf="formGroup" [formGroup]="formGroup"
-      [style.flex-direction]="vertical ? 'column' : 'row'">
+      [class.vertical]="vertical">
 	<div *ngFor="let one of enums;let i=index"
 	     class="inputContainer" [class.active]="isIncluded(one.value)">
 		<app-checkbox #checkbox [formControlName]="i"></app-checkbox>
