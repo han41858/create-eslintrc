@@ -77,3 +77,13 @@ export function getStorage (key: StorageKey): unknown | undefined {
 
 	return rootObj[key];
 }
+
+export function newArray (length: number): undefined[];
+export function newArray<T> (length: number, callback: (i: number, arr: undefined[]) => T): T[];
+export function newArray<T> (length: number, callback?: (i: number, arr: undefined[]) => T): undefined[] | T[] {
+	const _arr: undefined[] = new Array(length).fill(undefined);
+
+	return (typeof callback === 'function')
+		? _arr.map((nothing: unknown, _i: number): T => callback(_i, _arr))
+		: _arr;
+}

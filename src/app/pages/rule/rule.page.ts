@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -9,9 +9,6 @@ import { LanguageService, RuleService } from '../../services';
 
 import { ObjectOption, Option, Rule, RuleSelected } from '../../common/interfaces';
 import { DefaultErrorLevel, ErrorLevel, LanguageCode, Message } from '../../common/constants';
-
-import { ErrorLevelSelectorComponent } from '../../components/error-level-selector/error-level-selector.component';
-import { OptionSelectorComponent } from '../../components/option-selector/option-selector.component';
 
 
 enum FormFieldName {
@@ -46,9 +43,6 @@ export class RulePage implements OnInit {
 	freezeFormReaction: boolean = false;
 	freezeSave: boolean = false;
 
-	@ViewChild(ErrorLevelSelectorComponent) errorLevelSelector: ErrorLevelSelectorComponent | undefined;
-	@ViewChild(OptionSelectorComponent) optionSelector: OptionSelectorComponent | undefined;
-
 
 	constructor (
 		public languageSvc: LanguageService,
@@ -63,7 +57,10 @@ export class RulePage implements OnInit {
 				value: null,
 				disabled: true
 			}),
-			[FormFieldName.AdditionalOptions]: null
+			[FormFieldName.AdditionalOptions]: this.fb.control({
+				value: null,
+				disabled: true
+			})
 		});
 	}
 

@@ -28,7 +28,10 @@
 
 		<ng-container *ngIf="rule.additionalOptions">
 			<h2 class="additionalOptionsHeader">{{ languageSvc.getMsg(Message.AdditionalOptions) }}</h2>
-			<app-additional-option-selector [rule]="rule"></app-additional-option-selector>
+
+			<app-additional-option-selector [rule]="rule"
+			                                [formControlName]="FormFieldName.AdditionalOptions"
+			                                [disabled]="getFormCtrl(FormFieldName.AdditionalOptions)?.disabled || false"></app-additional-option-selector>
 		</ng-container>
 	</form>
 </div>
