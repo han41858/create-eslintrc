@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 
@@ -19,6 +19,8 @@ export class CheckboxComponent implements ControlValueAccessor {
 
 	disabled: boolean = false;
 	value: boolean = false;
+
+	@Input() label?: string;
 
 	private onChangeFnc: OnChangeFnc | undefined;
 	private onTouchedFnc: OnChangeFnc | undefined;
