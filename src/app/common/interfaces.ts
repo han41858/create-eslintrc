@@ -62,7 +62,6 @@ export interface Rule {
 		alternative?: string;
 	};
 
-	defaultOption?: Option;
 	options?: Option[]; // radio button
 	additionalOptions?: ObjectOption[]; // check box
 
@@ -89,7 +88,7 @@ export interface Example {
 
 interface OptionCommon {
 	type: OptionType;
-	value?: unknown;
+	value: unknown;
 
 	examples?: Example[];
 }
@@ -99,14 +98,17 @@ export interface BooleanOption extends OptionCommon {
 	value: boolean;
 }
 
-export interface NumberOption extends OptionCommon {
-	type: OptionType.NumberFixed | OptionType.NumberVariable;
-	value?: number;
+export interface IntegerOption extends OptionCommon {
+	type: OptionType.IntegerFixed | OptionType.IntegerVariable;
+	value: number;
+	suffix?: string;
+
+	min?: number;
 }
 
 export interface StringOption extends OptionCommon {
 	type: OptionType.StringFixed | OptionType.StringVariable;
-	value?: string;
+	value: string;
 }
 
 export interface ObjectOption extends OptionCommon {
@@ -117,7 +119,10 @@ export interface ObjectOption extends OptionCommon {
 	examples?: Example[];
 }
 
-export type Option = BooleanOption | NumberOption | StringOption | ObjectOption;
+export type Option = BooleanOption | IntegerOption | StringOption | StringArrayOption;
+export type ObjectOption = Option & {
+	property: string;
+}
 
 export interface ResultSet {
 	fileName?: string;

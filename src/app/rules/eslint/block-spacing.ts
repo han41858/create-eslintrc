@@ -16,10 +16,6 @@ export const BlockSpacingRule: Rule = {
 	docUrl: 'https://eslint.org/docs/rules/block-spacing',
 	version: '1.2.0',
 
-	defaultOption: {
-		type: OptionType.StringFixed,
-		value: 'always'
-	},
 	options: [{
 		type: OptionType.StringFixed,
 		value: 'always',

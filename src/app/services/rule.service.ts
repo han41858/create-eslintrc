@@ -180,7 +180,7 @@ export class RuleService {
 								return additionalAcc;
 							}, {})
 						: undefined
-				].filter((one) => !!one);
+				].filter((one: unknown | undefined): one is unknown => one !== undefined);
 			}
 
 			return acc;

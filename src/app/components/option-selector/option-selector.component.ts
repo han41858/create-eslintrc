@@ -1,12 +1,22 @@
 import { Component, ElementRef, Input, OnChanges, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+	AbstractControl,
+	ControlValueAccessor,
+	FormBuilder,
+	FormGroup,
+	NG_VALUE_ACCESSOR,
+	ValidatorFn,
+	Validators
+} from '@angular/forms';
 
-import { Option, Rule } from '../../common/interfaces';
+import { IntegerOption, Option, Rule, TypedObject } from '../../common/interfaces';
 import { OptionType } from '../../common/constants';
-import { refreshPrism } from '../../common/util';
+import { newArray, refreshPrism } from '../../common/util';
 
 
-type OnChangeFnc = (option: Option | undefined) => void;
+type OnChangeFnc = (option: Option | null) => void;
+
+type FormConfigObj = TypedObject<AbstractControl | undefined>;
 
 
 @Component({
@@ -32,18 +42,47 @@ export class OptionSelectorComponent implements ControlValueAccessor, OnChanges 
 	currentValue: Option | undefined;
 	disabled: boolean = false;
 
+	formGroup: FormGroup | undefined;
+
 	@ViewChildren('code') codeElements: QueryList<ElementRef> | undefined;
 
 
+	constructor (private fb: FormBuilder) {
+	}
+
 	ngOnChanges (changes: SimpleChanges): void {
-		if (this.rule) {
-			// wait 1 cycle to binding
-			setTimeout(() => {
-				this.codeElements?.forEach((one: ElementRef): void => {
-					refreshPrism(one);
-				});
-			});
+		if (!this.rule) {
+			throw new Error('no rule');
 		}
+
+		if (this.rule.options) {
+			const formConfigObj: FormConfigObj = newArray(this.rule.options.length, (i: number) => {
+				return this.rule?.options?.[i];
+			})
+				.reduce((acc: FormConfigObj, option: Option | undefined, i: number): FormConfigObj => {
+					if (option && option.type === OptionType.IntegerVariable) {
+						acc['' + i] = this.fb.control(option.value, [
+							Validators.required,
+							'min' in option && option.min !== undefined ? Validators.min(option.min) : undefined,
+							Validators.pattern(/^[0-9]*$/)
+						].filter((validator: ValidatorFn | undefined): validator is ValidatorFn => {
+							return validator !== undefined;
+						}));
+					}
+
+					return acc;
+				}, {});
+
+			this.formGroup = this.fb.group(formConfigObj);
+		}
+
+
+		// wait 1 cycle to binding
+		setTimeout(() => {
+			this.codeElements?.forEach((one: ElementRef): void => {
+				refreshPrism(one);
+			});
+		});
 	}
 
 	registerOnChange (fn: OnChangeFnc): void {
@@ -58,7 +97,7 @@ export class OptionSelectorComponent implements ControlValueAccessor, OnChanges 
 		this.disabled = isDisabled;
 
 		if (this.currentValue) {
-			this.writeValue(undefined);
+			this.writeValue(null);
 		}
 	}
 
@@ -69,10 +108,10 @@ export class OptionSelectorComponent implements ControlValueAccessor, OnChanges 
 			let newOption: Option;
 
 			switch (option.type) {
-				case OptionType.NumberVariable:
+				case OptionType.IntegerVariable:
 					newOption = {
-						type: OptionType.NumberVariable,
-						value: +(newValue as number)
+						type: OptionType.IntegerVariable,
+						value: +(newValue as string)
 					};
 					break;
 
@@ -98,31 +137,42 @@ export class OptionSelectorComponent implements ControlValueAccessor, OnChanges 
 		}
 	}
 
-	writeValue (option: Option | undefined): void {
-		if (this.currentValue?.value !== option?.value) {
-			this.currentValue = option;
+	writeValue (option: Option | null): void {
+		if (this.formGroup?.valid) {
+			if (this.currentValue?.type !== option?.type
+				|| this.currentValue?.value !== option?.value) {
+				this.currentValue = option || undefined;
 
-			if (this.rule && this.rule.options && option) {
-				const target: Option | undefined = this.rule.options.find((refOption): boolean => {
-					return refOption.value === option.value;
-				});
+				if (this.rule && this.rule.options && option) {
+					const target: Option | undefined = this.rule.options.find((refOption: Option): boolean => {
+						return refOption.type === option.type;
+					});
 
-				if (target) {
-					this.selectedIndex = this.rule.options.indexOf(target);
+					if (target) {
+						this.selectedIndex = this.rule.options.indexOf(target);
+					}
+					else {
+						this.selectedIndex = undefined;
+					}
 				}
 				else {
 					this.selectedIndex = undefined;
 				}
-			}
-			else {
-				this.selectedIndex = undefined;
-			}
 
 
-			if (typeof this.onChangeFnc === 'function') {
-				this.onChangeFnc(option);
+				if (typeof this.onChangeFnc === 'function') {
+					this.onChangeFnc(option);
+				}
 			}
 		}
 	}
 
+	integerGuard (option: Option): option is IntegerOption {
+		return option.type === OptionType.IntegerFixed
+			|| option.type === OptionType.IntegerVariable;
+	}
+
+	getFormCtrl (i: number): AbstractControl | undefined {
+		return this.formGroup?.get('' + i) || undefined;
+	}
 }

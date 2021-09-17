@@ -16,13 +16,12 @@ export const IndentRule: Rule = {
 	docUrl: 'https://eslint.org/docs/rules/indent#enforce-consistent-indentation-indent',
 	version: '0.14.0',
 
-	defaultOption: {
-		type: OptionType.NumberVariable,
-		value: 4
-	},
 	options: [{
-		type: OptionType.NumberVariable,
-		value: 4
+		type: OptionType.IntegerVariable,
+		value: 4,
+		suffix: 'spaces',
+
+		min: 0
 	}, {
 		type: OptionType.StringFixed,
 		value: 'tab',
@@ -53,6 +52,7 @@ function foo(d) {
 	}],
 	additionalOptions: [{
 		type: OptionType.StringArray,
+		value: [],
 
 		property: 'ignoredNodes',
 
@@ -82,7 +82,8 @@ bar();
 		}]
 	}, {
 		property: 'SwitchCase',
-		type: OptionType.NumberVariable,
+		type: OptionType.IntegerVariable,
+		value: 0,
 
 		examples: [{
 			correct: false,
@@ -109,7 +110,8 @@ case "b":
 		}]
 	}, {
 		property: 'VariableDeclarator',
-		type: OptionType.NumberVariable,
+		type: OptionType.IntegerVariable,
+		value: 1,
 
 		examples: [{
 			correct: false,

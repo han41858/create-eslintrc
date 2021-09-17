@@ -1,34 +1,43 @@
-<ng-container *ngIf="rule">
-	<ng-container *ngIf="rule.options && rule.options.length > 0">
-		<div class="option" *ngFor="let option of rule.options;let i=index"
-		     [class.disabled]="disabled">
-			<div class="radioBtn" [class.selected]="selectedIndex === i"
-			     (click)="writeValueInternal(i, option, option.value)">
-				<div class="indicator"></div>
-			</div>
+<form *ngIf="rule && rule.options && rule.options.length > 0 && formGroup"
+      [formGroup]="formGroup">
+	<div class="option"
+	     *ngFor="let option of rule.options;let i=index"
+	     [class.disabled]="disabled">
+		<div class="radioBtn"
+		     [class.selected]="selectedIndex === i"
+		     (click)="writeValueInternal(i, option, option.value)">
+			<div class="indicator"></div>
+		</div>
 
-			<div [class]="option.type" [ngSwitch]="option.type">
-				<ng-container *ngSwitchCase="OptionType.NumberVariable">
-					<input #input type="number" class="input"
-					       [value]="option.value"
+		<div [class]="option.type" [ngSwitch]="option.type">
+			<ng-container *ngSwitchCase="OptionType.IntegerVariable">
+				<ng-container *ngIf="integerGuard(option)">
+					<input #input type="number" class="input" [class.error]="getFormCtrl(i)?.errors"
+					       step="0"
+					       [min]="option.min !== undefined ? option.min : ''"
+					       inputmode="numeric"
+					       [formControlName]="i"
+					       [value]="selectedIndex === i ? currentValue?.value : option.value"
 					       (focus)="writeValueInternal(i, option, input.value)"
 					       (change)="writeValueInternal(i, option, input.value)">
+
+					<span class="suffix"
+					      *ngIf="option.suffix"
+					      (click)="writeValueInternal(i, option, input.value)">{{ option.suffix }}</span>
 				</ng-container>
 
-				<ng-container *ngSwitchCase="OptionType.StringFixed">
-					<code #code
-					      class="label lang-js"
-					      (click)="writeValueInternal(i, option, option.value)">"{{ option.value }}"</code>
-				</ng-container>
+			</ng-container>
 
-				<ng-container *ngSwitchCase="OptionType.StringVariable">
-					<input #input type="text" [value]="option.value"
-					       (change)="writeValueInternal(i, option, input.value)">
-				</ng-container>
-			</div>
+			<ng-container *ngSwitchCase="OptionType.StringFixed">
+				<code #code
+				      class="label lang-js"
+				      (click)="writeValueInternal(i, option, option.value)">"{{ option.value }}"</code>
+			</ng-container>
+
+			<ng-container *ngSwitchCase="OptionType.StringVariable">
+				<input #input type="text" [value]="option.value"
+				       (change)="writeValueInternal(i, option, input.value)">
+			</ng-container>
 		</div>
-	</ng-container>
-
-	<app-example-viewer *ngFor="let example of rule.examples"
-	                    [example]="example"></app-example-viewer>
-</ng-container>
+	</div>
+</form>
