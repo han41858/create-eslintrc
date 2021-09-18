@@ -64,19 +64,33 @@ export class AdditionalOptionSelectorComponent implements OnChanges, ControlValu
 				.reduce((acc: FormConfigObj, option: ObjectOption, i: number): FormConfigObj => {
 					acc['' + i] = this.fb.control(false);
 
-					if (option.type === OptionType.IntegerVariable
-						|| option.type === OptionType.StringVariable
-						|| option.type === OptionType.StringArray) {
+					let validators: ValidatorFn[] | undefined;
+
+					switch (option.type) {
+						case OptionType.IntegerVariable:
+							validators = [
+								Validators.required,
+								'min' in option && option.min !== undefined ? Validators.min(option.min) : undefined,
+								Validators.pattern(/^[0-9]*$/)
+							].filter((validator: ValidatorFn | undefined): validator is ValidatorFn => {
+								return validator !== undefined;
+							});
+							break;
+
+						case OptionType.StringVariable:
+							validators = [Validators.required];
+							break;
+
+						// TODO
+						// case OptionType.StringArray:
+						// 	break;
+					}
+
+					if (validators) {
 						acc['' + i + '_value'] = this.fb.control({
 							value: option.value,
 							disabled: true
-						}, [
-							Validators.required,
-							'min' in option && option.min !== undefined ? Validators.min(option.min) : undefined,
-							Validators.pattern(/^[0-9]*$/)
-						].filter((validator: ValidatorFn | undefined): validator is ValidatorFn => {
-							return validator !== undefined;
-						}));
+						}, validators);
 					}
 
 					return acc;
@@ -120,8 +134,6 @@ export class AdditionalOptionSelectorComponent implements OnChanges, ControlValu
 				.pipe(
 					debounceTime(10), // wait disable state change
 					tap(() => {
-						console.warn('form value changed', this.formGroup?.value);
-
 						if (this.formGroup) {
 							const newOptions: ObjectOption[] = Object.keys(this.formGroup.value)
 								.reduce((acc: ObjectOption[], indexStr: string): ObjectOption[] => {
@@ -159,8 +171,6 @@ export class AdditionalOptionSelectorComponent implements OnChanges, ControlValu
 
 									return acc;
 								}, []);
-
-							console.log('newOptions :', newOptions);
 
 							this.writeValue(newOptions);
 						}

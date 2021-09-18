@@ -1,5 +1,3 @@
-<p>form.valid: {{ formGroup?.valid | json }}</p>
-
 <form *ngIf="rule && formGroup" [formGroup]="formGroup">
 	<div class="option" *ngFor="let option of rule.additionalOptions;let i=index">
 		<div class="checkboxRow">
@@ -21,7 +19,17 @@
 					       [value]="getFormCtrl(i + '_value')?.value"
 					       [formControlName]="i + '_value'">
 				</ng-container>
-				<p *ngSwitchCase="OptionType.StringVariable">string variable</p>
+
+				<ng-container *ngSwitchCase="OptionType.StringVariable">
+					<input #input
+					       class="input"
+					       [class.disabled]="getFormCtrl(i + '_value')?.disabled"
+					       [class.error]="getFormCtrl(i + '_value')?.errors"
+					       type="text"
+					       [value]="getFormCtrl(i + '_value')?.value"
+					       [formControlName]="i + '_value'">
+				</ng-container>
+
 				<p *ngSwitchCase="OptionType.StringArray">string array</p>
 
 				<code *ngSwitchDefault class="devFont language-js">{{ option.value }}</code>

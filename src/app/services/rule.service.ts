@@ -174,8 +174,7 @@ export class RuleService {
 					rule.additionalOptions?.length > 0
 						? rule.additionalOptions
 							.reduce((additionalAcc: TypedObject<unknown>, option: ObjectOption): TypedObject<unknown> => {
-								// additionalAcc[option.property] = option.value;
-								additionalAcc[option.property] = 'todo'; // TODO
+								additionalAcc[option.property] = option.value;
 
 								return additionalAcc;
 							}, {})
