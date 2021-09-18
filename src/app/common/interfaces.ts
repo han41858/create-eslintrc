@@ -111,12 +111,9 @@ export interface StringOption extends OptionCommon {
 	value: string;
 }
 
-export interface ObjectOption extends OptionCommon {
-	type: OptionType;
-
-	property: string;
-	options?: Option[];
-	examples?: Example[];
+export interface StringArrayOption extends OptionCommon {
+	type: OptionType.StringArray;
+	value: string[];
 }
 
 export type Option = BooleanOption | IntegerOption | StringOption | StringArrayOption;

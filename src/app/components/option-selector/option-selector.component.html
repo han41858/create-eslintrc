@@ -12,7 +12,8 @@
 		<div [class]="option.type" [ngSwitch]="option.type">
 			<ng-container *ngSwitchCase="OptionType.IntegerVariable">
 				<ng-container *ngIf="integerGuard(option)">
-					<input #input type="number" class="input" [class.error]="getFormCtrl(i)?.errors"
+					<input #input
+					       type="number" class="input" [class.error]="getFormCtrl(i)?.errors"
 					       step="0"
 					       [min]="option.min !== undefined ? option.min : ''"
 					       inputmode="numeric"
@@ -25,7 +26,6 @@
 					      *ngIf="option.suffix"
 					      (click)="writeValueInternal(i, option, input.value)">{{ option.suffix }}</span>
 				</ng-container>
-
 			</ng-container>
 
 			<ng-container *ngSwitchCase="OptionType.StringFixed">

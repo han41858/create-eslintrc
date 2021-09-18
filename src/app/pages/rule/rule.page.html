@@ -22,16 +22,24 @@
 		<app-error-level-selector [formControlName]="FormFieldName.ErrorLevel"></app-error-level-selector>
 
 		<h2 class="optionsHeader">{{ languageSvc.getMsg(Message.Options) }}</h2>
-		<app-option-selector [rule]="rule"
-		                     [formControlName]="FormFieldName.Option"
-		                     [disabled]="getFormCtrl(FormFieldName.Option)?.disabled || false"></app-option-selector>
 
-		<ng-container *ngIf="rule.additionalOptions">
+		<div class="optionsContainer">
+			<app-option-selector [rule]="rule"
+			                     [formControlName]="FormFieldName.Option"
+			                     [disabled]="getFormCtrl(FormFieldName.Option)?.disabled || false"></app-option-selector>
+		</div>
+
+		<app-example-viewer *ngFor="let example of rule.examples"
+		                    [example]="example"></app-example-viewer>
+
+		<div *ngIf="rule.additionalOptions">
 			<h2 class="additionalOptionsHeader">{{ languageSvc.getMsg(Message.AdditionalOptions) }}</h2>
 
-			<app-additional-option-selector [rule]="rule"
-			                                [formControlName]="FormFieldName.AdditionalOptions"
-			                                [disabled]="getFormCtrl(FormFieldName.AdditionalOptions)?.disabled || false"></app-additional-option-selector>
-		</ng-container>
+			<div class="optionsContainer">
+				<app-additional-option-selector [rule]="rule"
+				                                [formControlName]="FormFieldName.AdditionalOptions"
+				                                [disabled]="getFormCtrl(FormFieldName.AdditionalOptions)?.disabled || false"></app-additional-option-selector>
+			</div>
+		</div>
 	</form>
 </div>

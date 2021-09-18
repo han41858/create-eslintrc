@@ -1,9 +1,34 @@
+<p>form.valid: {{ formGroup?.valid | json }}</p>
+
 <form *ngIf="rule && formGroup" [formGroup]="formGroup">
 	<div class="option" *ngFor="let option of rule.additionalOptions;let i=index">
-		<app-checkbox [formControlName]="i"
-		              [label]="option.property"></app-checkbox>
+		<div class="checkboxRow">
+			<app-checkbox [formControlName]="i"
+			              [label]="option.property"></app-checkbox>
 
-		<div class="examples">
+			<span class="separator">:</span>
+
+			<div class="valueContainer" [ngSwitch]="option.type">
+				<ng-container *ngSwitchCase="OptionType.IntegerVariable">
+					<input *ngIf="integerGuard(option)"
+					       #input
+					       class="input"
+					       [class.disabled]="getFormCtrl(i + '_value')?.disabled"
+					       [class.error]="getFormCtrl(i + '_value')?.errors"
+					       type="number"
+					       inputmode="numeric"
+					       [min]="option.min !== undefined ? option.min : ''"
+					       [value]="getFormCtrl(i + '_value')?.value"
+					       [formControlName]="i + '_value'">
+				</ng-container>
+				<p *ngSwitchCase="OptionType.StringVariable">string variable</p>
+				<p *ngSwitchCase="OptionType.StringArray">string array</p>
+
+				<code *ngSwitchDefault class="devFont language-js">{{ option.value }}</code>
+			</div>
+		</div>
+
+		<div class="examples" *ngIf="option.examples && option.examples.length > 0">
 			<app-example-viewer *ngFor="let example of option.examples"
 			                    [example]="example"></app-example-viewer>
 		</div>
