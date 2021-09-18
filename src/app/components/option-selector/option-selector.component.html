@@ -5,6 +5,7 @@
 	     [class.disabled]="disabled">
 		<div class="radioBtn"
 		     [class.selected]="selectedIndex === i"
+		     [class.disabled]="disabled"
 		     (click)="writeValueInternal(i, option, option.value)">
 			<div class="indicator"></div>
 		</div>
