@@ -72,51 +72,66 @@ export class RulePage implements OnInit {
 					return paramMap.get('rule') || undefined;
 				}),
 				filter((ruleName: string | undefined): ruleName is string => !!ruleName),
-				map((ruleName: string): string => {
+				map((ruleName: string) => {
 					this.freezeFormReaction = true;
 					this.freezeSave = true;
 
 					this.rule = this.ruleSvc.getRule(ruleName);
 
+					const ruleSelected: RuleSelected | undefined = this.ruleSvc.getRuleSelected(ruleName);
+
+					const optionEnabled: boolean = !!this.rule?.options
+						&& (ruleSelected?.errorLevel === ErrorLevel.warn || ruleSelected?.errorLevel === ErrorLevel.error);
+
+					const additionalOptionEnabled: boolean = !!this.rule?.additionalOptions
+						&& (ruleSelected?.errorLevel === ErrorLevel.warn || ruleSelected?.errorLevel === ErrorLevel.error);
+
 					if (this.rule) {
 						const optionCtrl: AbstractControl = this.getFormCtrl(FormFieldName.Option);
 
-						if (this.rule.options) {
-							if (optionCtrl.disabled) {
-								optionCtrl.enable();
-							}
+						if (this.rule.options && optionEnabled) {
+							optionCtrl.enable();
 						}
 						else {
-							if (optionCtrl.enabled) {
-								optionCtrl.disable();
-							}
+							optionCtrl.disable();
 						}
 
 						const additionalOptionCtrl: AbstractControl = this.getFormCtrl(FormFieldName.AdditionalOptions);
 
-						if (this.rule.additionalOptions) {
-							if (additionalOptionCtrl.disabled) {
-								additionalOptionCtrl.enable();
-							}
+						if (this.rule.additionalOptions && additionalOptionEnabled) {
+							additionalOptionCtrl.enable();
 						}
 						else {
-							if (additionalOptionCtrl.enabled) {
-								additionalOptionCtrl.disable();
-							}
+							additionalOptionCtrl.disable();
 						}
 					}
 
-					return ruleName;
+					return {
+						optionEnabled,
+						additionalOptionEnabled,
+						ruleSelected
+					};
 				}),
 				delay(0), // wait 1 cycle to enable/disable form control
-				tap((ruleName: string): void => {
-					const ruleSelected: RuleSelected | undefined = this.ruleSvc.getRuleSelected(ruleName);
+				tap((param): void => {
+					if (param.ruleSelected) {
+						this.getFormCtrl(FormFieldName.ErrorLevel).setValue(param.ruleSelected.errorLevel);
+					}
+					else {
+						this.getFormCtrl(FormFieldName.ErrorLevel).setValue(DefaultErrorLevel);
+					}
 
-					this.formGroup.reset({
-						[FormFieldName.ErrorLevel]: ruleSelected?.errorLevel || DefaultErrorLevel,
-						[FormFieldName.Option]: ruleSelected?.option,
-						[FormFieldName.AdditionalOptions]: ruleSelected?.additionalOptions
-					});
+					if (param.optionEnabled && param.ruleSelected && param.ruleSelected.option) {
+						const optionCtrl: AbstractControl = this.getFormCtrl(FormFieldName.Option);
+
+						optionCtrl.setValue(param.ruleSelected.option);
+					}
+
+					if (param.additionalOptionEnabled && param.ruleSelected && param.ruleSelected.additionalOptions) {
+						const additionalOptionCtrl: AbstractControl = this.getFormCtrl(FormFieldName.AdditionalOptions);
+
+						additionalOptionCtrl.setValue(param.ruleSelected.additionalOptions);
+					}
 
 					this.freezeFormReaction = false;
 					this.freezeSave = false;
@@ -130,30 +145,29 @@ export class RulePage implements OnInit {
 				filter(() => !this.freezeFormReaction),
 				map((newValue: ErrorLevel) => {
 					const optionCtrl: AbstractControl = this.getFormCtrl(FormFieldName.Option);
+					const additionalOptionCtrl: AbstractControl = this.getFormCtrl(FormFieldName.AdditionalOptions);
 
 					let optionEnabled: boolean = false;
 
 					if (newValue === ErrorLevel.skip
 						|| newValue === ErrorLevel.off) {
-						if (optionCtrl.enabled) {
-							optionCtrl.disable();
-						}
+						optionCtrl.disable();
+
+						additionalOptionCtrl.disable();
 					}
 					else {
-						if (optionCtrl.disabled) {
-							optionCtrl.enable();
+						optionCtrl.enable();
+						optionEnabled = true;
 
-							optionEnabled = true;
-						}
+						additionalOptionCtrl.enable();
 					}
 
 					return {
 						optionEnabled
-						// additionalOptionEnabled
 					};
 				}),
 				delay(0), // wait 1 cycle to enable/disable form control
-				tap((param): void => {
+				tap((param: { optionEnabled: boolean }): void => {
 					if (param.optionEnabled) {
 						this.getFormCtrl(FormFieldName.Option).setValue(this.rule?.options?.[0]);
 					}

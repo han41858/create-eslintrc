@@ -31,8 +31,7 @@
 
 			<div class="selector">
 				<app-option-selector [rule]="rule"
-				                     [formControlName]="FormFieldName.Option"
-				                     [disabled]="getFormCtrl(FormFieldName.Option)?.disabled || false"></app-option-selector>
+				                     [formControlName]="FormFieldName.Option"></app-option-selector>
 			</div>
 		</div>
 
@@ -41,8 +40,7 @@
 
 			<div class="selector">
 				<app-additional-option-selector [rule]="rule"
-				                                [formControlName]="FormFieldName.AdditionalOptions"
-				                                [disabled]="getFormCtrl(FormFieldName.AdditionalOptions)?.disabled || false"></app-additional-option-selector>
+				                                [formControlName]="FormFieldName.AdditionalOptions"></app-additional-option-selector>
 			</div>
 		</div>
 	</form>

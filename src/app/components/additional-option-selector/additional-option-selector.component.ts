@@ -9,7 +9,7 @@ import {
 	Validators
 } from '@angular/forms';
 
-import { debounceTime, tap } from 'rxjs/operators';
+import { debounceTime, filter, tap } from 'rxjs/operators';
 
 import { IntegerOption, ObjectOption, Option, Rule, TypedObject } from '../../common/interfaces';
 import { newArray } from '../../common/util';
@@ -44,6 +44,7 @@ export class AdditionalOptionSelectorComponent implements OnChanges, ControlValu
 	currentValue: ObjectOption[] = [];
 
 	formGroup: FormGroup | undefined;
+	private freezeFormReaction: boolean = false;
 
 
 	constructor (private fb: FormBuilder) {
@@ -62,7 +63,7 @@ export class AdditionalOptionSelectorComponent implements OnChanges, ControlValu
 			})
 				.filter((option: ObjectOption | undefined): option is ObjectOption => !!option)
 				.reduce((acc: FormConfigObj, option: ObjectOption, i: number): FormConfigObj => {
-					acc['' + i] = this.fb.control(false);
+					acc['' + i] = this.fb.control(false); // TODO: from rule selected
 
 					let validators: ValidatorFn[] | undefined;
 
@@ -132,6 +133,7 @@ export class AdditionalOptionSelectorComponent implements OnChanges, ControlValu
 
 			this.formGroup.valueChanges
 				.pipe(
+					filter(() => !this.freezeFormReaction),
 					debounceTime(10), // wait disable state change
 					tap(() => {
 						if (this.formGroup) {
@@ -191,17 +193,42 @@ export class AdditionalOptionSelectorComponent implements OnChanges, ControlValu
 	setDisabledState (isDisabled: boolean) {
 		this.disabled = isDisabled;
 
-		if (this.currentValue) {
-			this.writeValue([]);
+		if (this.disabled) {
+			if (this.currentValue?.length > 0) {
+				this.writeValue([]);
+			}
+
+			this.formGroup?.disable();
+		}
+		else {
+			this.formGroup?.enable();
 		}
 	}
 
-	writeValue (additionalOptions: ObjectOption[]): void {
+	writeValue (additionalOptions: ObjectOption[] | null): void {
+		// console.log('writeValue()', additionalOptions);
+
 		if (this.currentValue !== additionalOptions) {
-			this.currentValue = additionalOptions;
+			this.currentValue = additionalOptions || [];
+
+			// const allValues: unknown[] = additionalOptions?.map(option => option.value) || [];
+			//
+			// console.warn(this.formGroup?.value);
+			//
+			// const valueObj: TypedObject<boolean | unknown> | undefined = this.rule?.additionalOptions?.reduce((valueObj: TypedObject<boolean | unknown>, option: ObjectOption, i: number) => {
+			// 	valueObj['' + i] = allValues.includes(option.value);
+			//
+			// 	return valueObj;
+			// }, {});
+			//
+			// if (valueObj) {
+			// 	this.freezeFormReaction = true;
+			// 	this.formGroup?.patchValue(valueObj);
+			// 	this.freezeFormReaction = false;
+			// }
 
 			if (typeof this.onChangeFnc === 'function') {
-				this.onChangeFnc(additionalOptions);
+				this.onChangeFnc(additionalOptions || []);
 			}
 		}
 	}
